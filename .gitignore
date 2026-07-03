@@ -1,0 +1,5 @@
+# root .gitignore — Firebase CLI junk & logs
+.firebase/
+*-debug.log
+*.log
+.emulator-data/
