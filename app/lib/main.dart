@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
+import 'core/di/injection.dart';
+import 'core/env/build_info_service.dart';
 import 'core/theme/app_spacing.dart';
 import 'core/theme/app_theme.dart';
 
 void main() {
+  configureDependencies();
   runApp(const EventHorizonApp());
 }
 
@@ -41,6 +44,8 @@ class _PlaceholderPage extends StatelessWidget {
               'Đã kết nối',
               style: TextStyle(color: context.statusColors.success),
             ),
+            AppSpacing.vSm,
+            Text(getIt<BuildInfoService>().describe()),
           ],
         ),
       ),
