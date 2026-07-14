@@ -10,6 +10,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:event_horizon/core/env/build_info_service.dart' as _i229;
+import 'package:event_horizon/core/router/app_router.dart' as _i157;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
@@ -23,6 +24,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i229.BuildInfoService>(
       () => const _i229.BuildInfoService(),
     );
+    gh.lazySingleton<_i157.AppRouter>(() => _i157.AppRouter());
     return this;
   }
 }
