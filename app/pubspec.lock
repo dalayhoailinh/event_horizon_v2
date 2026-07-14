@@ -141,10 +141,10 @@ packages:
     dependency: "direct main"
     description:
       name: cloud_firestore
-      sha256: "252994bf8c50b344d5e24b12d52f41a46cbf2b26f66088e8680ff05244fc8daf"
+      sha256: f0dba6cedc1e1c84bb811c32ce1343cde4f1aa796dc4b5d00344e16a5342aed0
       url: "https://pub.dev"
     source: hosted
-    version: "6.7.0"
+    version: "6.6.0"
   cloud_firestore_platform_interface:
     dependency: transitive
     description:
@@ -165,10 +165,10 @@ packages:
     dependency: "direct main"
     description:
       name: cloud_functions
-      sha256: "88c7d95354e5d54b236a2ca4c6625d38cda7a381f2828d4a4b5becc374ecd3d1"
+      sha256: "94ed08514607ac591e92b9aab1da67e3c8d99c0a7d0b40d096c62843f026cd52"
       url: "https://pub.dev"
     source: hosted
-    version: "6.3.4"
+    version: "6.3.3"
   cloud_functions_platform_interface:
     dependency: transitive
     description:
@@ -261,10 +261,10 @@ packages:
     dependency: "direct main"
     description:
       name: firebase_auth
-      sha256: c3fc520e4fc4bf23a455643df07921d63cd6601936e99aeca3c04b5bd0ce3594
+      sha256: "7996a49c4b4054573eac9124c1c412095ae1406ca367bd2373de1ad2eaba04b8"
       url: "https://pub.dev"
     source: hosted
-    version: "6.5.5"
+    version: "6.5.4"
   firebase_auth_platform_interface:
     dependency: transitive
     description:

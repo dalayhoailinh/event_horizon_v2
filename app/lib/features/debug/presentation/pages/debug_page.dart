@@ -1,0 +1,59 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+
+import '../../../../core/di/injection.dart';
+import '../../../../core/theme/app_spacing.dart';
+
+class DebugPage extends StatefulWidget {
+  const DebugPage({super.key});
+
+  @override
+  State<DebugPage> createState() => _DebugPageState();
+}
+
+class _DebugPageState extends State<DebugPage> {
+  String _log = 'Chưa chạy kiểm tra nào.';
+
+  Future<void> _testFirestore() async {
+    setState(() {
+      _log = 'Đang ghi Firestore...';
+    });
+    try {
+      final db = getIt<FirebaseFirestore>();
+      await db.collection('debug').doc('ping').set({
+        'at': FieldValue.serverTimestamp(),
+        'from': kIsWeb ? 'web' : 'app',
+      });
+      final snap = await db.collection('debug').doc('ping').get();
+      setState(() {
+        _log = 'Ghi Firestore thành công: ${snap.data()}';
+      });
+    } catch (e) {
+      setState(() {
+        _log = 'Lỗi khi ghi Firestore: $e';
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Debug')),
+      body: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            FilledButton(
+              onPressed: _testFirestore,
+              child: const Text('Ghi thử Firestore'),
+            ),
+            AppSpacing.vMd,
+            Text(_log),
+          ],
+        ),
+      ),
+    );
+  }
+}

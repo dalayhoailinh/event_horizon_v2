@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../features/debug/presentation/pages/debug_page.dart';
 import '../../features/shell/presentation/pages/shell_placeholder_page.dart';
 import 'route_names.dart';
 
@@ -23,6 +24,10 @@ class AppRouter {
         path: RouteNames.admin,
         builder: (context, state) =>
             const ShellPlaceholderPage(title: 'Admin shell'),
+      ),
+      GoRoute(
+        path: RouteNames.debug,
+        builder: (context, state) => const DebugPage(),
       ),
     ],
   );

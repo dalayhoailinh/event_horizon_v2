@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "EventHorizon (EMULATOR)",
+      "request": "launch",
+      "type": "dart",
+      "cwd": "app",
+      "program": "lib/main.dart",
+      "toolArgs": ["--dart-define=USE_EMULATOR=true"],
+      "preLaunchTask": "firebase-emulators"
+    },
+    {
+      "name": "EventHorizon (CLOUD)",
+      "request": "launch",
+      "type": "dart",
+      "cwd": "app",
+      "program": "lib/main.dart",
+      "toolArgs": ["--dart-define=USE_EMULATOR=false"]
+    }
+  ]
+}

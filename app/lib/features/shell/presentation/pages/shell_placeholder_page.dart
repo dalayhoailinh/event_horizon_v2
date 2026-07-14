@@ -32,6 +32,11 @@ class ShellPlaceholderPage extends StatelessWidget {
               onPressed: () => context.go(RouteNames.admin),
               child: const Text('Admin shell'),
             ),
+            AppSpacing.vLg,
+            OutlinedButton(
+              onPressed: () => context.go(RouteNames.debug),
+              child: const Text('Trang Debug'),
+            ),
           ],
         ),
       ),
