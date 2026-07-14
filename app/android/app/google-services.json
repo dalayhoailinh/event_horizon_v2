@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "484514163927",
+    "project_id": "event-horizon-v2",
+    "storage_bucket": "event-horizon-v2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:484514163927:android:f2eafd4622e4e12fdc1492",
+        "android_client_info": {
+          "package_name": "com.eventhorizon.event_horizon"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0nE-mqWZLNB4J-MD3v9poEeX9CeOt5Bs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
