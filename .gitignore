@@ -3,3 +3,5 @@
 *-debug.log
 *.log
 .emulator-data/
+.agents/
+.claude/
