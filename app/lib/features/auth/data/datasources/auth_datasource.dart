@@ -25,7 +25,7 @@ abstract interface class AuthDatasource {
   Future<void> logout();
 }
 
-@lazySingleton
+@LazySingleton(as: AuthDatasource)
 class AuthDatasourceImpl implements AuthDatasource {
   final FirebaseAuth _auth;
   const AuthDatasourceImpl(this._auth);
