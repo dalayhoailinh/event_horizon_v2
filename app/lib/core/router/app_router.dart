@@ -2,6 +2,8 @@ import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../features/auth/presentation/pages/login_page.dart';
+import '../../features/auth/presentation/pages/register_page.dart';
+import '../../features/auth/presentation/pages/verify_email_page.dart';
 import '../../features/debug/presentation/pages/debug_page.dart';
 import '../../features/shell/presentation/pages/shell_placeholder_page.dart';
 import 'route_names.dart';
@@ -33,6 +35,14 @@ class AppRouter {
       GoRoute(
         path: RouteNames.login,
         builder: (context, state) => const LoginPage(),
+      ),
+      GoRoute(
+        path: RouteNames.register,
+        builder: (context, state) => const RegisterPage(),
+      ),
+      GoRoute(
+        path: RouteNames.verifyEmail,
+        builder: (context, state) => const VerifyEmailPage(),
       ),
     ],
   );

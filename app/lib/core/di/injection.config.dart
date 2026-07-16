@@ -24,6 +24,10 @@ import 'package:event_horizon/features/auth/presentation/blocs/auth/auth_bloc.da
     as _i523;
 import 'package:event_horizon/features/auth/presentation/blocs/login/login_cubit.dart'
     as _i486;
+import 'package:event_horizon/features/auth/presentation/blocs/register/register_cubit.dart'
+    as _i115;
+import 'package:event_horizon/features/auth/presentation/blocs/verify_email/verify_email_cubit.dart'
+    as _i974;
 import 'package:firebase_auth/firebase_auth.dart' as _i59;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
@@ -54,6 +58,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i486.LoginCubit>(
       () => _i486.LoginCubit(gh<_i911.AuthRepository>()),
+    );
+    gh.factory<_i115.RegisterCubit>(
+      () => _i115.RegisterCubit(gh<_i911.AuthRepository>()),
+    );
+    gh.factory<_i974.VerifyEmailCubit>(
+      () => _i974.VerifyEmailCubit(gh<_i911.AuthRepository>()),
     );
     return this;
   }
