@@ -85,10 +85,7 @@ switch (_that) {
 case AuthUnknown():
 return unknown(_that);case AuthAuthenticated():
 return authenticated(_that);case AuthUnauthenticated():
-return unauthenticated(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return unauthenticated(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -153,10 +150,7 @@ switch (_that) {
 case AuthUnknown():
 return unknown();case AuthAuthenticated():
 return authenticated(_that.user);case AuthUnauthenticated():
-return unauthenticated();case _:
-  throw StateError('Unexpected subclass');
-
-}
+return unauthenticated();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
