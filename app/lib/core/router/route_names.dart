@@ -3,4 +3,6 @@ abstract final class RouteNames {
   static const String organizer = '/organizer';
   static const String admin = '/admin';
   static const String debug = '/debug'; // dev-only playground
+  static const String login = '/login';
+  static const String register = '/register';
 }

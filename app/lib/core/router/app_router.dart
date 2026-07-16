@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/debug/presentation/pages/debug_page.dart';
 import '../../features/shell/presentation/pages/shell_placeholder_page.dart';
 import 'route_names.dart';
@@ -28,6 +29,10 @@ class AppRouter {
       GoRoute(
         path: RouteNames.debug,
         builder: (context, state) => const DebugPage(),
+      ),
+      GoRoute(
+        path: RouteNames.login,
+        builder: (context, state) => const LoginPage(),
       ),
     ],
   );

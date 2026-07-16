@@ -4,11 +4,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'core/di/injection.dart';
 import 'core/env/app_env.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
+import 'features/auth/presentation/blocs/auth/auth_bloc.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -19,6 +21,7 @@ Future<void> main() async {
   }
   debugPrint('Firebase OK: ${Firebase.app().options.projectId}');
   configureDependencies();
+  getIt<AuthBloc>().add(const AuthStarted());
   runApp(const EventHorizonApp());
 }
 
@@ -27,10 +30,13 @@ class EventHorizonApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'Event Horizon v2',
-      theme: AppTheme.light,
-      routerConfig: getIt<AppRouter>().router,
+    return BlocProvider.value(
+      value: getIt<AuthBloc>(),
+      child: MaterialApp.router(
+        title: 'Event Horizon v2',
+        theme: AppTheme.light,
+        routerConfig: getIt<AppRouter>().router,
+      ),
     );
   }
 }
