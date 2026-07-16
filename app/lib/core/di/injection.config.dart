@@ -20,6 +20,8 @@ import 'package:event_horizon/features/auth/data/repositories/auth_repository_im
     as _i835;
 import 'package:event_horizon/features/auth/domain/repositories/auth_repository.dart'
     as _i911;
+import 'package:event_horizon/features/auth/presentation/blocs/auth/auth_bloc.dart'
+    as _i523;
 import 'package:firebase_auth/firebase_auth.dart' as _i59;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
@@ -44,6 +46,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i911.AuthRepository>(
       () => _i835.AuthRepositoryImpl(gh<_i555.AuthDatasource>()),
+    );
+    gh.lazySingleton<_i523.AuthBloc>(
+      () => _i523.AuthBloc(gh<_i911.AuthRepository>()),
     );
     return this;
   }
