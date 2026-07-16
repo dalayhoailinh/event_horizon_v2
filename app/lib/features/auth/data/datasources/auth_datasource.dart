@@ -32,7 +32,7 @@ class AuthDatasourceImpl implements AuthDatasource {
 
   @override
   Stream<AppUser?> watchCurrentUser() {
-    return _auth.authStateChanges().asyncMap((user) async {
+    return _auth.userChanges().asyncMap((user) async {
       if (user == null) return null;
       try {
         return await mapFirebaseUserToAppUser(user);
