@@ -22,7 +22,17 @@ class ShellPlaceholderPage extends StatelessWidget {
       _ => 'Khách (chưa đăng nhập)',
     };
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
+      appBar: AppBar(
+        title: Text(title),
+        actions: [
+          IconButton(
+            tooltip: 'Đăng xuất',
+            onPressed: () =>
+                context.read<AuthBloc>().add(const AuthLogoutRequested()),
+            icon: const Icon(Icons.logout),
+          ),
+        ],
+      ),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,

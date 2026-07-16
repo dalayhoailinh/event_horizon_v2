@@ -46,7 +46,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i229.BuildInfoService>(
       () => const _i229.BuildInfoService(),
     );
-    gh.lazySingleton<_i157.AppRouter>(() => _i157.AppRouter());
     gh.lazySingleton<_i555.AuthDatasource>(
       () => _i555.AuthDatasourceImpl(gh<_i59.FirebaseAuth>()),
     );
@@ -64,6 +63,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i974.VerifyEmailCubit>(
       () => _i974.VerifyEmailCubit(gh<_i911.AuthRepository>()),
+    );
+    gh.lazySingleton<_i157.AppRouter>(
+      () => _i157.AppRouter(gh<_i523.AuthBloc>()),
     );
     return this;
   }
