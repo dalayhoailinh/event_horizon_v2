@@ -2,9 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../auth/presentation/blocs/auth/auth_bloc.dart';
 
 class DebugPage extends StatefulWidget {
   const DebugPage({super.key});
@@ -71,6 +73,12 @@ class _DebugPageState extends State<DebugPage> {
             FilledButton(
               onPressed: _testPing,
               child: const Text('Ping thử server'),
+            ),
+            AppSpacing.vSm,
+            OutlinedButton(
+              onPressed: () =>
+                  context.read<AuthBloc>().add(const AuthRefreshRequested()),
+              child: const Text('Làm mới vai trò (đọc lại claims)'),
             ),
             AppSpacing.vMd,
             Text(_log),
