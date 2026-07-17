@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:flutter/foundation.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,21 +20,26 @@ class _DebugPageState extends State<DebugPage> {
 
   Future<void> _testFirestore() async {
     setState(() {
-      _log = 'Đang ghi Firestore...';
+      _log = 'Đang đọc users doc của mình...';
     });
     try {
-      final db = getIt<FirebaseFirestore>();
-      await db.collection('debug').doc('ping').set({
-        'at': FieldValue.serverTimestamp(),
-        'from': kIsWeb ? 'web' : 'app',
-      });
-      final snap = await db.collection('debug').doc('ping').get();
+      final uid = getIt<FirebaseAuth>().currentUser?.uid;
+      if (uid == null) {
+        setState(() {
+          _log = 'Chưa đăng nhập.';
+        });
+        return;
+      }
+      final snap = await getIt<FirebaseFirestore>()
+          .collection('users')
+          .doc(uid)
+          .get();
       setState(() {
-        _log = 'Ghi Firestore thành công: ${snap.data()}';
+        _log = 'users/$uid: ${snap.data()}';
       });
     } catch (e) {
       setState(() {
-        _log = 'Lỗi khi ghi Firestore: $e';
+        _log = 'Lỗi khi đọc Firestore: $e';
       });
     }
   }
@@ -67,7 +72,7 @@ class _DebugPageState extends State<DebugPage> {
           children: [
             FilledButton(
               onPressed: _testFirestore,
-              child: const Text('Ghi thử Firestore'),
+              child: const Text('Đọc thử Firestore'),
             ),
             AppSpacing.vSm,
             FilledButton(
