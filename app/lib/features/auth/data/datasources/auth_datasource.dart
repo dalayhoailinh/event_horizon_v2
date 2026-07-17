@@ -108,7 +108,10 @@ class AuthDatasourceImpl implements AuthDatasource {
   @override
   Future<void> refreshUser() async {
     try {
-      await _auth.currentUser?.reload();
+      final user = _auth.currentUser;
+      if (user == null) return;
+      await user.getIdTokenResult(true);
+      await user.reload();
     } on FirebaseAuthException catch (e) {
       throw mapFirebaseAuthException(e);
     }
