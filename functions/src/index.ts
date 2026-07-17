@@ -1,7 +1,8 @@
-import { setGlobalOptions } from "firebase-functions/v2";
+import "./init";
+
 import { onCall } from "firebase-functions/v2/https";
 
-setGlobalOptions({ region: "asia-southeast1", maxInstances: 2 });
+export { onUserCreated } from "./auth/onUserCreated";
 
 export const ping = onCall(() => {
   return { message: "pong", serverTime: new Date().toISOString() };
