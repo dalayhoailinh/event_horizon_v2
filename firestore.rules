@@ -23,6 +23,60 @@ service cloud.firestore {
         ]);
 
       allow create, delete: if false;
+
+      match /favorites/{eventId} {
+        allow read, delete: if isSignedIn() && request.auth.uid == userId;
+
+        allow create: if isSignedIn() && request.auth.uid == userId 
+          && request.resource.data.keys().hasOnly(['createdAt'])
+          && request.resource.data.createdAt == request.time;
+      }
+    }
+
+    match /categories/{categoryId} {
+      allow read: if resource.data.status == 'approved' || isAdmin();
+
+      allow write: if false;
+    }
+ 
+    match /events/{eventId} {
+      function isEventOwner() {
+        return isSignedIn() && request.auth.uid == resource.data.organizerId;
+      }
+
+      allow read: if resource.data.status == 'published'
+        || isEventOwner()
+        || isAdmin();
+      
+      allow write: if false;
+
+      function parentEvent() {
+        return get(/databases/$(database)/documents/events/$(eventId)).data;
+      }
+
+      function parentReadable() {
+        return parentEvent().status == 'published' 
+          || (isSignedIn() && request.auth.uid == parentEvent().organizerId)
+      }
+
+      match /content/{docId} {
+        allow read: if parentReadable();
+        allow write: if false;
+      }
+
+      match /ticketTypes/{ttId} {
+        allow read: if parentReadable();
+        allow write: if false;
+      }
+
+      match /seatmap/{docId} {
+        allow read: if parentReadable();
+        allow write: if false;
+      }
+
+      match /search/{docId} {
+        allow read, write: if false;
+      }
     }
   }
 }
