@@ -14,7 +14,7 @@ abstract class EventSummary with _$EventSummary {
     required List<String> categoryNames,
     required int minPrice,
     required int maxPrice,
-    required int ticketSold,
+    required int ticketsSold,
     required int favoriteCount,
     required bool hasSeatMap,
   }) = _EventSummary;

@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$EventSummary {
 
- String get id; String get title; String get coverImageUrl; DateTime get startAt; String get venueName; String get provinceCode; List<String> get categoryNames; int get minPrice; int get maxPrice; int get ticketSold; int get favoriteCount; bool get hasSeatMap;
+ String get id; String get title; String get coverImageUrl; DateTime get startAt; String get venueName; String get provinceCode; List<String> get categoryNames; int get minPrice; int get maxPrice; int get ticketsSold; int get favoriteCount; bool get hasSeatMap;
 /// Create a copy of EventSummary
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $EventSummaryCopyWith<EventSummary> get copyWith => _$EventSummaryCopyWithImpl<E
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EventSummary&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.coverImageUrl, coverImageUrl) || other.coverImageUrl == coverImageUrl)&&(identical(other.startAt, startAt) || other.startAt == startAt)&&(identical(other.venueName, venueName) || other.venueName == venueName)&&(identical(other.provinceCode, provinceCode) || other.provinceCode == provinceCode)&&const DeepCollectionEquality().equals(other.categoryNames, categoryNames)&&(identical(other.minPrice, minPrice) || other.minPrice == minPrice)&&(identical(other.maxPrice, maxPrice) || other.maxPrice == maxPrice)&&(identical(other.ticketSold, ticketSold) || other.ticketSold == ticketSold)&&(identical(other.favoriteCount, favoriteCount) || other.favoriteCount == favoriteCount)&&(identical(other.hasSeatMap, hasSeatMap) || other.hasSeatMap == hasSeatMap));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EventSummary&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.coverImageUrl, coverImageUrl) || other.coverImageUrl == coverImageUrl)&&(identical(other.startAt, startAt) || other.startAt == startAt)&&(identical(other.venueName, venueName) || other.venueName == venueName)&&(identical(other.provinceCode, provinceCode) || other.provinceCode == provinceCode)&&const DeepCollectionEquality().equals(other.categoryNames, categoryNames)&&(identical(other.minPrice, minPrice) || other.minPrice == minPrice)&&(identical(other.maxPrice, maxPrice) || other.maxPrice == maxPrice)&&(identical(other.ticketsSold, ticketsSold) || other.ticketsSold == ticketsSold)&&(identical(other.favoriteCount, favoriteCount) || other.favoriteCount == favoriteCount)&&(identical(other.hasSeatMap, hasSeatMap) || other.hasSeatMap == hasSeatMap));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,title,coverImageUrl,startAt,venueName,provinceCode,const DeepCollectionEquality().hash(categoryNames),minPrice,maxPrice,ticketSold,favoriteCount,hasSeatMap);
+int get hashCode => Object.hash(runtimeType,id,title,coverImageUrl,startAt,venueName,provinceCode,const DeepCollectionEquality().hash(categoryNames),minPrice,maxPrice,ticketsSold,favoriteCount,hasSeatMap);
 
 @override
 String toString() {
-  return 'EventSummary(id: $id, title: $title, coverImageUrl: $coverImageUrl, startAt: $startAt, venueName: $venueName, provinceCode: $provinceCode, categoryNames: $categoryNames, minPrice: $minPrice, maxPrice: $maxPrice, ticketSold: $ticketSold, favoriteCount: $favoriteCount, hasSeatMap: $hasSeatMap)';
+  return 'EventSummary(id: $id, title: $title, coverImageUrl: $coverImageUrl, startAt: $startAt, venueName: $venueName, provinceCode: $provinceCode, categoryNames: $categoryNames, minPrice: $minPrice, maxPrice: $maxPrice, ticketsSold: $ticketsSold, favoriteCount: $favoriteCount, hasSeatMap: $hasSeatMap)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $EventSummaryCopyWith<$Res>  {
   factory $EventSummaryCopyWith(EventSummary value, $Res Function(EventSummary) _then) = _$EventSummaryCopyWithImpl;
 @useResult
 $Res call({
- String id, String title, String coverImageUrl, DateTime startAt, String venueName, String provinceCode, List<String> categoryNames, int minPrice, int maxPrice, int ticketSold, int favoriteCount, bool hasSeatMap
+ String id, String title, String coverImageUrl, DateTime startAt, String venueName, String provinceCode, List<String> categoryNames, int minPrice, int maxPrice, int ticketsSold, int favoriteCount, bool hasSeatMap
 });
 
 
@@ -62,7 +62,7 @@ class _$EventSummaryCopyWithImpl<$Res>
 
 /// Create a copy of EventSummary
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? coverImageUrl = null,Object? startAt = null,Object? venueName = null,Object? provinceCode = null,Object? categoryNames = null,Object? minPrice = null,Object? maxPrice = null,Object? ticketSold = null,Object? favoriteCount = null,Object? hasSeatMap = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? coverImageUrl = null,Object? startAt = null,Object? venueName = null,Object? provinceCode = null,Object? categoryNames = null,Object? minPrice = null,Object? maxPrice = null,Object? ticketsSold = null,Object? favoriteCount = null,Object? hasSeatMap = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -73,7 +73,7 @@ as String,provinceCode: null == provinceCode ? _self.provinceCode : provinceCode
 as String,categoryNames: null == categoryNames ? _self.categoryNames : categoryNames // ignore: cast_nullable_to_non_nullable
 as List<String>,minPrice: null == minPrice ? _self.minPrice : minPrice // ignore: cast_nullable_to_non_nullable
 as int,maxPrice: null == maxPrice ? _self.maxPrice : maxPrice // ignore: cast_nullable_to_non_nullable
-as int,ticketSold: null == ticketSold ? _self.ticketSold : ticketSold // ignore: cast_nullable_to_non_nullable
+as int,ticketsSold: null == ticketsSold ? _self.ticketsSold : ticketsSold // ignore: cast_nullable_to_non_nullable
 as int,favoriteCount: null == favoriteCount ? _self.favoriteCount : favoriteCount // ignore: cast_nullable_to_non_nullable
 as int,hasSeatMap: null == hasSeatMap ? _self.hasSeatMap : hasSeatMap // ignore: cast_nullable_to_non_nullable
 as bool,
@@ -161,10 +161,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String coverImageUrl,  DateTime startAt,  String venueName,  String provinceCode,  List<String> categoryNames,  int minPrice,  int maxPrice,  int ticketSold,  int favoriteCount,  bool hasSeatMap)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String coverImageUrl,  DateTime startAt,  String venueName,  String provinceCode,  List<String> categoryNames,  int minPrice,  int maxPrice,  int ticketsSold,  int favoriteCount,  bool hasSeatMap)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _EventSummary() when $default != null:
-return $default(_that.id,_that.title,_that.coverImageUrl,_that.startAt,_that.venueName,_that.provinceCode,_that.categoryNames,_that.minPrice,_that.maxPrice,_that.ticketSold,_that.favoriteCount,_that.hasSeatMap);case _:
+return $default(_that.id,_that.title,_that.coverImageUrl,_that.startAt,_that.venueName,_that.provinceCode,_that.categoryNames,_that.minPrice,_that.maxPrice,_that.ticketsSold,_that.favoriteCount,_that.hasSeatMap);case _:
   return orElse();
 
 }
@@ -182,10 +182,10 @@ return $default(_that.id,_that.title,_that.coverImageUrl,_that.startAt,_that.ven
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  String coverImageUrl,  DateTime startAt,  String venueName,  String provinceCode,  List<String> categoryNames,  int minPrice,  int maxPrice,  int ticketSold,  int favoriteCount,  bool hasSeatMap)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  String coverImageUrl,  DateTime startAt,  String venueName,  String provinceCode,  List<String> categoryNames,  int minPrice,  int maxPrice,  int ticketsSold,  int favoriteCount,  bool hasSeatMap)  $default,) {final _that = this;
 switch (_that) {
 case _EventSummary():
-return $default(_that.id,_that.title,_that.coverImageUrl,_that.startAt,_that.venueName,_that.provinceCode,_that.categoryNames,_that.minPrice,_that.maxPrice,_that.ticketSold,_that.favoriteCount,_that.hasSeatMap);case _:
+return $default(_that.id,_that.title,_that.coverImageUrl,_that.startAt,_that.venueName,_that.provinceCode,_that.categoryNames,_that.minPrice,_that.maxPrice,_that.ticketsSold,_that.favoriteCount,_that.hasSeatMap);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -202,10 +202,10 @@ return $default(_that.id,_that.title,_that.coverImageUrl,_that.startAt,_that.ven
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String coverImageUrl,  DateTime startAt,  String venueName,  String provinceCode,  List<String> categoryNames,  int minPrice,  int maxPrice,  int ticketSold,  int favoriteCount,  bool hasSeatMap)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String coverImageUrl,  DateTime startAt,  String venueName,  String provinceCode,  List<String> categoryNames,  int minPrice,  int maxPrice,  int ticketsSold,  int favoriteCount,  bool hasSeatMap)?  $default,) {final _that = this;
 switch (_that) {
 case _EventSummary() when $default != null:
-return $default(_that.id,_that.title,_that.coverImageUrl,_that.startAt,_that.venueName,_that.provinceCode,_that.categoryNames,_that.minPrice,_that.maxPrice,_that.ticketSold,_that.favoriteCount,_that.hasSeatMap);case _:
+return $default(_that.id,_that.title,_that.coverImageUrl,_that.startAt,_that.venueName,_that.provinceCode,_that.categoryNames,_that.minPrice,_that.maxPrice,_that.ticketsSold,_that.favoriteCount,_that.hasSeatMap);case _:
   return null;
 
 }
@@ -217,7 +217,7 @@ return $default(_that.id,_that.title,_that.coverImageUrl,_that.startAt,_that.ven
 
 
 class _EventSummary implements EventSummary {
-  const _EventSummary({required this.id, required this.title, required this.coverImageUrl, required this.startAt, required this.venueName, required this.provinceCode, required final  List<String> categoryNames, required this.minPrice, required this.maxPrice, required this.ticketSold, required this.favoriteCount, required this.hasSeatMap}): _categoryNames = categoryNames;
+  const _EventSummary({required this.id, required this.title, required this.coverImageUrl, required this.startAt, required this.venueName, required this.provinceCode, required final  List<String> categoryNames, required this.minPrice, required this.maxPrice, required this.ticketsSold, required this.favoriteCount, required this.hasSeatMap}): _categoryNames = categoryNames;
   
 
 @override final  String id;
@@ -235,7 +235,7 @@ class _EventSummary implements EventSummary {
 
 @override final  int minPrice;
 @override final  int maxPrice;
-@override final  int ticketSold;
+@override final  int ticketsSold;
 @override final  int favoriteCount;
 @override final  bool hasSeatMap;
 
@@ -249,16 +249,16 @@ _$EventSummaryCopyWith<_EventSummary> get copyWith => __$EventSummaryCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EventSummary&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.coverImageUrl, coverImageUrl) || other.coverImageUrl == coverImageUrl)&&(identical(other.startAt, startAt) || other.startAt == startAt)&&(identical(other.venueName, venueName) || other.venueName == venueName)&&(identical(other.provinceCode, provinceCode) || other.provinceCode == provinceCode)&&const DeepCollectionEquality().equals(other._categoryNames, _categoryNames)&&(identical(other.minPrice, minPrice) || other.minPrice == minPrice)&&(identical(other.maxPrice, maxPrice) || other.maxPrice == maxPrice)&&(identical(other.ticketSold, ticketSold) || other.ticketSold == ticketSold)&&(identical(other.favoriteCount, favoriteCount) || other.favoriteCount == favoriteCount)&&(identical(other.hasSeatMap, hasSeatMap) || other.hasSeatMap == hasSeatMap));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _EventSummary&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.coverImageUrl, coverImageUrl) || other.coverImageUrl == coverImageUrl)&&(identical(other.startAt, startAt) || other.startAt == startAt)&&(identical(other.venueName, venueName) || other.venueName == venueName)&&(identical(other.provinceCode, provinceCode) || other.provinceCode == provinceCode)&&const DeepCollectionEquality().equals(other._categoryNames, _categoryNames)&&(identical(other.minPrice, minPrice) || other.minPrice == minPrice)&&(identical(other.maxPrice, maxPrice) || other.maxPrice == maxPrice)&&(identical(other.ticketsSold, ticketsSold) || other.ticketsSold == ticketsSold)&&(identical(other.favoriteCount, favoriteCount) || other.favoriteCount == favoriteCount)&&(identical(other.hasSeatMap, hasSeatMap) || other.hasSeatMap == hasSeatMap));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,title,coverImageUrl,startAt,venueName,provinceCode,const DeepCollectionEquality().hash(_categoryNames),minPrice,maxPrice,ticketSold,favoriteCount,hasSeatMap);
+int get hashCode => Object.hash(runtimeType,id,title,coverImageUrl,startAt,venueName,provinceCode,const DeepCollectionEquality().hash(_categoryNames),minPrice,maxPrice,ticketsSold,favoriteCount,hasSeatMap);
 
 @override
 String toString() {
-  return 'EventSummary(id: $id, title: $title, coverImageUrl: $coverImageUrl, startAt: $startAt, venueName: $venueName, provinceCode: $provinceCode, categoryNames: $categoryNames, minPrice: $minPrice, maxPrice: $maxPrice, ticketSold: $ticketSold, favoriteCount: $favoriteCount, hasSeatMap: $hasSeatMap)';
+  return 'EventSummary(id: $id, title: $title, coverImageUrl: $coverImageUrl, startAt: $startAt, venueName: $venueName, provinceCode: $provinceCode, categoryNames: $categoryNames, minPrice: $minPrice, maxPrice: $maxPrice, ticketsSold: $ticketsSold, favoriteCount: $favoriteCount, hasSeatMap: $hasSeatMap)';
 }
 
 
@@ -269,7 +269,7 @@ abstract mixin class _$EventSummaryCopyWith<$Res> implements $EventSummaryCopyWi
   factory _$EventSummaryCopyWith(_EventSummary value, $Res Function(_EventSummary) _then) = __$EventSummaryCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String title, String coverImageUrl, DateTime startAt, String venueName, String provinceCode, List<String> categoryNames, int minPrice, int maxPrice, int ticketSold, int favoriteCount, bool hasSeatMap
+ String id, String title, String coverImageUrl, DateTime startAt, String venueName, String provinceCode, List<String> categoryNames, int minPrice, int maxPrice, int ticketsSold, int favoriteCount, bool hasSeatMap
 });
 
 
@@ -286,7 +286,7 @@ class __$EventSummaryCopyWithImpl<$Res>
 
 /// Create a copy of EventSummary
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? coverImageUrl = null,Object? startAt = null,Object? venueName = null,Object? provinceCode = null,Object? categoryNames = null,Object? minPrice = null,Object? maxPrice = null,Object? ticketSold = null,Object? favoriteCount = null,Object? hasSeatMap = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? coverImageUrl = null,Object? startAt = null,Object? venueName = null,Object? provinceCode = null,Object? categoryNames = null,Object? minPrice = null,Object? maxPrice = null,Object? ticketsSold = null,Object? favoriteCount = null,Object? hasSeatMap = null,}) {
   return _then(_EventSummary(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -297,7 +297,7 @@ as String,provinceCode: null == provinceCode ? _self.provinceCode : provinceCode
 as String,categoryNames: null == categoryNames ? _self._categoryNames : categoryNames // ignore: cast_nullable_to_non_nullable
 as List<String>,minPrice: null == minPrice ? _self.minPrice : minPrice // ignore: cast_nullable_to_non_nullable
 as int,maxPrice: null == maxPrice ? _self.maxPrice : maxPrice // ignore: cast_nullable_to_non_nullable
-as int,ticketSold: null == ticketSold ? _self.ticketSold : ticketSold // ignore: cast_nullable_to_non_nullable
+as int,ticketsSold: null == ticketsSold ? _self.ticketsSold : ticketsSold // ignore: cast_nullable_to_non_nullable
 as int,favoriteCount: null == favoriteCount ? _self.favoriteCount : favoriteCount // ignore: cast_nullable_to_non_nullable
 as int,hasSeatMap: null == hasSeatMap ? _self.hasSeatMap : hasSeatMap // ignore: cast_nullable_to_non_nullable
 as bool,
