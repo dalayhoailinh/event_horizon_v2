@@ -28,6 +28,18 @@ import 'package:event_horizon/features/auth/presentation/blocs/register/register
     as _i115;
 import 'package:event_horizon/features/auth/presentation/blocs/verify_email/verify_email_cubit.dart'
     as _i974;
+import 'package:event_horizon/features/discovery/data/datasources/discovery_datasource.dart'
+    as _i766;
+import 'package:event_horizon/features/discovery/data/datasources/favorite_datasource.dart'
+    as _i901;
+import 'package:event_horizon/features/discovery/data/repositories/discovery_repository_impl.dart'
+    as _i607;
+import 'package:event_horizon/features/discovery/data/repositories/favorite_repository_impl.dart'
+    as _i256;
+import 'package:event_horizon/features/discovery/domain/repositories/discovery_repository.dart'
+    as _i358;
+import 'package:event_horizon/features/discovery/domain/repositories/favorite_repository.dart'
+    as _i934;
 import 'package:firebase_auth/firebase_auth.dart' as _i59;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
@@ -46,8 +58,23 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i229.BuildInfoService>(
       () => const _i229.BuildInfoService(),
     );
+    gh.singleton<_i901.FavoriteDataSource>(
+      () => _i901.FavoriteDataSourceImpl(
+        gh<_i974.FirebaseFirestore>(),
+        gh<_i59.FirebaseAuth>(),
+      ),
+    );
+    gh.singleton<_i766.DiscoveryDataSource>(
+      () => _i766.DiscoveryDataSourceImpl(gh<_i974.FirebaseFirestore>()),
+    );
+    gh.lazySingleton<_i358.DiscoveryRepository>(
+      () => _i607.DiscoveryRepositoryImpl(gh<_i766.DiscoveryDataSource>()),
+    );
     gh.lazySingleton<_i555.AuthDatasource>(
       () => _i555.AuthDatasourceImpl(gh<_i59.FirebaseAuth>()),
+    );
+    gh.lazySingleton<_i934.FavoriteRepository>(
+      () => _i256.FavoriteRepositoryImpl(gh<_i901.FavoriteDataSource>()),
     );
     gh.lazySingleton<_i911.AuthRepository>(
       () => _i835.AuthRepositoryImpl(gh<_i555.AuthDatasource>()),
