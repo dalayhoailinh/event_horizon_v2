@@ -1,6 +1,7 @@
 {
   "name": "functions",
   "scripts": {
+    "seed": "npm run build && node lib/dev/seed.js",
     "lint": "eslint --ext .js,.ts .",
     "build": "tsc",
     "test": "vitest run",
