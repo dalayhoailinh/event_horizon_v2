@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../core/responsive/responsive_content.dart';
 import '../../../../core/router/route_names.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -64,33 +65,40 @@ class _HomeView extends StatelessWidget {
           child: ListView(
             padding: const EdgeInsets.all(AppSpacing.md),
             children: [
-              const _FakeSearchBar(),
-              const SizedBox(height: AppSpacing.md),
-              _CategoryChips(categories: state.categories),
-              const SizedBox(height: AppSpacing.md),
-              _SectionHeader(
-                title: 'Nổi bật',
-                onSeeAll: () => context.push(RouteNames.events),
-              ),
-              SizedBox(
-                height: 270,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: state.featured.length,
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(width: AppSpacing.sm),
-                  itemBuilder: (context, index) =>
-                      EventCard(event: state.featured[index], width: 280),
+              ResponsiveContentBox(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const _FakeSearchBar(),
+                    const SizedBox(height: AppSpacing.md),
+                    _CategoryChips(categories: state.categories),
+                    const SizedBox(height: AppSpacing.md),
+                    _SectionHeader(
+                      title: 'Nổi bật',
+                      onSeeAll: () => context.push(RouteNames.events),
+                    ),
+                    SizedBox(
+                      height: 270,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: state.featured.length,
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(width: AppSpacing.sm),
+                        itemBuilder: (context, index) =>
+                            EventCard(event: state.featured[index], width: 280),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    const _ProvinceChips(),
+                    const SizedBox(height: AppSpacing.md),
+                    _SectionHeader(
+                      title: 'Sắp diễn ra',
+                      onSeeAll: () => context.push(RouteNames.events),
+                    ),
+                    for (final event in state.upcoming) EventCard(event: event),
+                  ],
                 ),
               ),
-              const SizedBox(height: AppSpacing.md),
-              const _ProvinceChips(),
-              const SizedBox(height: AppSpacing.md),
-              _SectionHeader(
-                title: 'Sắp diễn ra',
-                onSeeAll: () => context.push(RouteNames.events),
-              ),
-              for (final event in state.upcoming) EventCard(event: event),
             ],
           ),
         ),
