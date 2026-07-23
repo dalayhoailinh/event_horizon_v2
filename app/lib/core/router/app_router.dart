@@ -12,6 +12,7 @@ import '../../features/auth/presentation/pages/register_page.dart';
 import '../../features/auth/presentation/pages/splash_page.dart';
 import '../../features/auth/presentation/pages/verify_email_page.dart';
 import '../../features/debug/presentation/pages/debug_page.dart';
+import '../../features/discovery/presentation/pages/home_page.dart';
 import '../../features/shell/presentation/pages/shell_placeholder_page.dart';
 import 'route_names.dart';
 
@@ -48,8 +49,17 @@ class AppRouter {
       ),
       GoRoute(
         path: RouteNames.home,
+        builder: (context, state) => const HomePage(),
+      ),
+      GoRoute(
+        path: RouteNames.events,
         builder: (context, state) =>
-            const ShellPlaceholderPage(title: 'User shell'),
+            const ShellPlaceholderPage(title: 'Danh sách (Bước 9)'),
+      ),
+      GoRoute(
+        path: RouteNames.eventDetail,
+        builder: (context, state) =>
+            const ShellPlaceholderPage(title: 'Chi tiết (Bước 10)'),
       ),
       GoRoute(
         path: RouteNames.organizer,
