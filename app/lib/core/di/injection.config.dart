@@ -40,6 +40,8 @@ import 'package:event_horizon/features/discovery/domain/repositories/discovery_r
     as _i358;
 import 'package:event_horizon/features/discovery/domain/repositories/favorite_repository.dart'
     as _i934;
+import 'package:event_horizon/features/discovery/presentation/blocs/discovery_list/discovery_list_cubit.dart'
+    as _i793;
 import 'package:event_horizon/features/discovery/presentation/blocs/home/home_cubit.dart'
     as _i481;
 import 'package:firebase_auth/firebase_auth.dart' as _i59;
@@ -77,6 +79,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i934.FavoriteRepository>(
       () => _i256.FavoriteRepositoryImpl(gh<_i901.FavoriteDataSource>()),
+    );
+    gh.factory<_i793.DiscoveryListCubit>(
+      () => _i793.DiscoveryListCubit(gh<_i358.DiscoveryRepository>()),
     );
     gh.factory<_i481.HomeCubit>(
       () => _i481.HomeCubit(gh<_i358.DiscoveryRepository>()),
