@@ -6,13 +6,28 @@ import 'app_radius.dart';
 abstract final class AppTheme {
   static ThemeData get light {
     final scheme = ColorScheme.fromSeed(
-      seedColor: AppColors.brand,
-      error: AppColors.danger,
+      seedColor: AppColors.violet500,
+      primary: AppColors.violet500, // sys.primary
+      onPrimary: AppColors.white, // sys.on-primary
+      primaryContainer: AppColors.violet100, // sys.primary-container
+      onPrimaryContainer: AppColors.violet900,
+      secondary: AppColors.orange500, // sys.secondary
+      onSecondary: AppColors.white,
+      secondaryContainer: AppColors.orange100,
+      onSecondaryContainer: AppColors.orange900,
+      error: AppColors.red500, // sys.error
+      onError: AppColors.white,
+      surface: AppColors.white, // bg.surface
+      onSurface: AppColors.gray800, // text.primary
+      surfaceContainerHighest: AppColors.gray100, // bg.surface-variant
+      onSurfaceVariant: AppColors.gray500, // text.secondary
+      outlineVariant: AppColors.gray200, // border.default
     );
     final base = ThemeData.from(colorScheme: scheme, useMaterial3: true);
 
     return base.copyWith(
       appBarTheme: const AppBarTheme(centerTitle: true),
+      scaffoldBackgroundColor: AppColors.gray25, // bg.scaffold
       textTheme: base.textTheme
           .apply(fontFamily: 'Roboto')
           .copyWith(
@@ -31,7 +46,10 @@ abstract final class AppTheme {
         ),
       ),
       extensions: const [
-        AppStatusColors(success: AppColors.success, warning: AppColors.warning),
+        AppStatusColors(
+          success: AppColors.green500,
+          warning: AppColors.amber500,
+        ),
       ],
     );
   }
