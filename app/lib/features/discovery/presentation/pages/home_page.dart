@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -6,10 +5,10 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/responsive/page_section.dart';
 import '../../../../core/router/route_names.dart';
+import '../../../../core/shell/web_page.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/error_retry_view.dart';
-import '../../../auth/presentation/blocs/auth/auth_bloc.dart';
 import '../../domain/entities/event_category.dart';
 import '../../domain/entities/provinces.dart';
 import '../blocs/home/home_cubit.dart';
@@ -34,73 +33,55 @@ class _HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<HomeCubit>().state;
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('EventHorizon'),
-        actions: [
-          if (kDebugMode)
-            IconButton(
-              tooltip: 'Debug',
-              onPressed: () => context.push(RouteNames.debug),
-              icon: const Icon(Icons.bug_report_outlined),
+    return WebPage(
+      sections: switch (state) {
+        HomeState(isLoading: true) => const [
+          PageSection(child: Center(child: CircularProgressIndicator())),
+        ],
+        HomeState(:final failure?) => [
+          PageSection(
+            child: ErrorRetryView(
+              failure: failure,
+              onRetry: () => context.read<HomeCubit>().load(),
             ),
-          IconButton(
-            tooltip: 'Đăng xuất',
-            onPressed: () =>
-                context.read<AuthBloc>().add(const AuthLogoutRequested()),
-            icon: const Icon(Icons.logout),
           ),
         ],
-      ),
-      body: switch (state) {
-        HomeState(isLoading: true) => const Center(
-          child: CircularProgressIndicator(),
-        ),
-        HomeState(:final failure?) => ErrorRetryView(
-          failure: failure,
-          onRetry: () => context.read<HomeCubit>().load(),
-        ),
-        _ => RefreshIndicator(
-          onRefresh: () => context.read<HomeCubit>().load(),
-          child: ListView(
-            children: [
-              PageSection(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const _FakeSearchBar(),
-                    const SizedBox(height: AppSpacing.md),
-                    _CategoryChips(categories: state.categories),
-                    const SizedBox(height: AppSpacing.md),
-                    _SectionHeader(
-                      title: 'Nổi bật',
-                      onSeeAll: () => context.push(RouteNames.events),
-                    ),
-                    SizedBox(
-                      height: 270,
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: state.featured.length,
-                        separatorBuilder: (context, index) =>
-                            const SizedBox(width: AppSpacing.sm),
-                        itemBuilder: (context, index) =>
-                            EventCard(event: state.featured[index], width: 280),
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-                    const _ProvinceChips(),
-                    const SizedBox(height: AppSpacing.md),
-                    _SectionHeader(
-                      title: 'Sắp diễn ra',
-                      onSeeAll: () => context.push(RouteNames.events),
-                    ),
-                    for (final event in state.upcoming) EventCard(event: event),
-                  ],
+        _ => [
+          PageSection(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const _FakeSearchBar(),
+                const SizedBox(height: AppSpacing.md),
+                _CategoryChips(categories: state.categories),
+                const SizedBox(height: AppSpacing.md),
+                _SectionHeader(
+                  title: 'Nổi bật',
+                  onSeeAll: () => context.push(RouteNames.events),
                 ),
-              ),
-            ],
+                SizedBox(
+                  height: 270,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: state.featured.length,
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(width: AppSpacing.sm),
+                    itemBuilder: (context, index) =>
+                        EventCard(event: state.featured[index], width: 280),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                const _ProvinceChips(),
+                const SizedBox(height: AppSpacing.md),
+                _SectionHeader(
+                  title: 'Sắp diễn ra',
+                  onSeeAll: () => context.push(RouteNames.events),
+                ),
+                for (final event in state.upcoming) EventCard(event: event),
+              ],
+            ),
           ),
-        ),
+        ],
       },
     );
   }
