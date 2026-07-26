@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../responsive/breakpoints.dart';
+import 'app_header.dart';
+import 'app_nav_drawer.dart';
 
 class WebPage extends StatefulWidget {
   final List<Widget> sections;
@@ -24,6 +26,7 @@ class _WebPageState extends State<WebPage> {
   Widget build(BuildContext context) {
     final compact = context.windowSize.isCompact;
     return Scaffold(
+      endDrawer: compact ? const AppNavDrawer() : null,
       body: Scrollbar(
         controller: _scrollController,
         thumbVisibility: kIsWeb && !compact,
@@ -33,7 +36,7 @@ class _WebPageState extends State<WebPage> {
               pinned: true,
               automaticallyImplyLeading: false,
               titleSpacing: 0,
-              title: const _HeaderPlaceholder(),
+              title: const AppHeader(),
             ),
             for (final section in widget.sections) ...[
               SliverToBoxAdapter(child: section),
@@ -48,20 +51,6 @@ class _WebPageState extends State<WebPage> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _HeaderPlaceholder extends StatelessWidget {
-  const _HeaderPlaceholder();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 56,
-      color: Colors.grey,
-      alignment: Alignment.center,
-      child: const Text('TODO HEADER'),
     );
   }
 }

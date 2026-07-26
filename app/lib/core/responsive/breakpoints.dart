@@ -16,6 +16,7 @@ abstract final class Breakpoints {
   static const double medium = 600;
   static const double expanded = 840;
   static const double contentMax = 1200;
+  static const double shellGutter = 64;
   static const double gutter = 24;
   static const double gutterCompact = 16;
 
@@ -30,4 +31,7 @@ extension WindowSizeContext on BuildContext {
   WindowSize get windowSize => Breakpoints.of(MediaQuery.of(this).size.width);
   double get gutter =>
       windowSize.isCompact ? Breakpoints.gutterCompact : Breakpoints.gutter;
+  double get shellGutter => windowSize.isCompact
+      ? Breakpoints.gutterCompact
+      : Breakpoints.shellGutter;
 }
