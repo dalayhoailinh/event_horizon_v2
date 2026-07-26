@@ -9,7 +9,7 @@ class ContentContainer extends StatelessWidget {
   const ContentContainer({
     super.key,
     required this.child,
-    required this.maxWidth,
+    this.maxWidth = Breakpoints.contentMax,
   });
 
   @override

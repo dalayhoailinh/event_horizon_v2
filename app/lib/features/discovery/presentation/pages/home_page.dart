@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection.dart';
-import '../../../../core/responsive/responsive_content.dart';
+import '../../../../core/responsive/page_section.dart';
 import '../../../../core/router/route_names.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -63,9 +63,8 @@ class _HomeView extends StatelessWidget {
         _ => RefreshIndicator(
           onRefresh: () => context.read<HomeCubit>().load(),
           child: ListView(
-            padding: const EdgeInsets.all(AppSpacing.md),
             children: [
-              ResponsiveContentBox(
+              PageSection(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
