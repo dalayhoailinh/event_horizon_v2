@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../responsive/breakpoints.dart';
+import 'app_footer.dart';
 import 'app_header.dart';
 import 'app_nav_drawer.dart';
 
@@ -46,27 +47,12 @@ class _WebPageState extends State<WebPage> {
               hasScrollBody: false,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: const [_FooterPlaceholder()],
+                children: const [AppFooter()],
               ),
             ),
           ],
         ),
       ),
-    );
-  }
-}
-
-class _FooterPlaceholder extends StatelessWidget {
-  const _FooterPlaceholder();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 160,
-      width: double.infinity,
-      color: Colors.grey,
-      alignment: Alignment.center,
-      child: const Text('TODO FOOTER'),
     );
   }
 }
