@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../responsive/breakpoints.dart';
+import '../widgets/app_logo.dart';
 import 'site_nav.dart';
 
 class AppHeader extends StatelessWidget {
@@ -16,7 +17,7 @@ class AppHeader extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: context.shellGutter),
       child: Row(
         children: [
-          const Text('Event Horizon'),
+          const AppLogo(),
           Spacer(),
           if (!compact) ...[
             for (final link in kSiteNav)

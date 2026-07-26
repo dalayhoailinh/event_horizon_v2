@@ -31,6 +31,7 @@ class _WebPageState extends State<WebPage> {
         controller: _scrollController,
         thumbVisibility: kIsWeb && !compact,
         child: CustomScrollView(
+          controller: _scrollController,
           slivers: [
             SliverAppBar(
               pinned: true,
