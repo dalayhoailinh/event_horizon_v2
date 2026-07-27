@@ -19,9 +19,12 @@ class AppNavDrawer extends StatelessWidget {
               ListTile(
                 title: Text(link.label),
                 selected: location == link.route,
-                onTap: () {
-                  Navigator.of(context).pop();
-                  context.go(link.route);
+                onTap: switch (link.route) {
+                  null => null,
+                  final route => () {
+                    Navigator.of(context).pop();
+                    context.go(route);
+                  },
                 },
               ),
           ],

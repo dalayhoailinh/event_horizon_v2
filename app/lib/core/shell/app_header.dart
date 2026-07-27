@@ -6,7 +6,9 @@ import '../widgets/app_logo.dart';
 import 'site_nav.dart';
 
 class AppHeader extends StatelessWidget {
-  const AppHeader({super.key});
+  final List<Widget> actions;
+
+  const AppHeader({super.key, required this.actions});
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +21,16 @@ class AppHeader extends StatelessWidget {
         children: [
           const AppLogo(),
           Spacer(),
-          if (!compact) ...[
+          if (!compact)
             for (final link in kSiteNav)
               _HeaderLink(link: link, active: location == link.route),
-          ],
+          ...actions,
+          if (compact)
+            IconButton(
+              tooltip: 'Menu',
+              icon: const Icon(Icons.menu),
+              onPressed: Scaffold.of(context).openEndDrawer,
+            ),
         ],
       ),
     );
@@ -37,8 +45,9 @@ class _HeaderLink extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final route = link.route;
     return TextButton(
-      onPressed: () => context.go(link.route),
+      onPressed: route == null ? null : () => context.go(route),
       child: Text(
         link.label,
         style: TextStyle(

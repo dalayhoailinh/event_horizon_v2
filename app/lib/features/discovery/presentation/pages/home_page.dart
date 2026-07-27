@@ -1,15 +1,18 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/responsive/page_section.dart';
+import '../../../../core/responsive/responsive_grid.dart';
 import '../../../../core/router/route_names.dart';
 import '../../../../core/shell/web_page.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/error_retry_view.dart';
 import '../../domain/entities/event_category.dart';
+import '../../domain/entities/event_summary.dart';
 import '../../domain/entities/provinces.dart';
 import '../blocs/home/home_cubit.dart';
 import '../blocs/home/home_state.dart';
@@ -34,6 +37,15 @@ class _HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     final state = context.watch<HomeCubit>().state;
     return WebPage(
+      title: 'Trang chủ',
+      actions: [
+        if (kDebugMode)
+          IconButton(
+            tooltip: 'Debug',
+            onPressed: () => context.push(RouteNames.debug),
+            icon: const Icon(Icons.bug_report_outlined),
+          ),
+      ],
       sections: switch (state) {
         HomeState(isLoading: true) => const [
           PageSection(child: Center(child: CircularProgressIndicator())),
@@ -77,11 +89,35 @@ class _HomeView extends StatelessWidget {
                   title: 'Sắp diễn ra',
                   onSeeAll: () => context.push(RouteNames.events),
                 ),
-                for (final event in state.upcoming) EventCard(event: event),
+                _UpcomingGrid(events: state.upcoming),
               ],
             ),
           ),
         ],
+      },
+    );
+  }
+}
+
+class _UpcomingGrid extends StatelessWidget {
+  final List<EventSummary> events;
+  const _UpcomingGrid({required this.events});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final colums = responsiveColumns(availableWidth: constraints.maxWidth);
+        const gap = AppSpacing.sm;
+        final cardWidth = (constraints.maxWidth - gap * (colums - 1)) / colums;
+        return Wrap(
+          spacing: gap,
+          runSpacing: gap,
+          children: [
+            for (final event in events)
+              EventCard(event: event, width: cardWidth),
+          ],
+        );
       },
     );
   }
