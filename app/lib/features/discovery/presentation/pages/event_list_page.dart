@@ -4,17 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/di/injection.dart';
-import '../../../../core/responsive/responsive_grid.dart';
+import '../../../../core/responsive/page_section.dart';
+import '../../../../core/shell/web_page.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/error_retry_view.dart';
 import '../../domain/entities/event_filter.dart';
 import '../blocs/discovery_list/discovery_list_cubit.dart';
 import '../blocs/discovery_list/discovery_list_state.dart';
-import '../widgets/event_card.dart';
 import '../widgets/event_filter_bar.dart';
+import '../widgets/event_grid.dart';
 
 class EventListPage extends StatelessWidget {
   final EventFilter initialFilter;
+
   const EventListPage({super.key, required this.initialFilter});
 
   @override
@@ -34,6 +36,7 @@ class _EventListView extends StatefulWidget {
 }
 
 class __EventListViewState extends State<_EventListView> {
+  static const _searchDebounce = Duration(milliseconds: 300);
   Timer? _debounce;
 
   @override
@@ -44,46 +47,71 @@ class __EventListViewState extends State<_EventListView> {
 
   void _onQueryChanged(String query) {
     _debounce?.cancel();
-    _debounce = Timer(const Duration(milliseconds: 300), () {
+    _debounce = Timer(_searchDebounce, () {
+      if (!mounted) return;
       context.read<DiscoveryListCubit>().search(query);
     });
   }
 
-  bool _onScroll(ScrollNotification notification) {
-    final metrics = notification.metrics;
-    if (metrics.pixels >= metrics.maxScrollExtent - 400) {
-      context.read<DiscoveryListCubit>().loadMore();
-    }
-    return false;
+  void _onSubmitted(String query) {
+    _debounce?.cancel();
+    context.read<DiscoveryListCubit>().search(query);
   }
 
   @override
   Widget build(BuildContext context) {
     final state = context.watch<DiscoveryListCubit>().state;
-    return Scaffold(
-      appBar: AppBar(
-        title: TextField(
-          onChanged: _onQueryChanged,
-          textInputAction: TextInputAction.search,
-          decoration: const InputDecoration(
-            hintText: 'Tìm sự kiện...',
-            border: InputBorder.none,
-            icon: Icon(Icons.search),
+    return WebPage(
+      title: 'Khám phá',
+      actions: const [],
+      sections: [
+        PageSection(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _SearchField(
+                onChanged: _onQueryChanged,
+                onSubmitted: _onSubmitted,
+              ),
+              AppSpacing.vMd,
+              const EventFilterBar(),
+            ],
           ),
         ),
-      ),
-      body: Column(
-        children: [
-          AppSpacing.vSm,
-          const EventFilterBar(),
-          AppSpacing.vSm,
-          Expanded(child: _buildBody(state)),
-        ],
+        PageSection(child: _Result(state: state)),
+      ],
+    );
+  }
+}
+
+class _SearchField extends StatelessWidget {
+  final ValueChanged<String> onChanged;
+  final ValueChanged<String> onSubmitted;
+
+  const _SearchField({required this.onChanged, required this.onSubmitted});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      onChanged: onChanged,
+      onSubmitted: onSubmitted,
+      textInputAction: TextInputAction.search,
+      decoration: InputDecoration(
+        labelText: 'Tìm sự kiện',
+        prefixIcon: const Icon(Icons.search),
+        border: const OutlineInputBorder(),
       ),
     );
   }
+}
 
-  Widget _buildBody(DiscoveryListState state) {
+class _Result extends StatelessWidget {
+  final DiscoveryListState state;
+
+  const _Result({required this.state});
+
+  @override
+  Widget build(BuildContext context) {
     if (state.isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -97,34 +125,47 @@ class __EventListViewState extends State<_EventListView> {
     }
 
     if (state.events.isEmpty) {
-      return const Center(child: Text('Không có sự kiện nào.'));
+      return const Center(child: Text('Không có sự kiện nào'));
     }
 
-    return NotificationListener<ScrollNotification>(
-      onNotification: _onScroll,
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final crossAxisCount = responsiveColumns(
-            availableWidth: constraints.maxWidth,
-          );
-          return GridView.builder(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: crossAxisCount,
-              mainAxisExtent: 320,
-              crossAxisSpacing: AppSpacing.sm,
-              mainAxisSpacing: AppSpacing.sm,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        EventGrid(events: state.events),
+        if (state.hasMore) ...[
+          AppSpacing.vLg,
+          Center(
+            child: _LoadMoreButton(
+              isLoading: state.isLoadingMore,
+              onPressed: () => context.read<DiscoveryListCubit>().loadMore(),
             ),
-            itemCount: state.events.length + (state.isLoadingMore ? 1 : 0),
-            itemBuilder: (context, index) {
-              if (index >= state.events.length) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              return EventCard(event: state.events[index]);
-            },
-          );
-        },
-      ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _LoadMoreButton extends StatelessWidget {
+  final bool isLoading;
+  final VoidCallback onPressed;
+  const _LoadMoreButton({required this.isLoading, required this.onPressed});
+
+  static const double _spinnerSize = 20;
+  static const double _spinnerStroke = 2;
+
+  @override
+  Widget build(BuildContext context) {
+    return FilledButton.tonalIcon(
+      onPressed: isLoading ? null : onPressed,
+      icon: isLoading
+          ? const SizedBox(
+              width: _spinnerSize,
+              height: _spinnerSize,
+              child: CircularProgressIndicator(strokeWidth: _spinnerStroke),
+            )
+          : const Icon(Icons.expand_more),
+      label: Text(isLoading ? 'Đang tải…' : 'Tải thêm'),
     );
   }
 }

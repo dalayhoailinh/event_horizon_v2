@@ -16,15 +16,11 @@ class EventFilterBar extends StatelessWidget {
 
     String? categoryName;
     for (final c in state.categories) {
-      if (c.id == filter.categoryId) {
-        categoryName = c.name;
-      }
+      if (c.id == filter.categoryId) categoryName = c.name;
     }
     String? provinceName;
     for (final p in kProvinces) {
-      if (p.code == filter.provinceCode) {
-        provinceName = p.name;
-      }
+      if (p.code == filter.provinceCode) provinceName = p.name;
     }
 
     return SingleChildScrollView(

@@ -5,18 +5,17 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/responsive/page_section.dart';
-import '../../../../core/responsive/responsive_grid.dart';
 import '../../../../core/router/route_names.dart';
 import '../../../../core/shell/web_page.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/error_retry_view.dart';
 import '../../domain/entities/event_category.dart';
-import '../../domain/entities/event_summary.dart';
 import '../../domain/entities/provinces.dart';
 import '../blocs/home/home_cubit.dart';
 import '../blocs/home/home_state.dart';
 import '../widgets/event_card.dart';
+import '../widgets/event_grid.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -89,35 +88,11 @@ class _HomeView extends StatelessWidget {
                   title: 'Sắp diễn ra',
                   onSeeAll: () => context.push(RouteNames.events),
                 ),
-                _UpcomingGrid(events: state.upcoming),
+                EventGrid(events: state.upcoming),
               ],
             ),
           ),
         ],
-      },
-    );
-  }
-}
-
-class _UpcomingGrid extends StatelessWidget {
-  final List<EventSummary> events;
-  const _UpcomingGrid({required this.events});
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final colums = responsiveColumns(availableWidth: constraints.maxWidth);
-        const gap = AppSpacing.sm;
-        final cardWidth = (constraints.maxWidth - gap * (colums - 1)) / colums;
-        return Wrap(
-          spacing: gap,
-          runSpacing: gap,
-          children: [
-            for (final event in events)
-              EventCard(event: event, width: cardWidth),
-          ],
-        );
       },
     );
   }
