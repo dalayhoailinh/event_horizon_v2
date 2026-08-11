@@ -6,6 +6,8 @@ export { onUserCreated } from "./auth/onUserCreated";
 
 export { setUserRole } from "./auth/setUserRole";
 
+export { onFavoriteWritten } from "./discovery/onFavoriteWritten";
+
 export const ping = onCall(() => {
   return { message: "pong", serverTime: new Date().toISOString() };
 });

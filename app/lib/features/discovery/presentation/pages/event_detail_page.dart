@@ -10,7 +10,9 @@ import '../../../../core/widgets/error_retry_view.dart';
 import '../../domain/entities/event_detail.dart';
 import '../blocs/event_detail/event_detail_cubit.dart';
 import '../blocs/event_detail/event_detail_state.dart';
+import '../blocs/favorite/favorite_cubit.dart';
 import '../widgets/detail_sections.dart';
+import '../widgets/favorite_button.dart';
 
 class EventDetailPage extends StatelessWidget {
   final String eventId;
@@ -18,8 +20,15 @@ class EventDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => getIt<EventDetailCubit>()..load(eventId),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => getIt<EventDetailCubit>()..load(eventId),
+        ),
+        BlocProvider(
+          create: (context) => getIt<FavoriteCubit>()..start(eventId),
+        ),
+      ],
       child: _EventDetailView(eventId: eventId),
     );
   }
@@ -70,7 +79,7 @@ class _DetailBody extends StatelessWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          EventHeroSection(detail: detail),
+          EventHeroSection(detail: detail, trailing: const FavoriteButton()),
           AppSpacing.vMd,
           TicketTypesSection(ticketTypes: detail.ticketTypes),
           AppSpacing.vMd,
@@ -86,7 +95,10 @@ class _DetailBody extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              EventHeroSection(detail: detail),
+              EventHeroSection(
+                detail: detail,
+                trailing: const FavoriteButton(),
+              ),
               AppSpacing.vLg,
               DescriptionSection(detail: detail),
             ],
