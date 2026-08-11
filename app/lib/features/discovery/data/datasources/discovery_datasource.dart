@@ -116,10 +116,7 @@ class DiscoveryDataSourceImpl implements DiscoveryDataSource {
   Query<Map<String, dynamic>> _buildQuery(EventFilter f) {
     var q = _db.collection('events').where('status', isEqualTo: 'published');
     if (f.searchQuery.isNotEmpty) {
-      q = q.where(
-        'titleSearch',
-        arrayContains: normalizeSearchText(f.searchQuery),
-      );
+      q = q.where('titleSearch', arrayContains: searchPrefix(f.searchQuery));
     } else {
       if (f.categoryId != null) {
         q = q.where('categoryIds', arrayContains: f.categoryId);
