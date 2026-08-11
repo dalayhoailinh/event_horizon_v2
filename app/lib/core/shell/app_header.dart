@@ -19,7 +19,13 @@ class AppHeader extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: context.shellGutter),
       child: Row(
         children: [
-          const AppLogo(),
+          const Flexible(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: AppLogo(),
+            ),
+          ),
           Spacer(),
           if (!compact)
             for (final link in kSiteNav)

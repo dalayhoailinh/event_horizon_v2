@@ -33,6 +33,7 @@ class _WebPageState extends State<WebPage> {
   @override
   Widget build(BuildContext context) {
     final compact = context.windowSize.isCompact;
+    final contentMinHeight = MediaQuery.sizeOf(context).height - kToolbarHeight;
     return Title(
       title: '${widget.title} — EventHorizon',
       color: Theme.of(context).colorScheme.primary,
@@ -52,16 +53,16 @@ class _WebPageState extends State<WebPage> {
                   titleSpacing: 0,
                   title: AppHeader(actions: widget.actions),
                 ),
-                for (final section in widget.sections) ...[
-                  SliverToBoxAdapter(child: section),
-                ],
-                SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: const [AppFooter()],
+                SliverToBoxAdapter(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(minHeight: contentMinHeight),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: widget.sections,
+                    ),
                   ),
                 ),
+                const SliverToBoxAdapter(child: AppFooter()),
               ],
             ),
           ),

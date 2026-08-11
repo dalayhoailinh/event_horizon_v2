@@ -8,6 +8,6 @@ abstract final class RouteNames {
   static const String verifyEmail = '/verify-email';
   static const String splash = '/splash';
   static const String events = '/events';
-  static const String eventDetail = '/events/:id';
+  static const String eventDetail = ':id';
   static String eventDetailPath(String id) => '/events/$id';
 }

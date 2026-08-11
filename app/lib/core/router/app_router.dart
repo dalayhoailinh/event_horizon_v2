@@ -65,21 +65,20 @@ class AppRouter {
             ),
           );
         },
-      ),
-      GoRoute(
-        path: RouteNames.eventDetail,
-        builder: (context, state) {
-          final id = state.pathParameters['id'];
-          if (id == null || id.isEmpty) {
-            return const ShellPlaceholderPage(title: 'Sự kiện không hợp lệ');
-          }
-          return EventDetailPage(eventId: id);
-        },
-      ),
-      GoRoute(
-        path: RouteNames.eventDetail,
-        builder: (context, state) =>
-            const ShellPlaceholderPage(title: 'Chi tiết (Bước 10)'),
+        routes: [
+          GoRoute(
+            path: RouteNames.eventDetail,
+            builder: (context, state) {
+              final id = state.pathParameters['id'];
+              if (id == null || id.isEmpty) {
+                return const ShellPlaceholderPage(
+                  title: 'Sự kiện không hợp lệ',
+                );
+              }
+              return EventDetailPage(eventId: id);
+            },
+          ),
+        ],
       ),
       GoRoute(
         path: RouteNames.organizer,

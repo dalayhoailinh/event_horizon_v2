@@ -68,7 +68,7 @@ class _HomeView extends StatelessWidget {
                 const SizedBox(height: AppSpacing.md),
                 _SectionHeader(
                   title: 'Nổi bật',
-                  onSeeAll: () => context.push(RouteNames.events),
+                  onSeeAll: () => context.go(RouteNames.events),
                 ),
                 SizedBox(
                   height: 270,
@@ -86,7 +86,7 @@ class _HomeView extends StatelessWidget {
                 const SizedBox(height: AppSpacing.md),
                 _SectionHeader(
                   title: 'Sắp diễn ra',
-                  onSeeAll: () => context.push(RouteNames.events),
+                  onSeeAll: () => context.go(RouteNames.events),
                 ),
                 EventGrid(events: state.upcoming),
               ],
@@ -107,7 +107,7 @@ class _FakeSearchBar extends StatelessWidget {
     final theme = Theme.of(context);
     return InkWell(
       borderRadius: BorderRadius.circular(AppRadius.md),
-      onTap: () => context.push(RouteNames.events),
+      onTap: () => context.go(RouteNames.events),
       child: Container(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
@@ -151,9 +151,8 @@ class _CategoryChips extends StatelessWidget {
           final c = categories[index];
           return ActionChip(
             label: Text(c.name),
-            // Deep-link filter via URL -> shareable on web
             onPressed: () =>
-                context.push('${RouteNames.events}?category=${c.id}'),
+                context.go('${RouteNames.events}?category=${c.id}'),
           );
         },
       ),
@@ -183,7 +182,7 @@ class _ProvinceChips extends StatelessWidget {
               return ActionChip(
                 label: Text(p.name),
                 onPressed: () =>
-                    context.push('${RouteNames.events}?province=${p.code}'),
+                    context.go('${RouteNames.events}?province=${p.code}'),
               );
             },
           ),
