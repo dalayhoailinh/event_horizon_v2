@@ -67,24 +67,7 @@ class DiscoveryListCubit extends Cubit<DiscoveryListState> {
     }
   }
 
-  void setCategory(String? id) => _apply(state.filter.copyWith(categoryId: id));
-
-  void setProvince(String? code) =>
-      _apply(state.filter.copyWith(provinceCode: code));
-
-  void setTimeRange(EventTimeRange range) =>
-      _apply(state.filter.copyWith(timeRange: range));
-
-  void search(String query) => _apply(
-    state.filter.copyWith(
-      searchQuery: query.trim(),
-      categoryId: null,
-      provinceCode: null,
-      timeRange: EventTimeRange.all,
-    ),
-  );
-
-  void _apply(EventFilter filter) {
+  void applyFilter(EventFilter filter) {
     if (filter == state.filter) return;
     unawaited(load(filter: filter));
   }

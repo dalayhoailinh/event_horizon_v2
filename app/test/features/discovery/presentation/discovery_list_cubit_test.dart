@@ -118,7 +118,7 @@ void main() {
       events: [e('a')],
       filter: const EventFilter(categoryId: 'music', provinceCode: 'SG'),
     ),
-    act: (cubit) => cubit.search('rock'),
+    act: (cubit) => cubit.applyFilter(const EventFilter().withSearch('rock')),
     expect: () => [
       isA<DiscoveryListState>()
           .having((s) => s.isLoading, 'isLoading', true)

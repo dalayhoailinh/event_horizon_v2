@@ -13,3 +13,8 @@ abstract class EventFilter with _$EventFilter {
     @Default('') String searchQuery,
   }) = _EventFilter;
 }
+
+extension EventFilterSearch on EventFilter {
+  EventFilter withSearch(String query) =>
+      EventFilter(searchQuery: query.trim());
+}

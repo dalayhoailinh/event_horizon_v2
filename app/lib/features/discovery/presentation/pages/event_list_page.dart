@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/responsive/page_section.dart';
@@ -11,6 +12,7 @@ import '../../../../core/widgets/error_retry_view.dart';
 import '../../domain/entities/event_filter.dart';
 import '../blocs/discovery_list/discovery_list_cubit.dart';
 import '../blocs/discovery_list/discovery_list_state.dart';
+import '../routing/event_filter_query.dart';
 import '../widgets/event_filter_bar.dart';
 import '../widgets/event_grid.dart';
 
@@ -23,13 +25,14 @@ class EventListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => getIt<DiscoveryListCubit>()..load(filter: initialFilter),
-      child: const _EventListView(),
+      child: _EventListView(filter: initialFilter),
     );
   }
 }
 
 class _EventListView extends StatefulWidget {
-  const _EventListView();
+  final EventFilter filter;
+  const _EventListView({required this.filter});
 
   @override
   State<_EventListView> createState() => __EventListViewState();
@@ -38,10 +41,24 @@ class _EventListView extends StatefulWidget {
 class __EventListViewState extends State<_EventListView> {
   static const _searchDebounce = Duration(milliseconds: 300);
   Timer? _debounce;
+  late final TextEditingController _searchController = TextEditingController(
+    text: widget.filter.searchQuery,
+  );
+
+  @override
+  void didUpdateWidget(_EventListView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.filter == oldWidget.filter) return;
+    context.read<DiscoveryListCubit>().applyFilter(widget.filter);
+    if (_searchController.text != widget.filter.searchQuery) {
+      _searchController.text = widget.filter.searchQuery;
+    }
+  }
 
   @override
   void dispose() {
     _debounce?.cancel();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -49,13 +66,13 @@ class __EventListViewState extends State<_EventListView> {
     _debounce?.cancel();
     _debounce = Timer(_searchDebounce, () {
       if (!mounted) return;
-      context.read<DiscoveryListCubit>().search(query);
+      context.replace(eventsLocationFor(widget.filter.withSearch(query)));
     });
   }
 
   void _onSubmitted(String query) {
     _debounce?.cancel();
-    context.read<DiscoveryListCubit>().search(query);
+    context.go(eventsLocationFor(widget.filter.withSearch(query)));
   }
 
   @override
@@ -70,6 +87,7 @@ class __EventListViewState extends State<_EventListView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _SearchField(
+                controller: _searchController,
                 onChanged: _onQueryChanged,
                 onSubmitted: _onSubmitted,
               ),
@@ -87,12 +105,18 @@ class __EventListViewState extends State<_EventListView> {
 class _SearchField extends StatelessWidget {
   final ValueChanged<String> onChanged;
   final ValueChanged<String> onSubmitted;
+  final TextEditingController controller;
 
-  const _SearchField({required this.onChanged, required this.onSubmitted});
+  const _SearchField({
+    required this.onChanged,
+    required this.onSubmitted,
+    required this.controller,
+  });
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: controller,
       onChanged: onChanged,
       onSubmitted: onSubmitted,
       textInputAction: TextInputAction.search,

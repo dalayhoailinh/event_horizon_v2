@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_spacing.dart';
 import '../../domain/entities/event_filter.dart';
 import '../../domain/entities/provinces.dart';
 import '../blocs/discovery_list/discovery_list_cubit.dart';
+import '../routing/event_filter_query.dart';
 
 class EventFilterBar extends StatelessWidget {
   const EventFilterBar({super.key});
@@ -38,7 +40,8 @@ class EventFilterBar extends StatelessWidget {
                 (null, 'Tất cả'),
                 for (final c in state.categories) (c.id, c.name),
               ],
-              onSelected: context.read<DiscoveryListCubit>().setCategory,
+              onSelected: (id) =>
+                  _goWith(context, filter.copyWith(categoryId: id)),
             ),
           ),
           AppSpacing.vSm,
@@ -52,7 +55,8 @@ class EventFilterBar extends StatelessWidget {
                 (null, 'Tất cả'),
                 for (final p in kProvinces) (p.code, p.name),
               ],
-              onSelected: context.read<DiscoveryListCubit>().setProvince,
+              onSelected: (code) =>
+                  _goWith(context, filter.copyWith(provinceCode: code)),
             ),
           ),
           AppSpacing.vSm,
@@ -73,15 +77,19 @@ class EventFilterBar extends StatelessWidget {
                 (EventTimeRange.thisWeek, 'Tuần này'),
                 (EventTimeRange.thisMonth, 'Tháng này'),
               ],
-              onSelected: (range) => context
-                  .read<DiscoveryListCubit>()
-                  .setTimeRange(range ?? EventTimeRange.all),
+              onSelected: (range) => _goWith(
+                context,
+                filter.copyWith(timeRange: range ?? EventTimeRange.all),
+              ),
             ),
           ),
         ],
       ),
     );
   }
+
+  void _goWith(BuildContext context, EventFilter filter) =>
+      context.go(eventsLocationFor(filter));
 
   Future<void> _pick<T>({
     required BuildContext context,
