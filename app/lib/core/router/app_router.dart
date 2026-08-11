@@ -13,6 +13,7 @@ import '../../features/auth/presentation/pages/splash_page.dart';
 import '../../features/auth/presentation/pages/verify_email_page.dart';
 import '../../features/debug/presentation/pages/debug_page.dart';
 import '../../features/discovery/domain/entities/event_filter.dart';
+import '../../features/discovery/presentation/pages/event_detail_page.dart';
 import '../../features/discovery/presentation/pages/event_list_page.dart';
 import '../../features/discovery/presentation/pages/home_page.dart';
 import '../../features/shell/presentation/pages/shell_placeholder_page.dart';
@@ -63,6 +64,16 @@ class AppRouter {
               provinceCode: qp['province'],
             ),
           );
+        },
+      ),
+      GoRoute(
+        path: RouteNames.eventDetail,
+        builder: (context, state) {
+          final id = state.pathParameters['id'];
+          if (id == null || id.isEmpty) {
+            return const ShellPlaceholderPage(title: 'Sự kiện không hợp lệ');
+          }
+          return EventDetailPage(eventId: id);
         },
       ),
       GoRoute(
