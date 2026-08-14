@@ -26,8 +26,8 @@ AppException mapFirebaseAuthException(FirebaseAuthException e) {
       'Quá nhiều yêu cầu. Vui lòng thử lại sau.',
       code: 'too-many-requests',
     ),
-    'popup-closed-by-user' || 'canceled-popup-request' || 'user-canceled' =>
-      const AuthException('Bạn đã hủy đăng nhập.', code: 'canceled'),
+    'popup-closed-by-user' || 'cancelled-popup-request' || 'user-cancelled' =>
+      const AuthException('Bạn đã hủy đăng nhập.', code: 'cancelled'),
     'network-request-failed' => const NetworkException(),
     _ => AuthException(
       e.message ?? 'Đã xảy ra lỗi không xác định.',

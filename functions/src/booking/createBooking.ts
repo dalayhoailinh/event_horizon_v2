@@ -10,10 +10,10 @@ import { HttpsError, onCall } from "firebase-functions/https";
 import { EventState, planBooking, TicketTypeState } from "./planBooking";
 import { buildQrData, signQr } from "./qr";
 
-const sqSecret = defineSecret("QR_SECRET");
+const qrSecret = defineSecret("QR_SECRET");
 
 export const createBooking = onCall(
-  { secrets: [sqSecret] },
+  { secrets: [qrSecret] },
   async (request) => {
     // Identity
     const auth = request.auth;
@@ -24,7 +24,7 @@ export const createBooking = onCall(
       throw new HttpsError(
         "failed-precondition",
         "Bạn cần xác thực email để đặt vé.",
-        { code: "email_not_verified" },
+        { code: "email-not-verified" },
       );
     }
 
@@ -129,7 +129,7 @@ export const createBooking = onCall(
         },
         ticket: {
           qrData,
-          qrSignature: signQr(qrData, sqSecret.value()),
+          qrSignature: signQr(qrData, qrSecret.value()),
           issuedAt: now,
         },
         createdAt: now,

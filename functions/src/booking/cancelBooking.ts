@@ -50,8 +50,8 @@ export const cancelBooking = onCall(async (request) => {
     }
 
     tx.update(bookingRef, {
-      status: "canceled",
-      canceledAt: Timestamp.now(),
+      status: "cancelled",
+      cancelledAt: Timestamp.now(),
     });
     for (const li of lineItems) {
       tx.update(eventRef.collection("ticketTypes").doc(li.ticketTypeId), {
