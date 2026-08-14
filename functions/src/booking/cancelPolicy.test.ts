@@ -28,7 +28,7 @@ describe("canCancel", () => {
   it("đơn đã hủy rồi -> not-cancellable (không hủy 2 lần)", () => {
     expect(
       canCancel({
-        booking: booking({ status: "cancelled" }),
+        booking: booking({ status: "canceled" }),
         uid: "u1",
         nowMs: NOW,
       }),

@@ -24,6 +24,7 @@ export const createBooking = onCall(
       throw new HttpsError(
         "failed-precondition",
         "Bạn cần xác thực email để đặt vé.",
+        { code: "email_not_verified" },
       );
     }
 
@@ -140,7 +141,7 @@ export const createBooking = onCall(
         });
       }
       tx.update(eventRef, {
-        ticketSold: FieldValue.increment(result.plan.ticketCount),
+        ticketsSold: FieldValue.increment(result.plan.ticketCount),
       });
       tx.set(
         buyerRef,
