@@ -13,7 +13,7 @@
       "queryScope": "COLLECTION",
       "fields": [
         {"fieldPath": "status", "order": "ASCENDING"},
-        {"fieldPath": "ticketSold", "order": "DESCENDING"}
+        {"fieldPath": "ticketsSold", "order": "DESCENDING"}
       ]
     },
     {
