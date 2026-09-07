@@ -7,7 +7,7 @@ function event(over: Partial<EventState> = {}): EventState {
   return {
     status: "published",
     startAtMs: NOW + 86_400_000, // tomorrow
-    maxBookingPerUser: 4,
+    maxBookingsPerUser: 4,
     ...over,
   };
 }
@@ -85,7 +85,7 @@ describe("planBooking - các nhánh từ chối", () => {
 
   it("hạn mức 0 = không giới hạn", () => {
     expect(
-      codeOf(run({ event: event({ maxBookingPerUser: 0 }), count: 999 })),
+      codeOf(run({ event: event({ maxBookingsPerUser: 0 }), count: 999 })),
     ).toBe("OK");
   });
 

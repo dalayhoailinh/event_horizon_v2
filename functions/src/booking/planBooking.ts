@@ -3,7 +3,7 @@ import { CreateBookingInput } from "./types";
 export type EventState = {
   status: string;
   startAtMs: number;
-  maxBookingPerUser: number; // 0 = unlimited
+  maxBookingsPerUser: number; // 0 = unlimited
 };
 
 export type TicketTypeState = {
@@ -56,12 +56,12 @@ export function planBooking(args: {
     return err("event-started", "Sự kiện đã diễn ra, không thể đặt vé.");
   }
   if (
-    event.maxBookingPerUser > 0 &&
-    buyerBookingCount >= event.maxBookingPerUser
+    event.maxBookingsPerUser > 0 &&
+    buyerBookingCount >= event.maxBookingsPerUser
   ) {
     return err(
       "booking-limit",
-      `Bạn đã đạt giới hạn ${event.maxBookingPerUser} đơn cho sự kiện này.`,
+      `Bạn đã đạt giới hạn ${event.maxBookingsPerUser} đơn cho sự kiện này.`,
     );
   }
 
@@ -78,7 +78,7 @@ export function planBooking(args: {
 
     const tt = ticketTypes.get(item.ticketTypeId) ?? null;
     if (!tt || !tt.isActive) {
-      return err("ticket-type-not-found", "LOại vé không tồn tại.");
+      return err("ticket-type-not-found", "Loại vé không tồn tại.");
     }
     if (tt.price > 0) {
       return err(
