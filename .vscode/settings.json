@@ -15,6 +15,9 @@
     }
   },
   "dart.lineLength": 80,
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
   "[json]": {
     "editor.formatOnSave": true
   },
