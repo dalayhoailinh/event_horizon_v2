@@ -149,4 +149,13 @@ describe("categories & favorites rules", () => {
       }),
     );
   });
+
+  it("favorite: ghi vào favorite của người khác -> bị chặn", async () => {
+    const bob = env.authenticatedContext("bob");
+    await assertFails(
+      setDoc(doc(bob.firestore(), "users/alice/favorites/pub1"), {
+        createdAt: serverTimestamp(),
+      }),
+    );
+  });
 });

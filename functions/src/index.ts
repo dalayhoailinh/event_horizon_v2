@@ -10,6 +10,8 @@ export { onFavoriteWritten } from "./discovery/onFavoriteWritten";
 
 export { createBooking } from "./booking/createBooking";
 
+export { cancelBooking } from "./booking/cancelBooking";
+
 export const ping = onCall(() => {
   return { message: "pong", serverTime: new Date().toISOString() };
 });

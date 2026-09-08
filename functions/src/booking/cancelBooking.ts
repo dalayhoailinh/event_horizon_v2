@@ -58,7 +58,7 @@ export const cancelBooking = onCall(async (request) => {
       });
     }
     tx.update(eventRef, {
-      ticketSold: FieldValue.increment(-ticketCount),
+      ticketsSold: FieldValue.increment(-ticketCount),
     });
     tx.set(
       eventRef.collection("buyers").doc(auth.uid),
