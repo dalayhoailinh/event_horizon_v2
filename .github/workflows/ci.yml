@@ -86,4 +86,4 @@ jobs:
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
       - name: Run booking integration tests (full emulator suite)
-        run: firebase emulators:exec --only firestore,auth,functions --project demo-event-horizon "npm --prefix functions run test:integrations"
+        run: firebase emulators:exec --only firestore,auth,functions --project demo-event-horizon "npm --prefix functions run test:integration"
