@@ -11,11 +11,15 @@ module.exports = {
     "plugin:import/typescript",
     "google",
     "plugin:@typescript-eslint/recommended",
-    "prettier", // MUST be last: tắt các rule format xung đột với Prettier
+    "prettier",
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
-    project: ["tsconfig.json", "tsconfig.dev.json"],
+    project: [
+      "tsconfig.json",
+      "tsconfig.dev.json",
+      "integration/tsconfig.json",
+    ],
     sourceType: "module",
   },
   ignorePatterns: [
