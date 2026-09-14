@@ -28,6 +28,12 @@ import 'package:event_horizon/features/auth/presentation/blocs/register/register
     as _i115;
 import 'package:event_horizon/features/auth/presentation/blocs/verify_email/verify_email_cubit.dart'
     as _i974;
+import 'package:event_horizon/features/booking/data/datasources/booking_datasource.dart'
+    as _i929;
+import 'package:event_horizon/features/booking/data/repositories/booking_repository_impl.dart'
+    as _i607;
+import 'package:event_horizon/features/booking/domain/repositories/booking_repository.dart'
+    as _i687;
 import 'package:event_horizon/features/discovery/data/datasources/discovery_datasource.dart'
     as _i766;
 import 'package:event_horizon/features/discovery/data/datasources/favorite_datasource.dart'
@@ -75,11 +81,21 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i766.DiscoveryDataSource>(
       () => _i766.DiscoveryDataSourceImpl(gh<_i974.FirebaseFirestore>()),
     );
+    gh.lazySingleton<_i929.BookingDataSource>(
+      () => _i929.BookingDataSourceImpl(
+        gh<_i974.FirebaseFirestore>(),
+        gh<_i809.FirebaseFunctions>(),
+        gh<_i59.FirebaseAuth>(),
+      ),
+    );
     gh.lazySingleton<_i358.DiscoveryRepository>(
       () => _i607.DiscoveryRepositoryImpl(gh<_i766.DiscoveryDataSource>()),
     );
     gh.lazySingleton<_i555.AuthDatasource>(
       () => _i555.AuthDatasourceImpl(gh<_i59.FirebaseAuth>()),
+    );
+    gh.lazySingleton<_i687.BookingRepository>(
+      () => _i607.BookingRepositoryImpl(gh<_i929.BookingDataSource>()),
     );
     gh.lazySingleton<_i934.FavoriteRepository>(
       () => _i256.FavoriteRepositoryImpl(gh<_i901.FavoriteDataSource>()),
