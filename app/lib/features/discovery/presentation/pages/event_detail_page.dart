@@ -81,7 +81,10 @@ class _DetailBody extends StatelessWidget {
         children: [
           EventHeroSection(detail: detail, trailing: const FavoriteButton()),
           AppSpacing.vMd,
-          TicketTypesSection(ticketTypes: detail.ticketTypes),
+          TicketTypesSection(
+            ticketTypes: detail.ticketTypes,
+            eventId: detail.summary.id,
+          ),
           AppSpacing.vMd,
           DescriptionSection(detail: detail),
         ],
@@ -107,7 +110,10 @@ class _DetailBody extends StatelessWidget {
         AppSpacing.hLg,
         Expanded(
           flex: _sideFlex,
-          child: TicketTypesSection(ticketTypes: detail.ticketTypes),
+          child: TicketTypesSection(
+            ticketTypes: detail.ticketTypes,
+            eventId: detail.summary.id,
+          ),
         ),
       ],
     );

@@ -11,6 +11,9 @@ import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/register_page.dart';
 import '../../features/auth/presentation/pages/splash_page.dart';
 import '../../features/auth/presentation/pages/verify_email_page.dart';
+import '../../features/booking/presentation/pages/booking_page.dart';
+import '../../features/booking/presentation/pages/my_tickets_page.dart';
+import '../../features/booking/presentation/pages/ticket_detail_page.dart';
 import '../../features/debug/presentation/pages/debug_page.dart';
 import '../../features/discovery/presentation/pages/event_detail_page.dart';
 import '../../features/discovery/presentation/pages/event_list_page.dart';
@@ -71,6 +74,36 @@ class AppRouter {
                 );
               }
               return EventDetailPage(eventId: id);
+            },
+            routes: [
+              GoRoute(
+                path: RouteNames.bookSegment,
+                builder: (context, state) {
+                  final id = state.pathParameters['id'];
+                  if (id == null || id.isEmpty) {
+                    return const ShellPlaceholderPage(
+                      title: 'Sự kiện không hợp lệ',
+                    );
+                  }
+                  return BookingPage(eventId: id);
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+      GoRoute(
+        path: RouteNames.myTickets,
+        builder: (context, state) => const MyTicketsPage(),
+        routes: [
+          GoRoute(
+            path: RouteNames.ticketDetailSegment,
+            builder: (context, state) {
+              final bookingId = state.pathParameters['id'];
+              if (bookingId == null || bookingId.isEmpty) {
+                return const ShellPlaceholderPage(title: 'Vé không hợp lệ');
+              }
+              return TicketDetailPage(bookingId: bookingId);
             },
           ),
         ],

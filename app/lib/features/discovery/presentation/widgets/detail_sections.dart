@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/format/formatters.dart';
+import '../../../../core/router/route_names.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../domain/entities/event_detail.dart';
@@ -85,7 +87,12 @@ class _IconLine extends StatelessWidget {
 
 class TicketTypesSection extends StatelessWidget {
   final List<TicketTypeInfo> ticketTypes;
-  const TicketTypesSection({super.key, required this.ticketTypes});
+  final String? eventId;
+  const TicketTypesSection({
+    super.key,
+    required this.ticketTypes,
+    this.eventId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -104,8 +111,10 @@ class TicketTypesSection extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: FilledButton(
-                onPressed: null,
-                child: const Text('Đặt vé — mở ở GĐ3'),
+                onPressed: eventId == null
+                    ? null
+                    : () => context.go(RouteNames.bookPath(eventId!)),
+                child: Text(eventId == null ? 'Đặt vé — mở ở GĐ3' : 'Đặt vé'),
               ),
             ),
           ],

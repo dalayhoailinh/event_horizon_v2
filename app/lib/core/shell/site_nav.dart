@@ -17,6 +17,7 @@ class NavGroup {
 const kSiteNav = [
   NavLink(label: 'Trang chủ', route: RouteNames.home),
   NavLink(label: 'Khám phá', route: RouteNames.events),
+  NavLink(label: 'Vé của tôi', route: RouteNames.myTickets),
 ];
 
 const kFooterNav = <NavGroup>[

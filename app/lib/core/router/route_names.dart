@@ -10,4 +10,9 @@ abstract final class RouteNames {
   static const String events = '/events';
   static const String eventDetail = ':id';
   static String eventDetailPath(String id) => '/events/$id';
+  static const String bookSegment = 'book';
+  static String bookPath(String eventId) => '/events/$eventId/book';
+  static const String myTickets = '/my-tickets';
+  static const String ticketDetailSegment = ':id';
+  static String ticketDetailPath(String id) => '/my-tickets/$id';
 }
