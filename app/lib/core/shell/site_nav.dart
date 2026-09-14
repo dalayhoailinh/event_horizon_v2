@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import '../router/route_names.dart';
 
 class NavLink {
@@ -43,3 +45,29 @@ const kFooterNav = <NavGroup>[
     ],
   ),
 ];
+
+ButtonStyle linkButtonStyle(
+  ColorScheme scheme, {
+  bool active = false,
+  TextStyle? base,
+}) {
+  return ButtonStyle(
+    overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+    splashFactory: NoSplash.splashFactory,
+    foregroundColor: WidgetStateProperty.resolveWith((states) {
+      final highlighted =
+          active ||
+          states.contains(WidgetState.hovered) ||
+          states.contains(WidgetState.focused);
+      return highlighted ? scheme.primary : scheme.onSurfaceVariant;
+    }),
+    textStyle: WidgetStateProperty.resolveWith((states) {
+      return (base ?? const TextStyle()).copyWith(
+        fontWeight: active ? FontWeight.w600 : FontWeight.w400,
+        decoration: states.contains(WidgetState.hovered)
+            ? TextDecoration.underline
+            : TextDecoration.none,
+      );
+    }),
+  );
+}

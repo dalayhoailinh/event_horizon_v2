@@ -54,13 +54,8 @@ class _HeaderLink extends StatelessWidget {
     final route = link.route;
     return TextButton(
       onPressed: route == null ? null : () => context.go(route),
-      child: Text(
-        link.label,
-        style: TextStyle(
-          color: active ? scheme.primary : scheme.onSurfaceVariant,
-          fontWeight: active ? FontWeight.w600 : FontWeight.w400,
-        ),
-      ),
+      style: linkButtonStyle(scheme, active: active),
+      child: Text(link.label),
     );
   }
 }

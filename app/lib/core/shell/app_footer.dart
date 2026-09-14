@@ -142,23 +142,19 @@ class _FooterLink extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
     final route = link.route;
 
     return TextButton(
       onPressed: route == null ? null : () => context.go(route),
-      style: TextButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
-        minimumSize: Size.zero,
-        alignment: Alignment.centerLeft,
-        foregroundColor: theme.colorScheme.onSurfaceVariant,
-        disabledForegroundColor: theme.colorScheme.onSurfaceVariant,
-      ),
-      child: Text(
-        link.label,
-        style: theme.textTheme.bodyMedium?.copyWith(
-          color: theme.colorScheme.onSurfaceVariant,
+      style: linkButtonStyle(scheme, base: theme.textTheme.bodyMedium).copyWith(
+        padding: const WidgetStatePropertyAll(
+          EdgeInsets.symmetric(vertical: AppSpacing.sm),
         ),
+        minimumSize: const WidgetStatePropertyAll(Size.zero),
+        alignment: Alignment.centerLeft,
       ),
+      child: Text(link.label),
     );
   }
 }

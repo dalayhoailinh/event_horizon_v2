@@ -42,29 +42,27 @@ class _WebPageState extends State<WebPage> {
         body: Scrollbar(
           controller: _scrollController,
           thumbVisibility: kIsWeb && !compact,
-          child: SelectionArea(
-            child: CustomScrollView(
-              controller: _scrollController,
-              slivers: [
-                SliverAppBar(
-                  pinned: true,
-                  automaticallyImplyLeading: false,
-                  automaticallyImplyActions: false,
-                  titleSpacing: 0,
-                  title: AppHeader(actions: widget.actions),
-                ),
-                SliverToBoxAdapter(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(minHeight: contentMinHeight),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: widget.sections,
-                    ),
+          child: CustomScrollView(
+            controller: _scrollController,
+            slivers: [
+              SliverAppBar(
+                pinned: true,
+                automaticallyImplyLeading: false,
+                automaticallyImplyActions: false,
+                titleSpacing: 0,
+                title: AppHeader(actions: widget.actions),
+              ),
+              SliverToBoxAdapter(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: contentMinHeight),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: widget.sections,
                   ),
                 ),
-                const SliverToBoxAdapter(child: AppFooter()),
-              ],
-            ),
+              ),
+              const SliverToBoxAdapter(child: AppFooter()),
+            ],
           ),
         ),
       ),
