@@ -2,7 +2,7 @@ name: event_horizon
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -40,9 +40,9 @@ dependencies:
   injectable: ^3.0.0
   equatable: ^2.1.0
   firebase_core: ^4.12.0
-  firebase_auth: '>=6.4.0 <6.5.5'
-  cloud_firestore: '>=6.6.0 <6.7.0'
-  cloud_functions: '>=6.3.0 <6.3.4'
+  firebase_auth: ">=6.4.0 <6.5.5"
+  cloud_firestore: ">=6.6.0 <6.7.0"
+  cloud_functions: ">=6.3.0 <6.3.4"
   freezed_annotation: ^3.1.0
   diacritic: ^0.1.6
 
@@ -68,7 +68,6 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
