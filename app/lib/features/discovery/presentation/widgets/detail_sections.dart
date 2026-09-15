@@ -88,15 +88,20 @@ class _IconLine extends StatelessWidget {
 class TicketTypesSection extends StatelessWidget {
   final List<TicketTypeInfo> ticketTypes;
   final String? eventId;
+  final DateTime startAt;
+
   const TicketTypesSection({
     super.key,
     required this.ticketTypes,
+    required this.startAt,
     this.eventId,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final hasStarted = !startAt.isAfter(DateTime.now());
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
@@ -111,10 +116,16 @@ class TicketTypesSection extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: FilledButton(
-                onPressed: eventId == null
+                onPressed: eventId == null || hasStarted
                     ? null
                     : () => context.go(RouteNames.bookPath(eventId!)),
-                child: Text(eventId == null ? 'Đặt vé — mở ở GĐ3' : 'Đặt vé'),
+                child: Text(
+                  hasStarted
+                      ? 'Sự kiện đã diễn ra'
+                      : eventId == null
+                      ? 'Đặt vé — mở ở GĐ3'
+                      : 'Đặt vé',
+                ),
               ),
             ),
           ],

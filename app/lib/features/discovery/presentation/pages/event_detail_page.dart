@@ -84,6 +84,7 @@ class _DetailBody extends StatelessWidget {
           TicketTypesSection(
             ticketTypes: detail.ticketTypes,
             eventId: detail.summary.id,
+            startAt: detail.summary.startAt,
           ),
           AppSpacing.vMd,
           DescriptionSection(detail: detail),
@@ -113,6 +114,7 @@ class _DetailBody extends StatelessWidget {
           child: TicketTypesSection(
             ticketTypes: detail.ticketTypes,
             eventId: detail.summary.id,
+            startAt: detail.summary.startAt,
           ),
         ),
       ],

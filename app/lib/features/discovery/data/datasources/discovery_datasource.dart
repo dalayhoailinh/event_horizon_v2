@@ -41,7 +41,10 @@ class DiscoveryDataSourceImpl implements DiscoveryDataSource {
         .orderBy('ticketsSold', descending: true)
         .limit(10)
         .get();
-    return [for (final d in snap.docs) mapEventSummary(d.id, d.data())];
+    final now = DateTime.now();
+    return [
+      for (final d in snap.docs) mapEventSummary(d.id, d.data()),
+    ].where((e) => e.startAt.isAfter(now)).take(10).toList();
   });
 
   @override
@@ -130,6 +133,8 @@ class DiscoveryDataSourceImpl implements DiscoveryDataSource {
       q = q
           .where('startAt', isGreaterThanOrEqualTo: range.$1)
           .where('startAt', isLessThan: range.$2);
+    } else {
+      q = q.where('startAt', isGreaterThanOrEqualTo: Timestamp.now());
     }
     return q.orderBy('startAt');
   }
