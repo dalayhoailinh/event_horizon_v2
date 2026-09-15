@@ -14,6 +14,7 @@ import '../../../discovery/domain/entities/event_detail.dart';
 import '../../../discovery/presentation/blocs/event_detail/event_detail_cubit.dart';
 import '../../../discovery/presentation/blocs/event_detail/event_detail_state.dart';
 import '../blocs/booking_create/booking_create_cubit.dart';
+import '../blocs/booking_create/booking_create_state.dart';
 import '../widgets/ticket_quantity_row.dart';
 
 class BookingPage extends StatelessWidget {
@@ -46,28 +47,34 @@ class _BookingView extends StatelessWidget {
     final detailState = context.watch<EventDetailCubit>().state;
     final title = detailState.detail?.summary.title;
 
-    return WebPage(
-      title: title == null ? 'Đặt vé' : 'Đặt vé - $title',
-      actions: const [],
-      sections: switch (detailState) {
-        EventDetailState(isLoading: true) => const [
-          PageSection(child: Center(child: CircularProgressIndicator())),
-        ],
-        EventDetailState(:final failure?) => [
-          PageSection(
-            child: ErrorRetryView(
-              failure: failure,
-              onRetry: () => context.read<EventDetailCubit>().load(eventId),
+    return BlocListener<BookingCreateCubit, BookingCreateState>(
+      listenWhen: (previous, current) =>
+          previous.bookingId == null && current.bookingId != null,
+      listener: (context, state) =>
+          context.go(RouteNames.ticketDetailPath(state.bookingId!)),
+      child: WebPage(
+        title: title == null ? 'Đặt vé' : 'Đặt vé - $title',
+        actions: const [],
+        sections: switch (detailState) {
+          EventDetailState(isLoading: true) => const [
+            PageSection(child: Center(child: CircularProgressIndicator())),
+          ],
+          EventDetailState(:final failure?) => [
+            PageSection(
+              child: ErrorRetryView(
+                failure: failure,
+                onRetry: () => context.read<EventDetailCubit>().load(eventId),
+              ),
             ),
-          ),
-        ],
-        EventDetailState(:final detail?) => [
-          PageSection(
-            child: _BookingBody(eventId: eventId, detail: detail),
-          ),
-        ],
-        _ => const [SizedBox.shrink()],
-      },
+          ],
+          EventDetailState(:final detail?) => [
+            PageSection(
+              child: _BookingBody(eventId: eventId, detail: detail),
+            ),
+          ],
+          _ => const [SizedBox.shrink()],
+        },
+      ),
     );
   }
 }
@@ -176,15 +183,6 @@ class _OrderSummary extends StatelessWidget {
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: theme.colorScheme.error,
                 ),
-              ),
-              AppSpacing.vSm,
-            ],
-            // TẠM (chặng này): đặt xong hiện mã đơn NGAY TẠI ĐÂY. Bước 12, khi
-            // trang "Vé của tôi" đã có thật, sẽ thay bằng điều hướng.
-            if (state.bookingId case final id?) ...[
-              Text(
-                'Đã đặt xong. Mã đơn: $id',
-                style: theme.textTheme.bodySmall,
               ),
               AppSpacing.vSm,
             ],

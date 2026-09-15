@@ -36,6 +36,8 @@ import 'package:event_horizon/features/booking/domain/repositories/booking_repos
     as _i687;
 import 'package:event_horizon/features/booking/presentation/blocs/booking_create/booking_create_cubit.dart'
     as _i421;
+import 'package:event_horizon/features/booking/presentation/blocs/my_tickets/my_tickets_cubit.dart'
+    as _i38;
 import 'package:event_horizon/features/discovery/data/datasources/discovery_datasource.dart'
     as _i766;
 import 'package:event_horizon/features/discovery/data/datasources/favorite_datasource.dart'
@@ -128,6 +130,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i421.BookingCreateCubit>(
       () => _i421.BookingCreateCubit(gh<_i687.BookingRepository>()),
+    );
+    gh.factory<_i38.MyTicketsCubit>(
+      () => _i38.MyTicketsCubit(gh<_i687.BookingRepository>()),
     );
     gh.lazySingleton<_i157.AppRouter>(
       () => _i157.AppRouter(gh<_i523.AuthBloc>()),

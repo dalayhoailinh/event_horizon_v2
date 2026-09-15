@@ -14,6 +14,7 @@ import '../../features/auth/presentation/pages/verify_email_page.dart';
 import '../../features/booking/presentation/pages/booking_page.dart';
 import '../../features/booking/presentation/pages/my_tickets_page.dart';
 import '../../features/booking/presentation/pages/ticket_detail_page.dart';
+import '../../features/booking/presentation/routing/my_tickets_query.dart';
 import '../../features/debug/presentation/pages/debug_page.dart';
 import '../../features/discovery/presentation/pages/event_detail_page.dart';
 import '../../features/discovery/presentation/pages/event_list_page.dart';
@@ -94,7 +95,8 @@ class AppRouter {
       ),
       GoRoute(
         path: RouteNames.myTickets,
-        builder: (context, state) => const MyTicketsPage(),
+        builder: (context, state) =>
+            MyTicketsPage(tab: tabFromQuery(state.uri.queryParameters)),
         routes: [
           GoRoute(
             path: RouteNames.ticketDetailSegment,
