@@ -38,13 +38,12 @@ class DiscoveryDataSourceImpl implements DiscoveryDataSource {
     final snap = await _db
         .collection('events')
         .where('status', isEqualTo: 'published')
-        .orderBy('ticketsSold', descending: true)
-        .limit(10)
-        .get();
-    final now = DateTime.now();
-    return [
-      for (final d in snap.docs) mapEventSummary(d.id, d.data()),
-    ].where((e) => e.startAt.isAfter(now)).take(10).toList();
+        .where('startAt', isGreaterThanOrEqualTo: Timestamp.now())
+        .orderBy('startAt')
+        .get(); // Works on dev if events under like hundreds, but not on prod.
+    final events = [for (final d in snap.docs) mapEventSummary(d.id, d.data())]
+      ..sort((a, b) => b.ticketsSold.compareTo(a.ticketsSold));
+    return events.take(10).toList();
   });
 
   @override
