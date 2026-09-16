@@ -12,9 +12,9 @@ class WebPage extends StatefulWidget {
   final List<Widget> actions;
   const WebPage({
     super.key,
-    required this.sections,
     required this.title,
     required this.actions,
+    required this.sections,
   });
 
   @override

@@ -15,4 +15,6 @@ abstract final class RouteNames {
   static const String myTickets = '/my-tickets';
   static const String ticketDetailSegment = ':id';
   static String ticketDetailPath(String id) => '/my-tickets/$id';
+  static const String payment = '/pay/:id';
+  static String paymentPath(String bookingId) => '/pay/$bookingId';
 }

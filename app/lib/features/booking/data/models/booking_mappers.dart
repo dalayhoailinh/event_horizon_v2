@@ -42,5 +42,6 @@ Booking mapBooking(String id, Map<String, dynamic> data) {
             qrData: ticket['qrData'] as String? ?? '',
             qrSignature: ticket['qrSignature'] as String? ?? '',
           ),
+    expiresAt: (data['expiresAt'] as Timestamp?)?.toDate(),
   );
 }

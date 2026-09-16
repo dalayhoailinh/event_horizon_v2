@@ -42,4 +42,15 @@ void main() {
     expect(booking.isUpcoming(DateTime(2026, 7, 7)), true);
     expect(booking.isUpcoming(DateTime(2026, 9, 1)), false);
   });
+
+  test('expiresAt: đơn trả phí có hạn, đơn miễn phí là null', () {
+    final deadline = DateTime(2026, 8, 1, 19, 45);
+    final paid = mapBooking('bk2', {
+      ...fixture,
+      'status': 'pendingPayment',
+      'expiresAt': Timestamp.fromDate(deadline),
+    });
+    expect(paid.expiresAt, deadline);
+    expect(mapBooking('bk1', fixture).expiresAt, isNull);
+  });
 }

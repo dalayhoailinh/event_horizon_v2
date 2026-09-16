@@ -46,6 +46,7 @@ abstract class Booking with _$Booking {
     required BookingStatus status,
     required DateTime createdAt,
     BookingTicket? ticket,
+    DateTime? expiresAt,
   }) = _Booking;
   const Booking._();
 

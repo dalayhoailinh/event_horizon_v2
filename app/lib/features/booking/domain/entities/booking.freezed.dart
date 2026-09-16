@@ -540,7 +540,7 @@ as String,
 /// @nodoc
 mixin _$Booking {
 
- String get id; String get eventId; String get eventTitle; String get eventCoverUrl; DateTime get eventStartAt; String get venueName; String get venueAddress; List<BookingLineItem> get lineItems; int get totalAmount; BookingStatus get status; DateTime get createdAt; BookingTicket? get ticket;
+ String get id; String get eventId; String get eventTitle; String get eventCoverUrl; DateTime get eventStartAt; String get venueName; String get venueAddress; List<BookingLineItem> get lineItems; int get totalAmount; BookingStatus get status; DateTime get createdAt; BookingTicket? get ticket; DateTime? get expiresAt;
 /// Create a copy of Booking
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -551,16 +551,16 @@ $BookingCopyWith<Booking> get copyWith => _$BookingCopyWithImpl<Booking>(this as
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Booking&&(identical(other.id, id) || other.id == id)&&(identical(other.eventId, eventId) || other.eventId == eventId)&&(identical(other.eventTitle, eventTitle) || other.eventTitle == eventTitle)&&(identical(other.eventCoverUrl, eventCoverUrl) || other.eventCoverUrl == eventCoverUrl)&&(identical(other.eventStartAt, eventStartAt) || other.eventStartAt == eventStartAt)&&(identical(other.venueName, venueName) || other.venueName == venueName)&&(identical(other.venueAddress, venueAddress) || other.venueAddress == venueAddress)&&const DeepCollectionEquality().equals(other.lineItems, lineItems)&&(identical(other.totalAmount, totalAmount) || other.totalAmount == totalAmount)&&(identical(other.status, status) || other.status == status)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.ticket, ticket) || other.ticket == ticket));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Booking&&(identical(other.id, id) || other.id == id)&&(identical(other.eventId, eventId) || other.eventId == eventId)&&(identical(other.eventTitle, eventTitle) || other.eventTitle == eventTitle)&&(identical(other.eventCoverUrl, eventCoverUrl) || other.eventCoverUrl == eventCoverUrl)&&(identical(other.eventStartAt, eventStartAt) || other.eventStartAt == eventStartAt)&&(identical(other.venueName, venueName) || other.venueName == venueName)&&(identical(other.venueAddress, venueAddress) || other.venueAddress == venueAddress)&&const DeepCollectionEquality().equals(other.lineItems, lineItems)&&(identical(other.totalAmount, totalAmount) || other.totalAmount == totalAmount)&&(identical(other.status, status) || other.status == status)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.ticket, ticket) || other.ticket == ticket)&&(identical(other.expiresAt, expiresAt) || other.expiresAt == expiresAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,eventId,eventTitle,eventCoverUrl,eventStartAt,venueName,venueAddress,const DeepCollectionEquality().hash(lineItems),totalAmount,status,createdAt,ticket);
+int get hashCode => Object.hash(runtimeType,id,eventId,eventTitle,eventCoverUrl,eventStartAt,venueName,venueAddress,const DeepCollectionEquality().hash(lineItems),totalAmount,status,createdAt,ticket,expiresAt);
 
 @override
 String toString() {
-  return 'Booking(id: $id, eventId: $eventId, eventTitle: $eventTitle, eventCoverUrl: $eventCoverUrl, eventStartAt: $eventStartAt, venueName: $venueName, venueAddress: $venueAddress, lineItems: $lineItems, totalAmount: $totalAmount, status: $status, createdAt: $createdAt, ticket: $ticket)';
+  return 'Booking(id: $id, eventId: $eventId, eventTitle: $eventTitle, eventCoverUrl: $eventCoverUrl, eventStartAt: $eventStartAt, venueName: $venueName, venueAddress: $venueAddress, lineItems: $lineItems, totalAmount: $totalAmount, status: $status, createdAt: $createdAt, ticket: $ticket, expiresAt: $expiresAt)';
 }
 
 
@@ -571,7 +571,7 @@ abstract mixin class $BookingCopyWith<$Res>  {
   factory $BookingCopyWith(Booking value, $Res Function(Booking) _then) = _$BookingCopyWithImpl;
 @useResult
 $Res call({
- String id, String eventId, String eventTitle, String eventCoverUrl, DateTime eventStartAt, String venueName, String venueAddress, List<BookingLineItem> lineItems, int totalAmount, BookingStatus status, DateTime createdAt, BookingTicket? ticket
+ String id, String eventId, String eventTitle, String eventCoverUrl, DateTime eventStartAt, String venueName, String venueAddress, List<BookingLineItem> lineItems, int totalAmount, BookingStatus status, DateTime createdAt, BookingTicket? ticket, DateTime? expiresAt
 });
 
 
@@ -588,7 +588,7 @@ class _$BookingCopyWithImpl<$Res>
 
 /// Create a copy of Booking
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? eventId = null,Object? eventTitle = null,Object? eventCoverUrl = null,Object? eventStartAt = null,Object? venueName = null,Object? venueAddress = null,Object? lineItems = null,Object? totalAmount = null,Object? status = null,Object? createdAt = null,Object? ticket = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? eventId = null,Object? eventTitle = null,Object? eventCoverUrl = null,Object? eventStartAt = null,Object? venueName = null,Object? venueAddress = null,Object? lineItems = null,Object? totalAmount = null,Object? status = null,Object? createdAt = null,Object? ticket = freezed,Object? expiresAt = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,eventId: null == eventId ? _self.eventId : eventId // ignore: cast_nullable_to_non_nullable
@@ -602,7 +602,8 @@ as List<BookingLineItem>,totalAmount: null == totalAmount ? _self.totalAmount : 
 as int,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as BookingStatus,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,ticket: freezed == ticket ? _self.ticket : ticket // ignore: cast_nullable_to_non_nullable
-as BookingTicket?,
+as BookingTicket?,expiresAt: freezed == expiresAt ? _self.expiresAt : expiresAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 /// Create a copy of Booking
@@ -699,10 +700,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String eventId,  String eventTitle,  String eventCoverUrl,  DateTime eventStartAt,  String venueName,  String venueAddress,  List<BookingLineItem> lineItems,  int totalAmount,  BookingStatus status,  DateTime createdAt,  BookingTicket? ticket)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String eventId,  String eventTitle,  String eventCoverUrl,  DateTime eventStartAt,  String venueName,  String venueAddress,  List<BookingLineItem> lineItems,  int totalAmount,  BookingStatus status,  DateTime createdAt,  BookingTicket? ticket,  DateTime? expiresAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Booking() when $default != null:
-return $default(_that.id,_that.eventId,_that.eventTitle,_that.eventCoverUrl,_that.eventStartAt,_that.venueName,_that.venueAddress,_that.lineItems,_that.totalAmount,_that.status,_that.createdAt,_that.ticket);case _:
+return $default(_that.id,_that.eventId,_that.eventTitle,_that.eventCoverUrl,_that.eventStartAt,_that.venueName,_that.venueAddress,_that.lineItems,_that.totalAmount,_that.status,_that.createdAt,_that.ticket,_that.expiresAt);case _:
   return orElse();
 
 }
@@ -720,10 +721,10 @@ return $default(_that.id,_that.eventId,_that.eventTitle,_that.eventCoverUrl,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String eventId,  String eventTitle,  String eventCoverUrl,  DateTime eventStartAt,  String venueName,  String venueAddress,  List<BookingLineItem> lineItems,  int totalAmount,  BookingStatus status,  DateTime createdAt,  BookingTicket? ticket)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String eventId,  String eventTitle,  String eventCoverUrl,  DateTime eventStartAt,  String venueName,  String venueAddress,  List<BookingLineItem> lineItems,  int totalAmount,  BookingStatus status,  DateTime createdAt,  BookingTicket? ticket,  DateTime? expiresAt)  $default,) {final _that = this;
 switch (_that) {
 case _Booking():
-return $default(_that.id,_that.eventId,_that.eventTitle,_that.eventCoverUrl,_that.eventStartAt,_that.venueName,_that.venueAddress,_that.lineItems,_that.totalAmount,_that.status,_that.createdAt,_that.ticket);case _:
+return $default(_that.id,_that.eventId,_that.eventTitle,_that.eventCoverUrl,_that.eventStartAt,_that.venueName,_that.venueAddress,_that.lineItems,_that.totalAmount,_that.status,_that.createdAt,_that.ticket,_that.expiresAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -740,10 +741,10 @@ return $default(_that.id,_that.eventId,_that.eventTitle,_that.eventCoverUrl,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String eventId,  String eventTitle,  String eventCoverUrl,  DateTime eventStartAt,  String venueName,  String venueAddress,  List<BookingLineItem> lineItems,  int totalAmount,  BookingStatus status,  DateTime createdAt,  BookingTicket? ticket)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String eventId,  String eventTitle,  String eventCoverUrl,  DateTime eventStartAt,  String venueName,  String venueAddress,  List<BookingLineItem> lineItems,  int totalAmount,  BookingStatus status,  DateTime createdAt,  BookingTicket? ticket,  DateTime? expiresAt)?  $default,) {final _that = this;
 switch (_that) {
 case _Booking() when $default != null:
-return $default(_that.id,_that.eventId,_that.eventTitle,_that.eventCoverUrl,_that.eventStartAt,_that.venueName,_that.venueAddress,_that.lineItems,_that.totalAmount,_that.status,_that.createdAt,_that.ticket);case _:
+return $default(_that.id,_that.eventId,_that.eventTitle,_that.eventCoverUrl,_that.eventStartAt,_that.venueName,_that.venueAddress,_that.lineItems,_that.totalAmount,_that.status,_that.createdAt,_that.ticket,_that.expiresAt);case _:
   return null;
 
 }
@@ -755,7 +756,7 @@ return $default(_that.id,_that.eventId,_that.eventTitle,_that.eventCoverUrl,_tha
 
 
 class _Booking extends Booking {
-  const _Booking({required this.id, required this.eventId, required this.eventTitle, required this.eventCoverUrl, required this.eventStartAt, required this.venueName, required this.venueAddress, required final  List<BookingLineItem> lineItems, required this.totalAmount, required this.status, required this.createdAt, this.ticket}): _lineItems = lineItems,super._();
+  const _Booking({required this.id, required this.eventId, required this.eventTitle, required this.eventCoverUrl, required this.eventStartAt, required this.venueName, required this.venueAddress, required final  List<BookingLineItem> lineItems, required this.totalAmount, required this.status, required this.createdAt, this.ticket, this.expiresAt}): _lineItems = lineItems,super._();
   
 
 @override final  String id;
@@ -776,6 +777,7 @@ class _Booking extends Booking {
 @override final  BookingStatus status;
 @override final  DateTime createdAt;
 @override final  BookingTicket? ticket;
+@override final  DateTime? expiresAt;
 
 /// Create a copy of Booking
 /// with the given fields replaced by the non-null parameter values.
@@ -787,16 +789,16 @@ _$BookingCopyWith<_Booking> get copyWith => __$BookingCopyWithImpl<_Booking>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Booking&&(identical(other.id, id) || other.id == id)&&(identical(other.eventId, eventId) || other.eventId == eventId)&&(identical(other.eventTitle, eventTitle) || other.eventTitle == eventTitle)&&(identical(other.eventCoverUrl, eventCoverUrl) || other.eventCoverUrl == eventCoverUrl)&&(identical(other.eventStartAt, eventStartAt) || other.eventStartAt == eventStartAt)&&(identical(other.venueName, venueName) || other.venueName == venueName)&&(identical(other.venueAddress, venueAddress) || other.venueAddress == venueAddress)&&const DeepCollectionEquality().equals(other._lineItems, _lineItems)&&(identical(other.totalAmount, totalAmount) || other.totalAmount == totalAmount)&&(identical(other.status, status) || other.status == status)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.ticket, ticket) || other.ticket == ticket));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Booking&&(identical(other.id, id) || other.id == id)&&(identical(other.eventId, eventId) || other.eventId == eventId)&&(identical(other.eventTitle, eventTitle) || other.eventTitle == eventTitle)&&(identical(other.eventCoverUrl, eventCoverUrl) || other.eventCoverUrl == eventCoverUrl)&&(identical(other.eventStartAt, eventStartAt) || other.eventStartAt == eventStartAt)&&(identical(other.venueName, venueName) || other.venueName == venueName)&&(identical(other.venueAddress, venueAddress) || other.venueAddress == venueAddress)&&const DeepCollectionEquality().equals(other._lineItems, _lineItems)&&(identical(other.totalAmount, totalAmount) || other.totalAmount == totalAmount)&&(identical(other.status, status) || other.status == status)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.ticket, ticket) || other.ticket == ticket)&&(identical(other.expiresAt, expiresAt) || other.expiresAt == expiresAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,eventId,eventTitle,eventCoverUrl,eventStartAt,venueName,venueAddress,const DeepCollectionEquality().hash(_lineItems),totalAmount,status,createdAt,ticket);
+int get hashCode => Object.hash(runtimeType,id,eventId,eventTitle,eventCoverUrl,eventStartAt,venueName,venueAddress,const DeepCollectionEquality().hash(_lineItems),totalAmount,status,createdAt,ticket,expiresAt);
 
 @override
 String toString() {
-  return 'Booking(id: $id, eventId: $eventId, eventTitle: $eventTitle, eventCoverUrl: $eventCoverUrl, eventStartAt: $eventStartAt, venueName: $venueName, venueAddress: $venueAddress, lineItems: $lineItems, totalAmount: $totalAmount, status: $status, createdAt: $createdAt, ticket: $ticket)';
+  return 'Booking(id: $id, eventId: $eventId, eventTitle: $eventTitle, eventCoverUrl: $eventCoverUrl, eventStartAt: $eventStartAt, venueName: $venueName, venueAddress: $venueAddress, lineItems: $lineItems, totalAmount: $totalAmount, status: $status, createdAt: $createdAt, ticket: $ticket, expiresAt: $expiresAt)';
 }
 
 
@@ -807,7 +809,7 @@ abstract mixin class _$BookingCopyWith<$Res> implements $BookingCopyWith<$Res> {
   factory _$BookingCopyWith(_Booking value, $Res Function(_Booking) _then) = __$BookingCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String eventId, String eventTitle, String eventCoverUrl, DateTime eventStartAt, String venueName, String venueAddress, List<BookingLineItem> lineItems, int totalAmount, BookingStatus status, DateTime createdAt, BookingTicket? ticket
+ String id, String eventId, String eventTitle, String eventCoverUrl, DateTime eventStartAt, String venueName, String venueAddress, List<BookingLineItem> lineItems, int totalAmount, BookingStatus status, DateTime createdAt, BookingTicket? ticket, DateTime? expiresAt
 });
 
 
@@ -824,7 +826,7 @@ class __$BookingCopyWithImpl<$Res>
 
 /// Create a copy of Booking
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? eventId = null,Object? eventTitle = null,Object? eventCoverUrl = null,Object? eventStartAt = null,Object? venueName = null,Object? venueAddress = null,Object? lineItems = null,Object? totalAmount = null,Object? status = null,Object? createdAt = null,Object? ticket = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? eventId = null,Object? eventTitle = null,Object? eventCoverUrl = null,Object? eventStartAt = null,Object? venueName = null,Object? venueAddress = null,Object? lineItems = null,Object? totalAmount = null,Object? status = null,Object? createdAt = null,Object? ticket = freezed,Object? expiresAt = freezed,}) {
   return _then(_Booking(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,eventId: null == eventId ? _self.eventId : eventId // ignore: cast_nullable_to_non_nullable
@@ -838,7 +840,8 @@ as List<BookingLineItem>,totalAmount: null == totalAmount ? _self.totalAmount : 
 as int,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as BookingStatus,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,ticket: freezed == ticket ? _self.ticket : ticket // ignore: cast_nullable_to_non_nullable
-as BookingTicket?,
+as BookingTicket?,expiresAt: freezed == expiresAt ? _self.expiresAt : expiresAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 
