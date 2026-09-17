@@ -109,16 +109,6 @@ describe("planBooking - các nhánh từ chối", () => {
     ).toBe("ticket-type-not-found");
   });
 
-  it("vé trả phí bị chặn ở giai đoạn này", () => {
-    expect(
-      codeOf(
-        run({
-          tts: [tt({ price: 100_000 })],
-        }),
-      ),
-    ).toBe("paid-not-supported");
-  });
-
   it("không đủ tồn kho: còn 1 mà mua 2", () => {
     expect(
       codeOf(
@@ -168,6 +158,18 @@ describe("planBooking - đơn hợp lệ", () => {
       expect(result.plan.ticketCount).toBe(2);
       expect(result.plan.totalAmount).toBe(0);
       expect(result.plan.lineItems).toHaveLength(1);
+      expect(result.plan.paymentRequired).toBe(false);
+    }
+  });
+
+  it("vé trả phí hợp lệ: -> paymentRequired true", () => {
+    const result = run({
+      tts: [tt({ price: 200_000 })],
+    });
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.plan.paymentRequired).toBe(true);
+      expect(result.plan.totalAmount).toBe(400_000);
     }
   });
 });

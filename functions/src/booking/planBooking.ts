@@ -25,6 +25,7 @@ export type BookingPlan = {
   }>;
   totalAmount: number;
   ticketCount: number;
+  paymentRequired: boolean;
 };
 
 export const MAX_TICKETS_PER_BOOKING = 10;
@@ -80,12 +81,6 @@ export function planBooking(args: {
     if (!tt || !tt.isActive) {
       return err("ticket-type-not-found", "Loại vé không tồn tại.");
     }
-    if (tt.price > 0) {
-      return err(
-        "paid-not-supported",
-        "Vé trả phí sẽ mở khi có thanh toán (GĐ4).",
-      );
-    }
     if (tt.quantity - tt.sold < item.quantity) {
       return err("sold-out", `"${tt.name}" không còn đủ vé.`);
     }
@@ -108,5 +103,13 @@ export function planBooking(args: {
     );
   }
 
-  return { ok: true, plan: { lineItems, totalAmount, ticketCount } };
+  return {
+    ok: true,
+    plan: {
+      lineItems,
+      totalAmount,
+      ticketCount,
+      paymentRequired: totalAmount > 0,
+    },
+  };
 }

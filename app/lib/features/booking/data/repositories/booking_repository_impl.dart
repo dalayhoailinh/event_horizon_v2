@@ -12,7 +12,7 @@ class BookingRepositoryImpl implements BookingRepository {
   const BookingRepositoryImpl(this._ds);
 
   @override
-  Future<Result<String>> createBooking({
+  Future<Result<BookingCreated>> createBooking({
     required String eventId,
     required String bookingIntentId,
     required Map<String, int> quantities,

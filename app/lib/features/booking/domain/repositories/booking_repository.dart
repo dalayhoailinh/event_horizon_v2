@@ -1,8 +1,10 @@
 import '../../../../core/result/result.dart';
 import '../entities/booking.dart';
 
+typedef BookingCreated = ({String bookingId, bool paymentRequired});
+
 abstract interface class BookingRepository {
-  Future<Result<String>> createBooking({
+  Future<Result<BookingCreated>> createBooking({
     required String eventId,
     required String bookingIntentId,
     required Map<String, int> quantities,

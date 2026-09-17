@@ -167,15 +167,20 @@ describe("createBooking (emulator)", () => {
     expect(third.error?.details?.code).toBe("booking-limit");
   }, 30_000);
 
-  it("vé trả phí -> paid-not-supported (GD4)", async () => {
-    const eventId = await seedEvent({ price: 100_000 });
+  it("vé trả phí -> pendingPayment, chưa có ticket", async () => {
+    const eventId = await seedEvent({ price: 200_000 });
     const user = await verifiedUser();
     const res = await call("createBooking", user.idToken, {
       eventId,
       bookingIntentId: intent(),
       items: [{ ticketTypeId: "t1", quantity: 1 }],
     });
-    expect(res.error?.details?.code).toBe("paid-not-supported");
+    expect(res.error).toBeUndefined();
+    const snap = await db.doc(`bookings/${res.result?.bookingId}`).get();
+    const data = snap.data();
+    expect(data?.status).toBe("pendingPayment");
+    expect(data?.ticket).toBeNull();
+    expect(data?.expiresAt).toBeTruthy();
   }, 30_000);
 });
 

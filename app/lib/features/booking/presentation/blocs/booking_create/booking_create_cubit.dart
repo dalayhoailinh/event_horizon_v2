@@ -36,7 +36,13 @@ class BookingCreateCubit extends Cubit<BookingCreateState> {
 
     switch (result) {
       case Ok(:final value):
-        emit(state.copyWith(submitting: false, bookingId: value));
+        emit(
+          state.copyWith(
+            submitting: false,
+            bookingId: value.bookingId,
+            paymentRequired: value.paymentRequired,
+          ),
+        );
       case Err(:final failure):
         emit(state.copyWith(submitting: false, errorMessage: failure.message));
     }

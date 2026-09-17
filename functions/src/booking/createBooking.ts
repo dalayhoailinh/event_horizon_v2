@@ -11,6 +11,7 @@ import { EventState, planBooking, TicketTypeState } from "./planBooking";
 import { buildQrData, signQr } from "./qr";
 
 const qrSecret = defineSecret("QR_SECRET");
+const PAYMENT_WINDOW_MS = 15 * 60_000;
 
 export const createBooking = onCall(
   { secrets: [qrSecret] },
@@ -43,7 +44,11 @@ export const createBooking = onCall(
     return await db.runTransaction(async (tx) => {
       const existing = await tx.get(bookingRef);
       if (existing.exists) {
-        return { bookingId, duplicate: true };
+        return {
+          bookingId,
+          duplicate: true,
+          paymentRequired: existing.data()?.status === "pendingPayment",
+        };
       }
       const eventSnap = await tx.get(eventRef);
       const buyerSnap = await tx.get(buyerRef);
@@ -95,6 +100,7 @@ export const createBooking = onCall(
       }
 
       const now = Timestamp.now();
+      const pending = result.plan.paymentRequired;
       const qrData = buildQrData(bookingId, input.eventId, now.toMillis());
       const venue = (eventData?.venue ?? {}) as {
         name?: string;
@@ -116,15 +122,22 @@ export const createBooking = onCall(
         },
         lineItems: result.plan.lineItems,
         totalAmount: result.plan.totalAmount,
-        status: "confirmed", // free ticket -> confirmed immediately (GD3)
-        payment: { method: "free", status: "paid", paidAt: now },
-        ticket: {
-          qrData,
-          qrSignature: signQr(qrData, qrSecret.value()),
-          issuedAt: now,
-        },
+        status: pending ? "pendingPayment" : "confirmed",
+        expiresAt: pending
+          ? Timestamp.fromMillis(now.toMillis() + PAYMENT_WINDOW_MS)
+          : null,
+        payment: pending
+          ? { method: "payos", status: "pending" }
+          : { method: "free", status: "paid", paidAt: now },
+        ticket: pending
+          ? null
+          : {
+              qrData,
+              qrSignature: signQr(qrData, qrSecret.value()),
+              issuedAt: now,
+            },
         createdAt: now,
-        confirmedAt: now,
+        confirmedAt: pending ? null : now,
       });
       for (const li of result.plan.lineItems) {
         tx.update(eventRef.collection("ticketTypes").doc(li.ticketTypeId), {
@@ -143,7 +156,7 @@ export const createBooking = onCall(
         { merge: true },
       );
 
-      return { bookingId, duplicate: false };
+      return { bookingId, duplicate: false, paymentRequired: pending };
     });
   },
 );

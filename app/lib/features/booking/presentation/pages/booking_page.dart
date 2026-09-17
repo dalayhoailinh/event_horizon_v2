@@ -50,8 +50,11 @@ class _BookingView extends StatelessWidget {
     return BlocListener<BookingCreateCubit, BookingCreateState>(
       listenWhen: (previous, current) =>
           previous.bookingId == null && current.bookingId != null,
-      listener: (context, state) =>
-          context.go(RouteNames.ticketDetailPath(state.bookingId!)),
+      listener: (context, state) => context.go(
+        state.paymentRequired
+            ? RouteNames.paymentPath(state.bookingId!)
+            : RouteNames.ticketDetailPath(state.bookingId!),
+      ),
       child: WebPage(
         title: title == null ? 'Đặt vé' : 'Đặt vé - $title',
         actions: const [],

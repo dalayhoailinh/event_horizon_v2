@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$BookingCreateState {
 
- Map<String, int> get quantities; bool get submitting; String? get bookingId; String? get errorMessage;
+ Map<String, int> get quantities; bool get submitting; String? get bookingId; bool get paymentRequired; String? get errorMessage;
 /// Create a copy of BookingCreateState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $BookingCreateStateCopyWith<BookingCreateState> get copyWith => _$BookingCreateS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BookingCreateState&&const DeepCollectionEquality().equals(other.quantities, quantities)&&(identical(other.submitting, submitting) || other.submitting == submitting)&&(identical(other.bookingId, bookingId) || other.bookingId == bookingId)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BookingCreateState&&const DeepCollectionEquality().equals(other.quantities, quantities)&&(identical(other.submitting, submitting) || other.submitting == submitting)&&(identical(other.bookingId, bookingId) || other.bookingId == bookingId)&&(identical(other.paymentRequired, paymentRequired) || other.paymentRequired == paymentRequired)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(quantities),submitting,bookingId,errorMessage);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(quantities),submitting,bookingId,paymentRequired,errorMessage);
 
 @override
 String toString() {
-  return 'BookingCreateState(quantities: $quantities, submitting: $submitting, bookingId: $bookingId, errorMessage: $errorMessage)';
+  return 'BookingCreateState(quantities: $quantities, submitting: $submitting, bookingId: $bookingId, paymentRequired: $paymentRequired, errorMessage: $errorMessage)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $BookingCreateStateCopyWith<$Res>  {
   factory $BookingCreateStateCopyWith(BookingCreateState value, $Res Function(BookingCreateState) _then) = _$BookingCreateStateCopyWithImpl;
 @useResult
 $Res call({
- Map<String, int> quantities, bool submitting, String? bookingId, String? errorMessage
+ Map<String, int> quantities, bool submitting, String? bookingId, bool paymentRequired, String? errorMessage
 });
 
 
@@ -62,12 +62,13 @@ class _$BookingCreateStateCopyWithImpl<$Res>
 
 /// Create a copy of BookingCreateState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? quantities = null,Object? submitting = null,Object? bookingId = freezed,Object? errorMessage = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? quantities = null,Object? submitting = null,Object? bookingId = freezed,Object? paymentRequired = null,Object? errorMessage = freezed,}) {
   return _then(_self.copyWith(
 quantities: null == quantities ? _self.quantities : quantities // ignore: cast_nullable_to_non_nullable
 as Map<String, int>,submitting: null == submitting ? _self.submitting : submitting // ignore: cast_nullable_to_non_nullable
 as bool,bookingId: freezed == bookingId ? _self.bookingId : bookingId // ignore: cast_nullable_to_non_nullable
-as String?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as String?,paymentRequired: null == paymentRequired ? _self.paymentRequired : paymentRequired // ignore: cast_nullable_to_non_nullable
+as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -153,10 +154,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Map<String, int> quantities,  bool submitting,  String? bookingId,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Map<String, int> quantities,  bool submitting,  String? bookingId,  bool paymentRequired,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _BookingCreateState() when $default != null:
-return $default(_that.quantities,_that.submitting,_that.bookingId,_that.errorMessage);case _:
+return $default(_that.quantities,_that.submitting,_that.bookingId,_that.paymentRequired,_that.errorMessage);case _:
   return orElse();
 
 }
@@ -174,10 +175,10 @@ return $default(_that.quantities,_that.submitting,_that.bookingId,_that.errorMes
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Map<String, int> quantities,  bool submitting,  String? bookingId,  String? errorMessage)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Map<String, int> quantities,  bool submitting,  String? bookingId,  bool paymentRequired,  String? errorMessage)  $default,) {final _that = this;
 switch (_that) {
 case _BookingCreateState():
-return $default(_that.quantities,_that.submitting,_that.bookingId,_that.errorMessage);case _:
+return $default(_that.quantities,_that.submitting,_that.bookingId,_that.paymentRequired,_that.errorMessage);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -194,10 +195,10 @@ return $default(_that.quantities,_that.submitting,_that.bookingId,_that.errorMes
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Map<String, int> quantities,  bool submitting,  String? bookingId,  String? errorMessage)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Map<String, int> quantities,  bool submitting,  String? bookingId,  bool paymentRequired,  String? errorMessage)?  $default,) {final _that = this;
 switch (_that) {
 case _BookingCreateState() when $default != null:
-return $default(_that.quantities,_that.submitting,_that.bookingId,_that.errorMessage);case _:
+return $default(_that.quantities,_that.submitting,_that.bookingId,_that.paymentRequired,_that.errorMessage);case _:
   return null;
 
 }
@@ -209,7 +210,7 @@ return $default(_that.quantities,_that.submitting,_that.bookingId,_that.errorMes
 
 
 class _BookingCreateState extends BookingCreateState {
-  const _BookingCreateState({final  Map<String, int> quantities = const <String, int>{}, this.submitting = false, this.bookingId, this.errorMessage}): _quantities = quantities,super._();
+  const _BookingCreateState({final  Map<String, int> quantities = const <String, int>{}, this.submitting = false, this.bookingId, this.paymentRequired = false, this.errorMessage}): _quantities = quantities,super._();
   
 
  final  Map<String, int> _quantities;
@@ -221,6 +222,7 @@ class _BookingCreateState extends BookingCreateState {
 
 @override@JsonKey() final  bool submitting;
 @override final  String? bookingId;
+@override@JsonKey() final  bool paymentRequired;
 @override final  String? errorMessage;
 
 /// Create a copy of BookingCreateState
@@ -233,16 +235,16 @@ _$BookingCreateStateCopyWith<_BookingCreateState> get copyWith => __$BookingCrea
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BookingCreateState&&const DeepCollectionEquality().equals(other._quantities, _quantities)&&(identical(other.submitting, submitting) || other.submitting == submitting)&&(identical(other.bookingId, bookingId) || other.bookingId == bookingId)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BookingCreateState&&const DeepCollectionEquality().equals(other._quantities, _quantities)&&(identical(other.submitting, submitting) || other.submitting == submitting)&&(identical(other.bookingId, bookingId) || other.bookingId == bookingId)&&(identical(other.paymentRequired, paymentRequired) || other.paymentRequired == paymentRequired)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_quantities),submitting,bookingId,errorMessage);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_quantities),submitting,bookingId,paymentRequired,errorMessage);
 
 @override
 String toString() {
-  return 'BookingCreateState(quantities: $quantities, submitting: $submitting, bookingId: $bookingId, errorMessage: $errorMessage)';
+  return 'BookingCreateState(quantities: $quantities, submitting: $submitting, bookingId: $bookingId, paymentRequired: $paymentRequired, errorMessage: $errorMessage)';
 }
 
 
@@ -253,7 +255,7 @@ abstract mixin class _$BookingCreateStateCopyWith<$Res> implements $BookingCreat
   factory _$BookingCreateStateCopyWith(_BookingCreateState value, $Res Function(_BookingCreateState) _then) = __$BookingCreateStateCopyWithImpl;
 @override @useResult
 $Res call({
- Map<String, int> quantities, bool submitting, String? bookingId, String? errorMessage
+ Map<String, int> quantities, bool submitting, String? bookingId, bool paymentRequired, String? errorMessage
 });
 
 
@@ -270,12 +272,13 @@ class __$BookingCreateStateCopyWithImpl<$Res>
 
 /// Create a copy of BookingCreateState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? quantities = null,Object? submitting = null,Object? bookingId = freezed,Object? errorMessage = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? quantities = null,Object? submitting = null,Object? bookingId = freezed,Object? paymentRequired = null,Object? errorMessage = freezed,}) {
   return _then(_BookingCreateState(
 quantities: null == quantities ? _self._quantities : quantities // ignore: cast_nullable_to_non_nullable
 as Map<String, int>,submitting: null == submitting ? _self.submitting : submitting // ignore: cast_nullable_to_non_nullable
 as bool,bookingId: freezed == bookingId ? _self.bookingId : bookingId // ignore: cast_nullable_to_non_nullable
-as String?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as String?,paymentRequired: null == paymentRequired ? _self.paymentRequired : paymentRequired // ignore: cast_nullable_to_non_nullable
+as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

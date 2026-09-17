@@ -5,10 +5,11 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../core/firebase/functions_error_mapper.dart';
 import '../../domain/entities/booking.dart';
+import '../../domain/repositories/booking_repository.dart';
 import '../models/booking_mappers.dart';
 
 abstract interface class BookingDataSource {
-  Future<String> createBooking({
+  Future<BookingCreated> createBooking({
     required String eventId,
     required String bookingIntentId,
     required Map<String, int> quantities,
@@ -26,7 +27,7 @@ class BookingDataSourceImpl implements BookingDataSource {
   const BookingDataSourceImpl(this._db, this._functions, this._auth);
 
   @override
-  Future<String> createBooking({
+  Future<BookingCreated> createBooking({
     required String eventId,
     required String bookingIntentId,
     required Map<String, int> quantities,
@@ -41,7 +42,10 @@ class BookingDataSourceImpl implements BookingDataSource {
             .toList(),
       });
       final data = Map<String, dynamic>.from(result.data as Map);
-      return data['bookingId'] as String;
+      return (
+        bookingId: data['bookingId'] as String,
+        paymentRequired: (data['paymentRequired'] as bool?) ?? false,
+      );
     } on FirebaseFunctionsException catch (e) {
       throw mapFunctionsException(e);
     }

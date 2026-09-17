@@ -8,6 +8,7 @@ abstract class BookingCreateState with _$BookingCreateState {
     @Default(<String, int>{}) Map<String, int> quantities,
     @Default(false) bool submitting,
     String? bookingId,
+    @Default(false) bool paymentRequired,
     String? errorMessage,
   }) = _BookingCreateState;
   const BookingCreateState._();
