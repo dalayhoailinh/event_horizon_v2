@@ -58,6 +58,13 @@ abstract class Booking with _$Booking {
     return count;
   }
 
+  bool get isActive =>
+      status == BookingStatus.pendingPayment ||
+      status == BookingStatus.confirmed ||
+      status == BookingStatus.checkedIn;
+
   bool isUpcoming(DateTime now) =>
-      status == BookingStatus.confirmed && eventStartAt.isAfter(now);
+      (status == BookingStatus.pendingPayment ||
+          status == BookingStatus.confirmed) &&
+      eventStartAt.isAfter(now);
 }

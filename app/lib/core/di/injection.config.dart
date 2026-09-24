@@ -38,6 +38,8 @@ import 'package:event_horizon/features/booking/presentation/blocs/booking_create
     as _i421;
 import 'package:event_horizon/features/booking/presentation/blocs/my_tickets/my_tickets_cubit.dart'
     as _i38;
+import 'package:event_horizon/features/booking/presentation/blocs/payment/payment_cubit.dart'
+    as _i484;
 import 'package:event_horizon/features/booking/presentation/blocs/ticket_detail/ticket_detail_cubit.dart'
     as _i161;
 import 'package:event_horizon/features/discovery/data/datasources/discovery_datasource.dart'
@@ -135,6 +137,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i38.MyTicketsCubit>(
       () => _i38.MyTicketsCubit(gh<_i687.BookingRepository>()),
+    );
+    gh.factory<_i484.PaymentCubit>(
+      () => _i484.PaymentCubit(gh<_i687.BookingRepository>()),
     );
     gh.factory<_i161.TicketDetailCubit>(
       () => _i161.TicketDetailCubit(gh<_i687.BookingRepository>()),

@@ -48,15 +48,12 @@ List<Booking> bookingsForTab(
     MyTicketsTab.past => [
       for (final booking in all)
         if (booking.status == BookingStatus.checkedIn ||
-            (booking.status == BookingStatus.confirmed &&
-                !booking.eventStartAt.isAfter(now)))
+            (booking.isActive && !booking.eventStartAt.isAfter(now)))
           booking,
     ],
     MyTicketsTab.cancelled => [
       for (final booking in all)
-        if (booking.status != BookingStatus.confirmed &&
-            booking.status != BookingStatus.checkedIn)
-          booking,
+        if (!booking.isActive) booking,
     ],
   };
 }

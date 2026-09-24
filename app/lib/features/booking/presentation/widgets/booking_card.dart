@@ -20,7 +20,11 @@ class BookingCard extends StatelessWidget {
     return Card(
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: () => context.go(RouteNames.ticketDetailPath(booking.id)),
+        onTap: () => context.go(
+          booking.status == BookingStatus.pendingPayment
+              ? RouteNames.paymentPath(booking.id)
+              : RouteNames.ticketDetailPath(booking.id),
+        ),
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.sm),
           child: Row(

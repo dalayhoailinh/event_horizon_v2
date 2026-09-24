@@ -62,15 +62,25 @@ void main() {
       status: BookingStatus.cancelled,
       startAt: _now.add(const Duration(days: 1)),
     );
-    final all = [upcoming, passed, checkedIn, cancelled];
+    final pending = _booking(
+      id: 'e',
+      status: BookingStatus.pendingPayment,
+      startAt: _now.add(const Duration(days: 1)),
+    );
+    final expired = _booking(
+      id: 'f',
+      status: BookingStatus.expired,
+      startAt: _now.add(const Duration(days: 1)),
+    );
+    final all = [upcoming, passed, checkedIn, cancelled, pending, expired];
 
-    test('Sắp diễn ra: chỉ vé confirmed và sự kiện chưa bắt đầu', () {
+    test('Sắp diễn ra: gồm cả đơn chờ thanh toán', () {
       expect(
         [
           for (final b in bookingsForTab(all, MyTicketsTab.upcoming, _now))
             b.id,
         ],
-        ['a'],
+        ['a', 'e'],
       );
     });
 
@@ -81,13 +91,13 @@ void main() {
       );
     });
 
-    test('Đã hủy: mọi trạng thái không còn dùng được', () {
+    test('Đã hủy: đơn hết hạn và đơn đã hủy', () {
       expect(
         [
           for (final b in bookingsForTab(all, MyTicketsTab.cancelled, _now))
             b.id,
         ],
-        ['d'],
+        ['d', 'f'],
       );
     });
 
@@ -96,7 +106,7 @@ void main() {
       for (final tab in MyTicketsTab.values) {
         seen.addAll([for (final b in bookingsForTab(all, tab, _now)) b.id]);
       }
-      expect(seen..sort(), ['a', 'b', 'c', 'd']);
+      expect(seen..sort(), ['a', 'b', 'c', 'd', 'e', 'f']);
     });
   });
 }

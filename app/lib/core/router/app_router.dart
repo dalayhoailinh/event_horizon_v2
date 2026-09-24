@@ -75,7 +75,7 @@ class AppRouter {
                   title: 'Sự kiện không hợp lệ',
                 );
               }
-              return EventDetailPage(eventId: id);
+              return EventDetailPage(key: ValueKey(id), eventId: id);
             },
             routes: [
               GoRoute(
@@ -87,7 +87,7 @@ class AppRouter {
                       title: 'Sự kiện không hợp lệ',
                     );
                   }
-                  return BookingPage(eventId: id);
+                  return BookingPage(key: ValueKey(id), eventId: id);
                 },
               ),
             ],
@@ -106,7 +106,10 @@ class AppRouter {
               if (bookingId == null || bookingId.isEmpty) {
                 return const ShellPlaceholderPage(title: 'Vé không hợp lệ');
               }
-              return TicketDetailPage(bookingId: bookingId);
+              return TicketDetailPage(
+                key: ValueKey(bookingId),
+                bookingId: bookingId,
+              );
             },
           ),
         ],
@@ -118,7 +121,7 @@ class AppRouter {
           if (id == null || id.isEmpty) {
             return const ShellPlaceholderPage(title: 'Đơn không hợp lệ');
           }
-          return PaymentPage(bookingId: id);
+          return PaymentPage(key: ValueKey(id), bookingId: id);
         },
       ),
       GoRoute(

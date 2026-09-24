@@ -15,6 +15,7 @@ abstract interface class BookingDataSource {
     required Map<String, int> quantities,
   });
   Future<void> cancelBooking(String bookingId);
+  Future<String> createPayosOrder(String bookingId);
   Stream<List<Booking>> watchMyBookings();
   Stream<Booking?> watchBooking(String bookingId);
 }
@@ -57,6 +58,19 @@ class BookingDataSourceImpl implements BookingDataSource {
       await _functions.httpsCallable('cancelBooking').call({
         'bookingId': bookingId,
       });
+    } on FirebaseFunctionsException catch (e) {
+      throw mapFunctionsException(e);
+    }
+  }
+
+  @override
+  Future<String> createPayosOrder(String bookingId) async {
+    try {
+      final result = await _functions.httpsCallable('createPayosOrder').call({
+        'bookingId': bookingId,
+      });
+      final data = Map<String, dynamic>.from(result.data as Map);
+      return data['qrCode'] as String;
     } on FirebaseFunctionsException catch (e) {
       throw mapFunctionsException(e);
     }

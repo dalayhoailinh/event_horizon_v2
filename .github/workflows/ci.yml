@@ -87,3 +87,11 @@ jobs:
         run: npm install -g firebase-tools
       - name: Run booking integration tests (full emulator suite)
         run: firebase emulators:exec --only firestore,auth,functions --project demo-event-horizon "npm --prefix functions run test:integration"
+      - name: Emulator secrets (fake values, never the real ones)
+        run: |
+          {
+            echo "QR_SECRET=ci-secret"
+            echo "PAYOS_CLIENT_ID=ci-fake"
+            echo "PAYOS_API_KEY=ci-fake"
+            echo "PAYOS_CHECKSUM_KEY=ci-fake"
+          } > functions/.secret.local

@@ -12,6 +12,8 @@ export { createBooking } from "./booking/createBooking";
 
 export { cancelBooking } from "./booking/cancelBooking";
 
+export { createPayosOrder } from "./payos/createPayosOrder";
+
 export const ping = onCall(() => {
   return { message: "pong", serverTime: new Date().toISOString() };
 });

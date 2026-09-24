@@ -29,6 +29,10 @@ class BookingRepositoryImpl implements BookingRepository {
       guard(() => _ds.cancelBooking(bookingId));
 
   @override
+  Future<Result<String>> createPayosOrder(String bookingId) =>
+      guard(() => _ds.createPayosOrder(bookingId));
+
+  @override
   Stream<List<Booking>> watchMyBookings() => _ds.watchMyBookings();
 
   @override

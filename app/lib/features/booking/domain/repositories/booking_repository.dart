@@ -10,6 +10,7 @@ abstract interface class BookingRepository {
     required Map<String, int> quantities,
   });
   Future<Result<void>> cancelBooking(String bookingId);
+  Future<Result<String>> createPayosOrder(String bookingId);
   Stream<List<Booking>> watchMyBookings();
   Stream<Booking?> watchBooking(String bookingId);
 }
