@@ -14,7 +14,10 @@ abstract final class RouteNames {
   static String bookPath(String eventId) => '/events/$eventId/book';
   static const String myTickets = '/my-tickets';
   static const String ticketDetailSegment = ':id';
-  static String ticketDetailPath(String id) => '/my-tickets/$id';
+  static String ticketDetailPath(String id, {String? tab}) => Uri(
+    path: '/my-tickets/$id',
+    queryParameters: tab == null ? null : {'tab': tab},
+  ).toString();
   static const String payment = '/pay/:id';
   static String paymentPath(String bookingId) => '/pay/$bookingId';
 }

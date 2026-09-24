@@ -9,7 +9,9 @@ import 'booking_status_chip.dart';
 
 class BookingCard extends StatelessWidget {
   final Booking booking;
-  const BookingCard({super.key, required this.booking});
+  final String? tabQuery;
+
+  const BookingCard({super.key, required this.booking, this.tabQuery});
 
   static const double _thumbSize = 72;
 
@@ -23,7 +25,7 @@ class BookingCard extends StatelessWidget {
         onTap: () => context.go(
           booking.status == BookingStatus.pendingPayment
               ? RouteNames.paymentPath(booking.id)
-              : RouteNames.ticketDetailPath(booking.id),
+              : RouteNames.ticketDetailPath(booking.id, tab: tabQuery),
         ),
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.sm),

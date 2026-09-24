@@ -140,7 +140,7 @@ class _TicketInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final canCancel = booking.status == BookingStatus.confirmed;
+    final canCancel = booking.canCancel(DateTime.now());
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

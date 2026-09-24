@@ -78,16 +78,7 @@ jobs:
       - name: Install functions deps
         run: npm ci
         working-directory: functions
-      - name: Emulator secret (never the real one)
-        run: echo "QR_SECRET=ci-secret" > functions/.secret.local
-      - name: Build functions
-        run: npm run build
-        working-directory: functions
-      - name: Install Firebase CLI
-        run: npm install -g firebase-tools
-      - name: Run booking integration tests (full emulator suite)
-        run: firebase emulators:exec --only firestore,auth,functions --project demo-event-horizon "npm --prefix functions run test:integration"
-      - name: Emulator secrets (fake values, never the real ones)
+      - name: Emulator secrets (never the real one)
         run: |
           {
             echo "QR_SECRET=ci-secret"
@@ -95,3 +86,10 @@ jobs:
             echo "PAYOS_API_KEY=ci-fake"
             echo "PAYOS_CHECKSUM_KEY=ci-fake"
           } > functions/.secret.local
+      - name: Build functions
+        run: npm run build
+        working-directory: functions
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+      - name: Run booking integration tests (full emulator suite)
+        run: firebase emulators:exec --only firestore,auth,functions --project demo-event-horizon "npm --prefix functions run test:integration"

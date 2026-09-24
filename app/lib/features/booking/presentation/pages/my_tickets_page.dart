@@ -98,7 +98,7 @@ class _TabBody extends StatelessWidget {
         for (final booking in bookings)
           Padding(
             padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-            child: BookingCard(booking: booking),
+            child: BookingCard(booking: booking, tabQuery: tabQueryValue(tab)),
           ),
       ],
     );

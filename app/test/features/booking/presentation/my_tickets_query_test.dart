@@ -1,3 +1,4 @@
+import 'package:event_horizon/core/router/route_names.dart';
 import 'package:event_horizon/features/booking/domain/entities/booking.dart';
 import 'package:event_horizon/features/booking/presentation/routing/my_tickets_query.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -38,6 +39,21 @@ void main() {
     test('tab lạ do sửa tay URL -> về mặc định, không nổ', () {
       expect(tabFromQuery({'tab': 'linh-tinh'}), MyTicketsTab.upcoming);
       expect(tabFromQuery({}), MyTicketsTab.upcoming);
+    });
+  });
+
+  group('tab đi theo URL sang trang con', () {
+    test('tab mặc định -> URL sạch, không có ?tab=', () {
+      expect(tabQueryValue(MyTicketsTab.upcoming), isNull);
+      expect(RouteNames.ticketDetailPath('bk1'), '/my-tickets/bk1');
+    });
+
+    test('tab khác -> URL có ?tab=', () {
+      expect(tabQueryValue(MyTicketsTab.cancelled), 'cancelled');
+      expect(
+        RouteNames.ticketDetailPath('bk1', tab: 'cancelled'),
+        '/my-tickets/bk1?tab=cancelled',
+      );
     });
   });
 

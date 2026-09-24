@@ -67,4 +67,7 @@ abstract class Booking with _$Booking {
       (status == BookingStatus.pendingPayment ||
           status == BookingStatus.confirmed) &&
       eventStartAt.isAfter(now);
+
+  bool canCancel(DateTime now) =>
+      status == BookingStatus.confirmed && eventStartAt.isAfter(now);
 }

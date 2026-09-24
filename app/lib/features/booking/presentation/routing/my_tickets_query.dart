@@ -29,6 +29,9 @@ String myTicketsLocationFor(MyTicketsTab tab) {
   ).toString();
 }
 
+String? tabQueryValue(MyTicketsTab tab) =>
+    tab == MyTicketsTab.upcoming ? null : _tabNames[tab];
+
 String tabLabel(MyTicketsTab tab) => switch (tab) {
   MyTicketsTab.upcoming => 'Sắp diễn ra',
   MyTicketsTab.past => 'Đã qua',
