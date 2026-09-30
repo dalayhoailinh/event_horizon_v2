@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/format/formatters.dart';
 import '../../../../core/responsive/page_section.dart';
+import '../../../../core/router/route_names.dart';
 import '../../../../core/shell/web_page.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../domain/entities/booking.dart';
@@ -34,23 +36,34 @@ class _PaymentView extends StatelessWidget {
     final state = context.watch<PaymentCubit>().state;
     final eventTitle = state.booking?.eventTitle;
 
-    return WebPage(
-      title: eventTitle == null ? 'Thanh toán' : 'Thanh toán - $eventTitle',
-      actions: const [],
-      sections: [
-        PageSection(
-          child: switch (state) {
-            PaymentState(loading: true) => const Center(
-              child: CircularProgressIndicator(),
-            ),
-            PaymentState(:final booking?) => _PaymentBody(
-              booking: booking,
-              state: state,
-            ),
-            _ => Text(state.errorMessage ?? 'Không tìm thấy đơn này.'),
-          },
-        ),
-      ],
+    return BlocListener<PaymentCubit, PaymentState>(
+      listenWhen: (previous, current) =>
+          previous.booking?.status != BookingStatus.confirmed &&
+          current.booking?.status == BookingStatus.confirmed,
+      listener: (context, state) {
+        final booking = state.booking;
+        if (booking != null) {
+          context.go(RouteNames.ticketDetailPath(booking.id));
+        }
+      },
+      child: WebPage(
+        title: eventTitle == null ? 'Thanh toán' : 'Thanh toán - $eventTitle',
+        actions: const [],
+        sections: [
+          PageSection(
+            child: switch (state) {
+              PaymentState(loading: true) => const Center(
+                child: CircularProgressIndicator(),
+              ),
+              PaymentState(:final booking?) => _PaymentBody(
+                booking: booking,
+                state: state,
+              ),
+              _ => Text(state.errorMessage ?? 'Không tìm thấy đơn này.'),
+            },
+          ),
+        ],
+      ),
     );
   }
 }

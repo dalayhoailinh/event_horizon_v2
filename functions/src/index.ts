@@ -14,6 +14,8 @@ export { cancelBooking } from "./booking/cancelBooking";
 
 export { createPayosOrder } from "./payos/createPayosOrder";
 
+export { payosWebhook } from "./payos/payosWebhook";
+
 export const ping = onCall(() => {
   return { message: "pong", serverTime: new Date().toISOString() };
 });
