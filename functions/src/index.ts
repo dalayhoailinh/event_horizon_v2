@@ -12,6 +12,8 @@ export { createBooking } from "./booking/createBooking";
 
 export { cancelBooking } from "./booking/cancelBooking";
 
+export { expireBookings } from "./booking/expireBookings";
+
 export { createPayosOrder } from "./payos/createPayosOrder";
 
 export { payosWebhook } from "./payos/payosWebhook";

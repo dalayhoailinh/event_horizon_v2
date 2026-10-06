@@ -25,6 +25,16 @@ describe("canCancel", () => {
     ).toBeNull();
   });
 
+  it("chủ đơn + pendingPayment + trước giờ diễn ra -> null (được hủy)", () => {
+    expect(
+      canCancel({
+        booking: booking({ status: "pendingPayment" }),
+        uid: "u1",
+        nowMs: NOW,
+      }),
+    ).toBeNull();
+  });
+
   it("không phải chủ đơn", () => {
     expect(canCancel({ booking: booking(), uid: "u2", nowMs: NOW })).toBe(
       "not-owner",

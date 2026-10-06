@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PaymentState {
 
- bool get loading; Booking? get booking; String? get qrCode; String? get errorMessage;
+ bool get loading; Booking? get booking; String? get qrCode; String? get errorMessage; bool get cancelling; String? get cancelError;
 /// Create a copy of PaymentState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $PaymentStateCopyWith<PaymentState> get copyWith => _$PaymentStateCopyWithImpl<P
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PaymentState&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.booking, booking) || other.booking == booking)&&(identical(other.qrCode, qrCode) || other.qrCode == qrCode)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PaymentState&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.booking, booking) || other.booking == booking)&&(identical(other.qrCode, qrCode) || other.qrCode == qrCode)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.cancelling, cancelling) || other.cancelling == cancelling)&&(identical(other.cancelError, cancelError) || other.cancelError == cancelError));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,loading,booking,qrCode,errorMessage);
+int get hashCode => Object.hash(runtimeType,loading,booking,qrCode,errorMessage,cancelling,cancelError);
 
 @override
 String toString() {
-  return 'PaymentState(loading: $loading, booking: $booking, qrCode: $qrCode, errorMessage: $errorMessage)';
+  return 'PaymentState(loading: $loading, booking: $booking, qrCode: $qrCode, errorMessage: $errorMessage, cancelling: $cancelling, cancelError: $cancelError)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $PaymentStateCopyWith<$Res>  {
   factory $PaymentStateCopyWith(PaymentState value, $Res Function(PaymentState) _then) = _$PaymentStateCopyWithImpl;
 @useResult
 $Res call({
- bool loading, Booking? booking, String? qrCode, String? errorMessage
+ bool loading, Booking? booking, String? qrCode, String? errorMessage, bool cancelling, String? cancelError
 });
 
 
@@ -62,12 +62,14 @@ class _$PaymentStateCopyWithImpl<$Res>
 
 /// Create a copy of PaymentState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? loading = null,Object? booking = freezed,Object? qrCode = freezed,Object? errorMessage = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? loading = null,Object? booking = freezed,Object? qrCode = freezed,Object? errorMessage = freezed,Object? cancelling = null,Object? cancelError = freezed,}) {
   return _then(_self.copyWith(
 loading: null == loading ? _self.loading : loading // ignore: cast_nullable_to_non_nullable
 as bool,booking: freezed == booking ? _self.booking : booking // ignore: cast_nullable_to_non_nullable
 as Booking?,qrCode: freezed == qrCode ? _self.qrCode : qrCode // ignore: cast_nullable_to_non_nullable
 as String?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as String?,cancelling: null == cancelling ? _self.cancelling : cancelling // ignore: cast_nullable_to_non_nullable
+as bool,cancelError: freezed == cancelError ? _self.cancelError : cancelError // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -165,10 +167,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool loading,  Booking? booking,  String? qrCode,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool loading,  Booking? booking,  String? qrCode,  String? errorMessage,  bool cancelling,  String? cancelError)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PaymentState() when $default != null:
-return $default(_that.loading,_that.booking,_that.qrCode,_that.errorMessage);case _:
+return $default(_that.loading,_that.booking,_that.qrCode,_that.errorMessage,_that.cancelling,_that.cancelError);case _:
   return orElse();
 
 }
@@ -186,10 +188,10 @@ return $default(_that.loading,_that.booking,_that.qrCode,_that.errorMessage);cas
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool loading,  Booking? booking,  String? qrCode,  String? errorMessage)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool loading,  Booking? booking,  String? qrCode,  String? errorMessage,  bool cancelling,  String? cancelError)  $default,) {final _that = this;
 switch (_that) {
 case _PaymentState():
-return $default(_that.loading,_that.booking,_that.qrCode,_that.errorMessage);case _:
+return $default(_that.loading,_that.booking,_that.qrCode,_that.errorMessage,_that.cancelling,_that.cancelError);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -206,10 +208,10 @@ return $default(_that.loading,_that.booking,_that.qrCode,_that.errorMessage);cas
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool loading,  Booking? booking,  String? qrCode,  String? errorMessage)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool loading,  Booking? booking,  String? qrCode,  String? errorMessage,  bool cancelling,  String? cancelError)?  $default,) {final _that = this;
 switch (_that) {
 case _PaymentState() when $default != null:
-return $default(_that.loading,_that.booking,_that.qrCode,_that.errorMessage);case _:
+return $default(_that.loading,_that.booking,_that.qrCode,_that.errorMessage,_that.cancelling,_that.cancelError);case _:
   return null;
 
 }
@@ -221,13 +223,15 @@ return $default(_that.loading,_that.booking,_that.qrCode,_that.errorMessage);cas
 
 
 class _PaymentState implements PaymentState {
-  const _PaymentState({this.loading = true, this.booking, this.qrCode, this.errorMessage});
+  const _PaymentState({this.loading = true, this.booking, this.qrCode, this.errorMessage, this.cancelling = false, this.cancelError});
   
 
 @override@JsonKey() final  bool loading;
 @override final  Booking? booking;
 @override final  String? qrCode;
 @override final  String? errorMessage;
+@override@JsonKey() final  bool cancelling;
+@override final  String? cancelError;
 
 /// Create a copy of PaymentState
 /// with the given fields replaced by the non-null parameter values.
@@ -239,16 +243,16 @@ _$PaymentStateCopyWith<_PaymentState> get copyWith => __$PaymentStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PaymentState&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.booking, booking) || other.booking == booking)&&(identical(other.qrCode, qrCode) || other.qrCode == qrCode)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PaymentState&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.booking, booking) || other.booking == booking)&&(identical(other.qrCode, qrCode) || other.qrCode == qrCode)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.cancelling, cancelling) || other.cancelling == cancelling)&&(identical(other.cancelError, cancelError) || other.cancelError == cancelError));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,loading,booking,qrCode,errorMessage);
+int get hashCode => Object.hash(runtimeType,loading,booking,qrCode,errorMessage,cancelling,cancelError);
 
 @override
 String toString() {
-  return 'PaymentState(loading: $loading, booking: $booking, qrCode: $qrCode, errorMessage: $errorMessage)';
+  return 'PaymentState(loading: $loading, booking: $booking, qrCode: $qrCode, errorMessage: $errorMessage, cancelling: $cancelling, cancelError: $cancelError)';
 }
 
 
@@ -259,7 +263,7 @@ abstract mixin class _$PaymentStateCopyWith<$Res> implements $PaymentStateCopyWi
   factory _$PaymentStateCopyWith(_PaymentState value, $Res Function(_PaymentState) _then) = __$PaymentStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool loading, Booking? booking, String? qrCode, String? errorMessage
+ bool loading, Booking? booking, String? qrCode, String? errorMessage, bool cancelling, String? cancelError
 });
 
 
@@ -276,12 +280,14 @@ class __$PaymentStateCopyWithImpl<$Res>
 
 /// Create a copy of PaymentState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? loading = null,Object? booking = freezed,Object? qrCode = freezed,Object? errorMessage = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? loading = null,Object? booking = freezed,Object? qrCode = freezed,Object? errorMessage = freezed,Object? cancelling = null,Object? cancelError = freezed,}) {
   return _then(_PaymentState(
 loading: null == loading ? _self.loading : loading // ignore: cast_nullable_to_non_nullable
 as bool,booking: freezed == booking ? _self.booking : booking // ignore: cast_nullable_to_non_nullable
 as Booking?,qrCode: freezed == qrCode ? _self.qrCode : qrCode // ignore: cast_nullable_to_non_nullable
 as String?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as String?,cancelling: null == cancelling ? _self.cancelling : cancelling // ignore: cast_nullable_to_non_nullable
+as bool,cancelError: freezed == cancelError ? _self.cancelError : cancelError // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

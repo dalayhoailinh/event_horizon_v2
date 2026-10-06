@@ -13,6 +13,7 @@ import '../../domain/entities/booking.dart';
 import '../blocs/payment/payment_cubit.dart';
 import '../blocs/payment/payment_state.dart';
 import '../widgets/booking_status_chip.dart';
+import '../widgets/payment_countdown.dart';
 
 class PaymentPage extends StatelessWidget {
   final String bookingId;
@@ -55,6 +56,8 @@ class _PaymentView extends StatelessWidget {
               PaymentState(loading: true) => const Center(
                 child: CircularProgressIndicator(),
               ),
+              PaymentState(booking: final booking?) when !booking.isActive =>
+                _PaymentClosed(booking: booking),
               PaymentState(:final booking?) => _PaymentBody(
                 booking: booking,
                 state: state,
@@ -68,11 +71,65 @@ class _PaymentView extends StatelessWidget {
   }
 }
 
+class _PaymentClosed extends StatelessWidget {
+  final Booking booking;
+
+  const _PaymentClosed({required this.booking});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final reason = booking.status == BookingStatus.expired
+        ? 'Đơn đã hết hạn.'
+        : 'Đơn đã bị hủy.';
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(booking.eventTitle, style: theme.textTheme.titleLarge),
+        AppSpacing.vSm,
+        BookingStatusChip(status: booking.status),
+        AppSpacing.vMd,
+        Text(reason, style: theme.textTheme.bodyLarge),
+        AppSpacing.vMd,
+        FilledButton(
+          onPressed: () =>
+              context.go(RouteNames.eventDetailPath(booking.eventId)),
+          child: const Text('Về trang sự kiện'),
+        ),
+      ],
+    );
+  }
+}
+
 class _PaymentBody extends StatelessWidget {
   final Booking booking;
   final PaymentState state;
 
   const _PaymentBody({required this.booking, required this.state});
+
+  Future<void> _confirmCancel(BuildContext context) async {
+    final cubit = context.read<PaymentCubit>();
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Xác nhận hủy đơn'),
+        content: const Text('Bạn có chắc chắn muốn hủy đơn này không?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('Hủy đơn'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text('Giữ đơn'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed ?? false) {
+      await cubit.cancel(booking.id);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,12 +149,33 @@ class _PaymentBody extends StatelessWidget {
           'Cần chuyển ${formatVnd(booking.totalAmount)}',
           style: theme.textTheme.titleMedium,
         ),
+        if (booking.expiresAt case final deadline?) ...[
+          AppSpacing.vSm,
+          PaymentCountdown(deadline: deadline),
+        ],
         AppSpacing.vMd,
         _QrArea(state: state),
         AppSpacing.vMd,
         Text(
           'Quét mã bằng app ngân hàng để chuyển khoản.',
           style: theme.textTheme.bodyMedium,
+        ),
+        AppSpacing.vLg,
+        if (state.cancelError case final message?) ...[
+          Text(
+            message,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.error,
+            ),
+          ),
+          AppSpacing.vSm,
+        ],
+        Align(
+          alignment: Alignment.centerLeft,
+          child: OutlinedButton(
+            onPressed: state.cancelling ? null : () => _confirmCancel(context),
+            child: Text(state.cancelling ? 'Đang hủy...' : 'Hủy đơn'),
+          ),
         ),
       ],
     );

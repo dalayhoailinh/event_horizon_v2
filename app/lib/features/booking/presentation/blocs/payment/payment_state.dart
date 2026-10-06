@@ -11,5 +11,7 @@ abstract class PaymentState with _$PaymentState {
     Booking? booking,
     String? qrCode,
     String? errorMessage,
+    @Default(false) bool cancelling,
+    String? cancelError,
   }) = _PaymentState;
 }

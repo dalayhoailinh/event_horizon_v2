@@ -22,3 +22,8 @@ String formatEventTime(DateTime dt) {
   return '$wd · ${_two(dt.day)}/${_two(dt.month)}/${dt.year}'
       ' · ${_two(dt.hour)}:${_two(dt.minute)}';
 }
+
+String formatCountdown(Duration remaining) {
+  if (remaining <= Duration.zero) return 'Hết hạn';
+  return '${remaining.inMinutes}:${_two(remaining.inSeconds % 60)}';
+}

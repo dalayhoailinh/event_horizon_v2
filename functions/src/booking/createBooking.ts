@@ -11,7 +11,7 @@ import { EventState, planBooking, TicketTypeState } from "./planBooking";
 import { buildQrData, signQr } from "./qr";
 
 const qrSecret = defineSecret("QR_SECRET");
-const PAYMENT_WINDOW_MS = 15 * 60_000;
+const PAYMENT_WINDOW_MS = 5 * 60_000;
 
 export const createBooking = onCall(
   { secrets: [qrSecret] },

@@ -12,7 +12,8 @@ export function canCancel(args: {
   const { booking, uid, nowMs } = args;
   if (!booking) return "booking-not-found";
   if (booking.userId !== uid) return "not-owner";
-  if (booking.status !== "confirmed") return "not-cancellable";
+  if (booking.status !== "confirmed" && booking.status !== "pendingPayment")
+    return "not-cancellable";
   if (booking.eventStartAtMs <= nowMs) return "event-started";
   return null;
 }

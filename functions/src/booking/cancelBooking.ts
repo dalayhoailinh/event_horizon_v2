@@ -1,7 +1,8 @@
 import { HttpsError, onCall } from "firebase-functions/https";
 import { cancelBookingSchema } from "./types";
-import { FieldValue, getFirestore, Timestamp } from "firebase-admin/firestore";
+import { getFirestore, Timestamp } from "firebase-admin/firestore";
 import { canCancel } from "./cancelPolicy";
+import { releaseBooking } from "./release";
 
 export const cancelBooking = onCall(async (request) => {
   const auth = request.auth;
@@ -32,42 +33,19 @@ export const cancelBooking = onCall(async (request) => {
       uid: auth.uid,
       nowMs: Date.now(),
     });
-    if (verdict !== null) {
+    if (!data || verdict !== null) {
       throw new HttpsError("failed-precondition", "Bạn không thể hủy vé.", {
-        code: verdict,
+        code: verdict ?? "booking-not-found",
       });
     }
 
-    const eventRef = db.collection("events").doc(data?.eventId as string);
-    const lineItems = (data?.lineItems ?? []) as Array<{
-      ticketTypeId: string;
-      quantity: number;
-    }>;
-    let ticketCount = 0;
-    for (const li of lineItems) {
-      ticketCount += li.quantity;
-    }
-
-    tx.update(bookingRef, {
-      status: "cancelled",
-      cancelledAt: Timestamp.now(),
+    releaseBooking({
+      tx,
+      db,
+      bookingRef,
+      data,
+      toStatus: "cancelled",
     });
-    for (const li of lineItems) {
-      tx.update(eventRef.collection("ticketTypes").doc(li.ticketTypeId), {
-        sold: FieldValue.increment(-li.quantity),
-      });
-    }
-    tx.update(eventRef, {
-      ticketsSold: FieldValue.increment(-ticketCount),
-    });
-    tx.set(
-      eventRef.collection("buyers").doc(auth.uid),
-      {
-        bookingCount: FieldValue.increment(-1),
-        updatedAt: Timestamp.now(),
-      },
-      { merge: true },
-    );
   });
 
   return { ok: true };

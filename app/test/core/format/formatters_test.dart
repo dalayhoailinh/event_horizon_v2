@@ -20,4 +20,11 @@ void main() {
       'CN · 12/07/2026 · 19:30',
     );
   });
+
+  test('formatCountdown', () {
+    expect(formatCountdown(const Duration(minutes: 14, seconds: 5)), '14:05');
+    expect(formatCountdown(const Duration(seconds: 9)), '0:09');
+    expect(formatCountdown(const Duration(seconds: 0)), 'Hết hạn');
+    expect(formatCountdown(const Duration(seconds: -1)), 'Hết hạn');
+  });
 }

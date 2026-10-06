@@ -38,6 +38,19 @@ class PaymentCubit extends Cubit<PaymentState> {
     }
   }
 
+  Future<void> cancel(String bookingId) async {
+    if (state.cancelling) return;
+    emit(state.copyWith(cancelling: true, cancelError: null));
+    final result = await _repo.cancelBooking(bookingId);
+    if (isClosed) return;
+    switch (result) {
+      case Ok():
+        emit(state.copyWith(cancelling: false));
+      case Err(:final failure):
+        emit(state.copyWith(cancelling: false, cancelError: failure.message));
+    }
+  }
+
   @override
   Future<void> close() async {
     await _sub?.cancel();
