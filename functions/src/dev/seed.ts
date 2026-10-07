@@ -78,10 +78,12 @@ async function main(): Promise<void> {
     const cat = categories[i % categories.length];
     const prov = provinces[i % provinces.length];
     const title = titleParts[i % titleParts.length] + ` #${i}`;
-    const status =
-      i % 17 === 0 ? "draft" : i % 19 === 0 ? "pending" : "published";
-    const isFree = i % 7 === 0;
     const startInDays = ((i * 3) % 60) - 5;
+    const baseStatus =
+      i % 17 === 0 ? "draft" : i % 19 === 0 ? "pending" : "published";
+    const status =
+      baseStatus === "published" && startInDays + 1 <= 0 ? "ended" : baseStatus;
+    const isFree = i % 7 === 0;
 
     let ticketTypes;
     if (isFree) {

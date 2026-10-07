@@ -2,6 +2,7 @@ import { Firestore, getFirestore, Timestamp } from "firebase-admin/firestore";
 import { releaseBooking } from "./release";
 import { logger } from "firebase-functions";
 import { onSchedule } from "firebase-functions/scheduler";
+import { endDueEvents } from "../events/endEvents";
 
 const BATCH_SIZE = 50;
 
@@ -36,5 +37,7 @@ export async function expireDueBookings(db: Firestore): Promise<number> {
 }
 
 export const expireBookings = onSchedule("every 1 minutes", async () => {
+  const db = getFirestore();
   await expireDueBookings(getFirestore());
+  await endDueEvents(db);
 });

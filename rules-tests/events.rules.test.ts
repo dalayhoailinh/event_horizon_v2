@@ -59,6 +59,17 @@ beforeAll(async () => {
       name: "Chờ duyệt",
       status: "pending",
     });
+    await setDoc(doc(db, "events/ended1"), {
+      title: "Đã xong",
+      status: "ended",
+      organizerId: "org1",
+    });
+    await setDoc(doc(db, "events/ended1/ticketTypes/t1"), {
+      name: "Thường",
+      price: 2000,
+      quantity: 100,
+      sold: 100,
+    });
   });
 });
 
@@ -120,6 +131,14 @@ describe("events rules", () => {
       updateDoc(doc(bob.firestore(), "events/pub1"), {
         ticketsSold: 1000,
       }),
+    );
+  });
+
+  it("event ENDED: khách vẫn đọc được, cả ticketTypes", async () => {
+    const guest = env.unauthenticatedContext();
+    await assertSucceeds(getDoc(doc(guest.firestore(), "events/ended1")));
+    await assertSucceeds(
+      getDoc(doc(guest.firestore(), "events/ended1/ticketTypes/t1")),
     );
   });
 });

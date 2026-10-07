@@ -38,12 +38,9 @@ class DiscoveryDataSourceImpl implements DiscoveryDataSource {
     final snap = await _db
         .collection('events')
         .where('status', isEqualTo: 'published')
-        .where('startAt', isGreaterThanOrEqualTo: Timestamp.now())
-        .orderBy('startAt')
-        .get(); // Works on dev if events under like hundreds, but not on prod.
-    final events = [for (final d in snap.docs) mapEventSummary(d.id, d.data())]
-      ..sort((a, b) => b.ticketsSold.compareTo(a.ticketsSold));
-    return events.take(10).toList();
+        .orderBy('ticketsSold', descending: true)
+        .get();
+    return [for (final d in snap.docs) mapEventSummary(d.id, d.data())];
   });
 
   @override
@@ -132,8 +129,6 @@ class DiscoveryDataSourceImpl implements DiscoveryDataSource {
       q = q
           .where('startAt', isGreaterThanOrEqualTo: range.$1)
           .where('startAt', isLessThan: range.$2);
-    } else {
-      q = q.where('startAt', isGreaterThanOrEqualTo: Timestamp.now());
     }
     return q.orderBy('startAt');
   }

@@ -44,7 +44,7 @@ service cloud.firestore {
         return isSignedIn() && request.auth.uid == resource.data.organizerId;
       }
 
-      allow read: if resource.data.status == 'published'
+      allow read: if resource.data.status in ['published', 'ended']
         || isEventOwner()
         || isAdmin();
       
@@ -55,7 +55,7 @@ service cloud.firestore {
       }
 
       function parentReadable() {
-        return parentEvent().status == 'published' 
+        return parentEvent().status in ['published', 'ended']
           || (isSignedIn() && request.auth.uid == parentEvent().organizerId)
       }
 
