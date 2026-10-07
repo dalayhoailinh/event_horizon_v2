@@ -39,6 +39,7 @@ class DiscoveryDataSourceImpl implements DiscoveryDataSource {
         .collection('events')
         .where('status', isEqualTo: 'published')
         .orderBy('ticketsSold', descending: true)
+        .limit(10)
         .get();
     return [for (final d in snap.docs) mapEventSummary(d.id, d.data())];
   });
