@@ -36,7 +36,9 @@ class _PaymentCountdownState extends State<PaymentCountdown> {
     final remaining = widget.deadline.difference(DateTime.now());
 
     return Text(
-      'Còn lại ${formatCountdown(remaining)}',
+      remaining.isNegative
+          ? formatCountdown(remaining)
+          : 'Còn lại ${formatCountdown(remaining)}',
       style: theme.textTheme.titleMedium?.copyWith(
         color: remaining < _warnBelow ? theme.colorScheme.error : null,
       ),

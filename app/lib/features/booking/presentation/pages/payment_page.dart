@@ -149,12 +149,12 @@ class _PaymentBody extends StatelessWidget {
           'Cần chuyển ${formatVnd(booking.totalAmount)}',
           style: theme.textTheme.titleMedium,
         ),
-        if (booking.expiresAt case final deadline?) ...[
-          AppSpacing.vSm,
-          PaymentCountdown(deadline: deadline),
-        ],
         AppSpacing.vMd,
         _QrArea(state: state),
+        if (booking.expiresAt case final deadline?) ...[
+          AppSpacing.vSm,
+          Center(child: PaymentCountdown(deadline: deadline)),
+        ],
         AppSpacing.vMd,
         Text(
           'Quét mã bằng app ngân hàng để chuyển khoản.',
