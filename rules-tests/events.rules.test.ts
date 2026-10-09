@@ -51,6 +51,11 @@ beforeAll(async () => {
       sold: 0,
     });
     await setDoc(doc(db, "events/pub1/search/main"), { embedding: [1, 2] });
+    await setDoc(doc(db, "events/pub1/seatmap/main"), {
+      version: 1,
+      floors: [],
+    });
+    await setDoc(doc(db, "events/pub1/seatmap/sold"), { codes: [] });
     await setDoc(doc(db, "categories/music"), {
       name: "Âm nhạc",
       status: "approved",
@@ -143,6 +148,20 @@ describe("events rules", () => {
   });
 });
 
+describe("seatmap rules", () => {
+  it("seatmap/main (bản vẽ lưới): ai cũng đọc được", async () => {
+    const bob = env.authenticatedContext("bob");
+    await assertSucceeds(
+      getDoc(doc(bob.firestore(), "events/pub1/seatmap/main")),
+    );
+  });
+
+  it("seatmap/sold (ghế -> bookingId): server-only, cấm đọc", async () => {
+    const bob = env.authenticatedContext("bob");
+    await assertFails(getDoc(doc(bob.firestore(), "events/pub1/seatmap/sold")));
+  });
+});
+
 describe("categories & favorites rules", () => {
   it("category approved đọc được, pending thì không", async () => {
     const bob = env.authenticatedContext("bob");
@@ -158,7 +177,6 @@ describe("categories & favorites rules", () => {
       }),
     );
   });
-
   it("favorite: nhét field lạ ngoài createdAt -> bị chặn", async () => {
     const alice = env.authenticatedContext("alice");
     await assertFails(

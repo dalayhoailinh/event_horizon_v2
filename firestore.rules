@@ -69,7 +69,7 @@ service cloud.firestore {
         allow write: if false;
       }
 
-      match /seatmap/{docId} {
+      match /seatmap/main {
         allow read: if parentReadable();
         allow write: if false;
       }
