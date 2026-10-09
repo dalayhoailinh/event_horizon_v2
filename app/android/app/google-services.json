@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "484514163927",
+    "firebase_url": "https://event-horizon-v2-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "event-horizon-v2",
     "storage_bucket": "event-horizon-v2.firebasestorage.app"
   },

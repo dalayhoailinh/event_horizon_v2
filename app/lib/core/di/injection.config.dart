@@ -30,10 +30,16 @@ import 'package:event_horizon/features/auth/presentation/blocs/verify_email/veri
     as _i974;
 import 'package:event_horizon/features/booking/data/datasources/booking_datasource.dart'
     as _i929;
+import 'package:event_horizon/features/booking/data/datasources/seat_lock_datasource.dart'
+    as _i974;
 import 'package:event_horizon/features/booking/data/repositories/booking_repository_impl.dart'
     as _i607;
+import 'package:event_horizon/features/booking/data/repositories/seat_lock_repository_impl.dart'
+    as _i408;
 import 'package:event_horizon/features/booking/domain/repositories/booking_repository.dart'
     as _i687;
+import 'package:event_horizon/features/booking/domain/repositories/seat_lock_repository.dart'
+    as _i763;
 import 'package:event_horizon/features/booking/presentation/blocs/booking_create/booking_create_cubit.dart'
     as _i421;
 import 'package:event_horizon/features/booking/presentation/blocs/my_tickets/my_tickets_cubit.dart'
@@ -65,6 +71,7 @@ import 'package:event_horizon/features/discovery/presentation/blocs/favorite/fav
 import 'package:event_horizon/features/discovery/presentation/blocs/home/home_cubit.dart'
     as _i481;
 import 'package:firebase_auth/firebase_auth.dart' as _i59;
+import 'package:firebase_database/firebase_database.dart' as _i345;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
@@ -78,6 +85,7 @@ extension GetItInjectableX on _i174.GetIt {
     final firebaseModule = _$FirebaseModule();
     gh.lazySingleton<_i59.FirebaseAuth>(() => firebaseModule.auth);
     gh.lazySingleton<_i974.FirebaseFirestore>(() => firebaseModule.firestore);
+    gh.lazySingleton<_i345.FirebaseDatabase>(() => firebaseModule.database);
     gh.lazySingleton<_i809.FirebaseFunctions>(() => firebaseModule.functions);
     gh.lazySingleton<_i229.BuildInfoService>(
       () => const _i229.BuildInfoService(),
@@ -104,17 +112,17 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i555.AuthDatasource>(
       () => _i555.AuthDatasourceImpl(gh<_i59.FirebaseAuth>()),
     );
+    gh.lazySingleton<_i974.SeatLockDataSource>(
+      () => _i974.SeatLockDataSourceImpl(gh<_i345.FirebaseDatabase>()),
+    );
     gh.lazySingleton<_i687.BookingRepository>(
       () => _i607.BookingRepositoryImpl(gh<_i929.BookingDataSource>()),
     );
     gh.lazySingleton<_i934.FavoriteRepository>(
       () => _i256.FavoriteRepositoryImpl(gh<_i901.FavoriteDataSource>()),
     );
-    gh.factory<_i623.SeatSelectionCubit>(
-      () => _i623.SeatSelectionCubit(
-        gh<_i358.DiscoveryRepository>(),
-        gh<_i687.BookingRepository>(),
-      ),
+    gh.lazySingleton<_i763.SeatLockRepository>(
+      () => _i408.SeatLockRepositoryImpl(gh<_i974.SeatLockDataSource>()),
     );
     gh.factory<_i793.DiscoveryListCubit>(
       () => _i793.DiscoveryListCubit(gh<_i358.DiscoveryRepository>()),
@@ -157,6 +165,13 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i696.FavoriteCubit>(
       () => _i696.FavoriteCubit(gh<_i934.FavoriteRepository>()),
+    );
+    gh.factory<_i623.SeatSelectionCubit>(
+      () => _i623.SeatSelectionCubit(
+        gh<_i358.DiscoveryRepository>(),
+        gh<_i687.BookingRepository>(),
+        gh<_i763.SeatLockRepository>(),
+      ),
     );
     return this;
   }

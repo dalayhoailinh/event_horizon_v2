@@ -1,0 +1,9 @@
+{
+  "rules": {
+    "seatLocks": {
+      "$eventId": {
+        ".read": "auth != null"
+      }
+    }
+  }
+}

@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../discovery/domain/entities/event_detail.dart';
+import '../../../domain/entities/seat_lock.dart';
 import '../../../domain/entities/seat_map.dart';
 
 part 'seat_selection_state.freezed.dart';
@@ -11,6 +12,7 @@ abstract class SeatSelectionState with _$SeatSelectionState {
     @Default(false) bool loading,
     EventDetail? detail,
     @Default([]) List<SeatMapFloor> floors,
+    @Default({}) Map<String, SeatLock> locks,
     String? loadError,
   }) = _SeatSelectionState;
 }

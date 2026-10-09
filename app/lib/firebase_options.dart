@@ -55,6 +55,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '484514163927',
     projectId: 'event-horizon-v2',
     authDomain: 'event-horizon-v2.firebaseapp.com',
+    databaseURL: 'https://event-horizon-v2-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'event-horizon-v2.firebasestorage.app',
     measurementId: 'G-N40B5C8V60',
   );
@@ -64,6 +65,7 @@ class DefaultFirebaseOptions {
     appId: '1:484514163927:android:f2eafd4622e4e12fdc1492',
     messagingSenderId: '484514163927',
     projectId: 'event-horizon-v2',
+    databaseURL: 'https://event-horizon-v2-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'event-horizon-v2.firebasestorage.app',
   );
 }

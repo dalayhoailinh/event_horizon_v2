@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SeatSelectionState {
 
- bool get loading; EventDetail? get detail; List<SeatMapFloor> get floors; String? get loadError;
+ bool get loading; EventDetail? get detail; List<SeatMapFloor> get floors; Map<String, SeatLock> get locks; String? get loadError;
 /// Create a copy of SeatSelectionState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $SeatSelectionStateCopyWith<SeatSelectionState> get copyWith => _$SeatSelectionS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SeatSelectionState&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.detail, detail) || other.detail == detail)&&const DeepCollectionEquality().equals(other.floors, floors)&&(identical(other.loadError, loadError) || other.loadError == loadError));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SeatSelectionState&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.detail, detail) || other.detail == detail)&&const DeepCollectionEquality().equals(other.floors, floors)&&const DeepCollectionEquality().equals(other.locks, locks)&&(identical(other.loadError, loadError) || other.loadError == loadError));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,loading,detail,const DeepCollectionEquality().hash(floors),loadError);
+int get hashCode => Object.hash(runtimeType,loading,detail,const DeepCollectionEquality().hash(floors),const DeepCollectionEquality().hash(locks),loadError);
 
 @override
 String toString() {
-  return 'SeatSelectionState(loading: $loading, detail: $detail, floors: $floors, loadError: $loadError)';
+  return 'SeatSelectionState(loading: $loading, detail: $detail, floors: $floors, locks: $locks, loadError: $loadError)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $SeatSelectionStateCopyWith<$Res>  {
   factory $SeatSelectionStateCopyWith(SeatSelectionState value, $Res Function(SeatSelectionState) _then) = _$SeatSelectionStateCopyWithImpl;
 @useResult
 $Res call({
- bool loading, EventDetail? detail, List<SeatMapFloor> floors, String? loadError
+ bool loading, EventDetail? detail, List<SeatMapFloor> floors, Map<String, SeatLock> locks, String? loadError
 });
 
 
@@ -62,12 +62,13 @@ class _$SeatSelectionStateCopyWithImpl<$Res>
 
 /// Create a copy of SeatSelectionState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? loading = null,Object? detail = freezed,Object? floors = null,Object? loadError = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? loading = null,Object? detail = freezed,Object? floors = null,Object? locks = null,Object? loadError = freezed,}) {
   return _then(_self.copyWith(
 loading: null == loading ? _self.loading : loading // ignore: cast_nullable_to_non_nullable
 as bool,detail: freezed == detail ? _self.detail : detail // ignore: cast_nullable_to_non_nullable
 as EventDetail?,floors: null == floors ? _self.floors : floors // ignore: cast_nullable_to_non_nullable
-as List<SeatMapFloor>,loadError: freezed == loadError ? _self.loadError : loadError // ignore: cast_nullable_to_non_nullable
+as List<SeatMapFloor>,locks: null == locks ? _self.locks : locks // ignore: cast_nullable_to_non_nullable
+as Map<String, SeatLock>,loadError: freezed == loadError ? _self.loadError : loadError // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -165,10 +166,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool loading,  EventDetail? detail,  List<SeatMapFloor> floors,  String? loadError)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool loading,  EventDetail? detail,  List<SeatMapFloor> floors,  Map<String, SeatLock> locks,  String? loadError)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SeatSelectionState() when $default != null:
-return $default(_that.loading,_that.detail,_that.floors,_that.loadError);case _:
+return $default(_that.loading,_that.detail,_that.floors,_that.locks,_that.loadError);case _:
   return orElse();
 
 }
@@ -186,10 +187,10 @@ return $default(_that.loading,_that.detail,_that.floors,_that.loadError);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool loading,  EventDetail? detail,  List<SeatMapFloor> floors,  String? loadError)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool loading,  EventDetail? detail,  List<SeatMapFloor> floors,  Map<String, SeatLock> locks,  String? loadError)  $default,) {final _that = this;
 switch (_that) {
 case _SeatSelectionState():
-return $default(_that.loading,_that.detail,_that.floors,_that.loadError);case _:
+return $default(_that.loading,_that.detail,_that.floors,_that.locks,_that.loadError);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -206,10 +207,10 @@ return $default(_that.loading,_that.detail,_that.floors,_that.loadError);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool loading,  EventDetail? detail,  List<SeatMapFloor> floors,  String? loadError)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool loading,  EventDetail? detail,  List<SeatMapFloor> floors,  Map<String, SeatLock> locks,  String? loadError)?  $default,) {final _that = this;
 switch (_that) {
 case _SeatSelectionState() when $default != null:
-return $default(_that.loading,_that.detail,_that.floors,_that.loadError);case _:
+return $default(_that.loading,_that.detail,_that.floors,_that.locks,_that.loadError);case _:
   return null;
 
 }
@@ -221,7 +222,7 @@ return $default(_that.loading,_that.detail,_that.floors,_that.loadError);case _:
 
 
 class _SeatSelectionState implements SeatSelectionState {
-  const _SeatSelectionState({this.loading = false, this.detail, final  List<SeatMapFloor> floors = const [], this.loadError}): _floors = floors;
+  const _SeatSelectionState({this.loading = false, this.detail, final  List<SeatMapFloor> floors = const [], final  Map<String, SeatLock> locks = const {}, this.loadError}): _floors = floors,_locks = locks;
   
 
 @override@JsonKey() final  bool loading;
@@ -231,6 +232,13 @@ class _SeatSelectionState implements SeatSelectionState {
   if (_floors is EqualUnmodifiableListView) return _floors;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_floors);
+}
+
+ final  Map<String, SeatLock> _locks;
+@override@JsonKey() Map<String, SeatLock> get locks {
+  if (_locks is EqualUnmodifiableMapView) return _locks;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_locks);
 }
 
 @override final  String? loadError;
@@ -245,16 +253,16 @@ _$SeatSelectionStateCopyWith<_SeatSelectionState> get copyWith => __$SeatSelecti
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SeatSelectionState&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.detail, detail) || other.detail == detail)&&const DeepCollectionEquality().equals(other._floors, _floors)&&(identical(other.loadError, loadError) || other.loadError == loadError));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SeatSelectionState&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.detail, detail) || other.detail == detail)&&const DeepCollectionEquality().equals(other._floors, _floors)&&const DeepCollectionEquality().equals(other._locks, _locks)&&(identical(other.loadError, loadError) || other.loadError == loadError));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,loading,detail,const DeepCollectionEquality().hash(_floors),loadError);
+int get hashCode => Object.hash(runtimeType,loading,detail,const DeepCollectionEquality().hash(_floors),const DeepCollectionEquality().hash(_locks),loadError);
 
 @override
 String toString() {
-  return 'SeatSelectionState(loading: $loading, detail: $detail, floors: $floors, loadError: $loadError)';
+  return 'SeatSelectionState(loading: $loading, detail: $detail, floors: $floors, locks: $locks, loadError: $loadError)';
 }
 
 
@@ -265,7 +273,7 @@ abstract mixin class _$SeatSelectionStateCopyWith<$Res> implements $SeatSelectio
   factory _$SeatSelectionStateCopyWith(_SeatSelectionState value, $Res Function(_SeatSelectionState) _then) = __$SeatSelectionStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool loading, EventDetail? detail, List<SeatMapFloor> floors, String? loadError
+ bool loading, EventDetail? detail, List<SeatMapFloor> floors, Map<String, SeatLock> locks, String? loadError
 });
 
 
@@ -282,12 +290,13 @@ class __$SeatSelectionStateCopyWithImpl<$Res>
 
 /// Create a copy of SeatSelectionState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? loading = null,Object? detail = freezed,Object? floors = null,Object? loadError = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? loading = null,Object? detail = freezed,Object? floors = null,Object? locks = null,Object? loadError = freezed,}) {
   return _then(_SeatSelectionState(
 loading: null == loading ? _self.loading : loading // ignore: cast_nullable_to_non_nullable
 as bool,detail: freezed == detail ? _self.detail : detail // ignore: cast_nullable_to_non_nullable
 as EventDetail?,floors: null == floors ? _self._floors : floors // ignore: cast_nullable_to_non_nullable
-as List<SeatMapFloor>,loadError: freezed == loadError ? _self.loadError : loadError // ignore: cast_nullable_to_non_nullable
+as List<SeatMapFloor>,locks: null == locks ? _self._locks : locks // ignore: cast_nullable_to_non_nullable
+as Map<String, SeatLock>,loadError: freezed == loadError ? _self.loadError : loadError // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

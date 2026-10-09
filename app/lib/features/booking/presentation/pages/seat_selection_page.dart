@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/di/injection.dart';
 import '../../../../core/responsive/page_section.dart';
 import '../../../../core/shell/web_page.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -14,6 +15,18 @@ class SeatSelectionPage extends StatelessWidget {
   final String eventId;
 
   const SeatSelectionPage({super.key, required this.eventId});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => getIt<SeatSelectionCubit>()..start(eventId),
+      child: const _SeatSelectionView(),
+    );
+  }
+}
+
+class _SeatSelectionView extends StatelessWidget {
+  const _SeatSelectionView();
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +74,8 @@ class _SeatMapList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Text('TẠM - đang có ${state.locks.length} ghế bị giữ'),
+        AppSpacing.vSm,
         for (final floor in state.floors) ...[
           Text(floor.name, style: theme.textTheme.titleMedium),
           AppSpacing.vSm,
