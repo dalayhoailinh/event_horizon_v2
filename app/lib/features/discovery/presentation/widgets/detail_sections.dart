@@ -89,12 +89,14 @@ class TicketTypesSection extends StatelessWidget {
   final List<TicketTypeInfo> ticketTypes;
   final String? eventId;
   final DateTime startAt;
+  final bool hasSeatMap;
 
   const TicketTypesSection({
     super.key,
     required this.ticketTypes,
     required this.startAt,
     this.eventId,
+    this.hasSeatMap = false,
   });
 
   @override
@@ -118,14 +120,17 @@ class TicketTypesSection extends StatelessWidget {
               child: FilledButton(
                 onPressed: eventId == null || hasStarted
                     ? null
-                    : () => context.go(RouteNames.bookPath(eventId!)),
-                child: Text(
-                  hasStarted
-                      ? 'Sự kiện đã diễn ra'
-                      : eventId == null
-                      ? 'Đặt vé — mở ở GĐ3'
-                      : 'Đặt vé',
-                ),
+                    : () => context.go(
+                        hasSeatMap
+                            ? RouteNames.seatsPath(eventId!)
+                            : RouteNames.bookPath(eventId!),
+                      ),
+                child: Text(switch ((eventId, hasSeatMap)) {
+                  _ when hasStarted => 'Sự kiện đã diễn ra',
+                  (null, _) => 'Đặt vé - mở ở GĐ3',
+                  (_, true) => 'Chọn ghế',
+                  (_, false) => 'Đặt vé',
+                }),
               ),
             ),
           ],

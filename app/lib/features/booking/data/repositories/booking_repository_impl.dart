@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 import '../../../../core/result/guard.dart';
 import '../../../../core/result/result.dart';
 import '../../domain/entities/booking.dart';
+import '../../domain/entities/seat_map.dart';
 import '../../domain/repositories/booking_repository.dart';
 import '../datasources/booking_datasource.dart';
 
@@ -38,4 +39,8 @@ class BookingRepositoryImpl implements BookingRepository {
   @override
   Stream<Booking?> watchBooking(String bookingId) =>
       _ds.watchBooking(bookingId);
+
+  @override
+  Future<Result<List<SeatMapFloor>>> fetchSeatMap(String eventId) =>
+      guard(() => _ds.fetchSeatMap(eventId));
 }

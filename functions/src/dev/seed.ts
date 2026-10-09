@@ -58,6 +58,35 @@ function daysFromNow(days: number): Timestamp {
   return Timestamp.fromMillis(Date.now() + days * 24 * 60 * 60 * 1000);
 }
 
+function buildSeatMap(twoTiers: boolean) {
+  const rows = 8;
+  const cols = 12;
+  const aisleCol = 6;
+  const vipRows = 2;
+  const vip: string[] = [];
+  const std: string[] = [];
+  let cells = "";
+  for (let r = 0; r < rows; r++) {
+    const rowLetter = String.fromCharCode(65 + r);
+    for (let c = 0; c < cols; c++) {
+      if (c === aisleCol) {
+        cells += ".";
+        continue;
+      }
+      const code = `1-${rowLetter}${c + 1}`;
+      if (twoTiers && r < vipRows) {
+        cells += "V";
+        vip.push(code);
+      } else {
+        cells += "S";
+        std.push(code);
+      }
+    }
+  }
+  const legend = twoTiers ? { V: "t2", S: "t1" } : { S: "t1" };
+  return { rows, cols, cells, legend, vip, std };
+}
+
 async function main(): Promise<void> {
   const ops: Op[] = [];
 
@@ -113,6 +142,8 @@ async function main(): Promise<void> {
         },
       };
     });
+    const hasSeatMap = i % 5 === 0;
+    if (hasSeatMap) ticketsSold = 0;
     ops.push({
       ref: db.doc(`events/${id}`),
       data: {
@@ -139,7 +170,7 @@ async function main(): Promise<void> {
         ticketsSold,
         favoriteCount: 0,
         maxBookingsPerUser: 4,
-        hasSeatMap: false,
+        hasSeatMap: hasSeatMap,
         publishedAt: daysFromNow(-i),
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
@@ -161,6 +192,43 @@ async function main(): Promise<void> {
         ],
       },
     });
+    if (hasSeatMap) {
+      const twoTiers = ticketTypes.length > 1;
+      const seatMap = buildSeatMap(twoTiers);
+      ops.push({
+        ref: db.doc(`events/${id}/seatmap/main`),
+        data: {
+          version: 1,
+          floors: [
+            {
+              name: "Tầng 1",
+              rows: seatMap.rows,
+              cols: seatMap.cols,
+              cells: seatMap.cells,
+              legend: seatMap.legend,
+            },
+          ],
+        },
+      });
+      ops.push({
+        ref: db.doc(`events/${id}/seatmap/sold`),
+        data: { codes: {} },
+      });
+      ttOps[0].data = {
+        ...ttOps[0].data,
+        quantity: seatMap.std.length,
+        sold: 0,
+        seatCodes: seatMap.std,
+      };
+      if (twoTiers) {
+        ttOps[1].data = {
+          ...ttOps[1].data,
+          quantity: seatMap.vip.length,
+          sold: 0,
+          seatCodes: seatMap.vip,
+        };
+      }
+    }
     ops.push(...ttOps);
   }
 

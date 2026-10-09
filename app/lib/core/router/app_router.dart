@@ -14,6 +14,7 @@ import '../../features/auth/presentation/pages/verify_email_page.dart';
 import '../../features/booking/presentation/pages/booking_page.dart';
 import '../../features/booking/presentation/pages/my_tickets_page.dart';
 import '../../features/booking/presentation/pages/payment_page.dart';
+import '../../features/booking/presentation/pages/seat_selection_page.dart';
 import '../../features/booking/presentation/pages/ticket_detail_page.dart';
 import '../../features/booking/presentation/routing/my_tickets_query.dart';
 import '../../features/debug/presentation/pages/debug_page.dart';
@@ -88,6 +89,18 @@ class AppRouter {
                     );
                   }
                   return BookingPage(key: ValueKey(id), eventId: id);
+                },
+              ),
+              GoRoute(
+                path: RouteNames.seatsSegment,
+                builder: (context, state) {
+                  final id = state.pathParameters['id'];
+                  if (id == null || id.isEmpty) {
+                    return const ShellPlaceholderPage(
+                      title: 'Sự kiện không hợp lệ',
+                    );
+                  }
+                  return SeatSelectionPage(key: ValueKey(id), eventId: id);
                 },
               ),
             ],

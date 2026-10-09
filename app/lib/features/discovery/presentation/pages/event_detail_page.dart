@@ -115,6 +115,7 @@ class _DetailBody extends StatelessWidget {
             ticketTypes: detail.ticketTypes,
             eventId: detail.summary.id,
             startAt: detail.summary.startAt,
+            hasSeatMap: detail.summary.hasSeatMap,
           ),
         ),
       ],

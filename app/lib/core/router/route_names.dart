@@ -20,4 +20,6 @@ abstract final class RouteNames {
   ).toString();
   static const String payment = '/pay/:id';
   static String paymentPath(String bookingId) => '/pay/$bookingId';
+  static const String seatsSegment = 'seats';
+  static String seatsPath(String eventId) => '/events/$eventId/seats';
 }
