@@ -40,6 +40,8 @@ import 'package:event_horizon/features/booking/presentation/blocs/my_tickets/my_
     as _i38;
 import 'package:event_horizon/features/booking/presentation/blocs/payment/payment_cubit.dart'
     as _i484;
+import 'package:event_horizon/features/booking/presentation/blocs/seat_selection/seat_selection_cubit.dart'
+    as _i623;
 import 'package:event_horizon/features/booking/presentation/blocs/ticket_detail/ticket_detail_cubit.dart'
     as _i161;
 import 'package:event_horizon/features/discovery/data/datasources/discovery_datasource.dart'
@@ -107,6 +109,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i934.FavoriteRepository>(
       () => _i256.FavoriteRepositoryImpl(gh<_i901.FavoriteDataSource>()),
+    );
+    gh.factory<_i623.SeatSelectionCubit>(
+      () => _i623.SeatSelectionCubit(
+        gh<_i358.DiscoveryRepository>(),
+        gh<_i687.BookingRepository>(),
+      ),
     );
     gh.factory<_i793.DiscoveryListCubit>(
       () => _i793.DiscoveryListCubit(gh<_i358.DiscoveryRepository>()),
