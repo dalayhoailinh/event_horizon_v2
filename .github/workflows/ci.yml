@@ -62,7 +62,7 @@ jobs:
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
       - name: Run security rules tests
-        run: firebase emulators:exec --only firestore --project demo-event-horizon "npm --prefix rules-tests test"
+        run: firebase emulators:exec --only firestore, database --project demo-event-horizon "npm --prefix rules-tests test"
 
   booking-integration:
     runs-on: ubuntu-latest
