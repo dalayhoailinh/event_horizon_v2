@@ -18,13 +18,16 @@ SeatLock _lock({String status = 'selecting', Duration? left}) => SeatLock(
 void main() {
   test('lối đi thì không phải ghế', () {
     expect(
-      seatVisualFor(cell: _aisle, lock: null, now: _now),
+      seatVisualFor(cell: _aisle, lock: null, now: _now, selectedByMe: false),
       SeatVisual.aisle,
     );
   });
 
   test('không ai giữ', () {
-    expect(seatVisualFor(cell: _seat, lock: null, now: _now), SeatVisual.free);
+    expect(
+      seatVisualFor(cell: _seat, lock: null, now: _now, selectedByMe: false),
+      SeatVisual.free,
+    );
   });
 
   test('người khác giữ, còn hạn -> đang giữ', () {
@@ -33,6 +36,7 @@ void main() {
         cell: _seat,
         lock: _lock(left: const Duration(seconds: 30)),
         now: _now,
+        selectedByMe: false,
       ),
       SeatVisual.heldByOther,
     );
@@ -44,6 +48,7 @@ void main() {
         cell: _seat,
         lock: _lock(left: const Duration(seconds: -30)),
         now: _now,
+        selectedByMe: false,
       ),
       SeatVisual.free,
     );
@@ -55,8 +60,21 @@ void main() {
         cell: _seat,
         lock: _lock(status: 'sold', left: const Duration(seconds: -30)),
         now: _now,
+        selectedByMe: false,
       ),
       SeatVisual.sold,
+    );
+  });
+
+  test('ghế MÌNH đang chọn thắng mọi trạng thái khác', () {
+    expect(
+      seatVisualFor(
+        cell: _seat,
+        lock: _lock(left: const Duration(seconds: 30)),
+        now: _now,
+        selectedByMe: true,
+      ),
+      SeatVisual.mine,
     );
   });
 }

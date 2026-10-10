@@ -13,6 +13,8 @@ abstract class SeatSelectionState with _$SeatSelectionState {
     EventDetail? detail,
     @Default([]) List<SeatMapFloor> floors,
     @Default({}) Map<String, SeatLock> locks,
+    @Default({}) Set<String> selected,
+    String? message,
     String? loadError,
   }) = _SeatSelectionState;
 }

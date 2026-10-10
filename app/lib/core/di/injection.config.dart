@@ -99,6 +99,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i766.DiscoveryDataSource>(
       () => _i766.DiscoveryDataSourceImpl(gh<_i974.FirebaseFirestore>()),
     );
+    gh.lazySingleton<_i974.SeatLockDataSource>(
+      () => _i974.SeatLockDataSourceImpl(
+        gh<_i345.FirebaseDatabase>(),
+        gh<_i59.FirebaseAuth>(),
+      ),
+    );
     gh.lazySingleton<_i929.BookingDataSource>(
       () => _i929.BookingDataSourceImpl(
         gh<_i974.FirebaseFirestore>(),
@@ -111,9 +117,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i555.AuthDatasource>(
       () => _i555.AuthDatasourceImpl(gh<_i59.FirebaseAuth>()),
-    );
-    gh.lazySingleton<_i974.SeatLockDataSource>(
-      () => _i974.SeatLockDataSourceImpl(gh<_i345.FirebaseDatabase>()),
     );
     gh.lazySingleton<_i687.BookingRepository>(
       () => _i607.BookingRepositoryImpl(gh<_i929.BookingDataSource>()),

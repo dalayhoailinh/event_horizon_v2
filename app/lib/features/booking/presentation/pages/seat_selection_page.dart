@@ -67,16 +67,19 @@ class _SeatMapList extends StatelessWidget {
         : scheme.tertiaryContainer;
   }
 
+  SeatVisual _visualOf(SeatCell cell) => seatVisualFor(
+    cell: cell,
+    lock: state.locks[cell.code],
+    selectedByMe: state.selected.contains(cell.code),
+    now: DateTime.now(),
+  );
+
   Color _colorOf(BuildContext context, SeatCell cell) {
     final scheme = Theme.of(context).colorScheme;
-    final visual = seatVisualFor(
-      cell: cell,
-      lock: state.locks[cell.code],
-      now: DateTime.now(),
-    );
-    return switch (visual) {
+    return switch (_visualOf(cell)) {
       SeatVisual.aisle => Colors.transparent,
       SeatVisual.sold => scheme.outlineVariant,
+      SeatVisual.mine => scheme.primary,
       SeatVisual.heldByOther => scheme.secondaryContainer,
       SeatVisual.free => _tierColor(scheme, cell),
     };
@@ -89,12 +92,28 @@ class _SeatMapList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('TẠM - đang có ${state.locks.length} ghế bị giữ'),
-        AppSpacing.vSm,
+        if (state.message case final message?) ...[
+          Text(
+            message,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.error,
+            ),
+          ),
+          AppSpacing.vSm,
+        ],
         for (final floor in state.floors) ...[
           Text(floor.name, style: theme.textTheme.titleMedium),
           AppSpacing.vSm,
-          SeatMapView(floor: floor, colorOf: _colorOf),
+          SeatMapView(
+            floor: floor,
+            colorOf: _colorOf,
+            onTap: (cell) => switch (_visualOf(cell)) {
+              SeatVisual.aisle ||
+              SeatVisual.sold ||
+              SeatVisual.heldByOther => null,
+              _ => () => context.read<SeatSelectionCubit>().toggle(cell),
+            },
+          ),
           AppSpacing.vMd,
         ],
       ],
