@@ -10,6 +10,7 @@ import '../../domain/entities/seat_map.dart';
 import '../blocs/seat_selection/seat_selection_cubit.dart';
 import '../blocs/seat_selection/seat_selection_state.dart';
 import '../widgets/seat_map_view.dart';
+import '../widgets/seat_visual.dart';
 
 class SeatSelectionPage extends StatelessWidget {
   final String eventId;
@@ -56,8 +57,7 @@ class _SeatMapList extends StatelessWidget {
 
   const _SeatMapList({required this.state});
 
-  Color _colorOf(BuildContext context, SeatCell cell) {
-    final scheme = Theme.of(context).colorScheme;
+  Color _tierColor(ColorScheme scheme, SeatCell cell) {
     final types = [
       for (final type in state.detail?.ticketTypes ?? const <TicketTypeInfo>[])
         type.id,
@@ -65,6 +65,21 @@ class _SeatMapList extends StatelessWidget {
     return types.indexOf(cell.ticketTypeId ?? '') <= 0
         ? scheme.surfaceContainerHighest
         : scheme.tertiaryContainer;
+  }
+
+  Color _colorOf(BuildContext context, SeatCell cell) {
+    final scheme = Theme.of(context).colorScheme;
+    final visual = seatVisualFor(
+      cell: cell,
+      lock: state.locks[cell.code],
+      now: DateTime.now(),
+    );
+    return switch (visual) {
+      SeatVisual.aisle => Colors.transparent,
+      SeatVisual.sold => scheme.outlineVariant,
+      SeatVisual.heldByOther => scheme.secondaryContainer,
+      SeatVisual.free => _tierColor(scheme, cell),
+    };
   }
 
   @override

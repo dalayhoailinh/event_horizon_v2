@@ -10,4 +10,12 @@ class SeatLock {
     required this.status,
     this.expiresAt,
   });
+
+  bool get isSold => status == 'sold';
+
+  bool isExpired(DateTime now) {
+    final expiresAt = this.expiresAt;
+    if (expiresAt == null) return false;
+    return now.millisecondsSinceEpoch > expiresAt;
+  }
 }
