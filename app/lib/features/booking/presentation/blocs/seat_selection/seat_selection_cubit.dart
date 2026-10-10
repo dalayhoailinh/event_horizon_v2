@@ -18,7 +18,7 @@ class SeatSelectionCubit extends Cubit<SeatSelectionState> {
   final SeatLockRepository _seatLocks;
 
   StreamSubscription<Map<String, SeatLock>>? _locksSub;
-  final String _eventId = '';
+  String _eventId = '';
 
   SeatSelectionCubit(this._discovery, this._booking, this._seatLocks)
     : super(const SeatSelectionState());
@@ -26,6 +26,7 @@ class SeatSelectionCubit extends Cubit<SeatSelectionState> {
   static const int maxSeatsPerBooking = 10;
 
   Future<void> start(String eventId) async {
+    _eventId = eventId;
     final detailFuture = _discovery.eventDetail(eventId);
     final floorsFuture = _booking.fetchSeatMap(eventId);
     final detail = await detailFuture;
