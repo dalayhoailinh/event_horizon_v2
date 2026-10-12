@@ -81,8 +81,11 @@ class SeatSelectionCubit extends Cubit<SeatSelectionState> {
   }
 
   @override
-  Future<void> close() {
-    _locksSub?.cancel();
+  Future<void> close() async {
+    await _locksSub?.cancel();
+    if (state.selected.isNotEmpty) {
+      unawaited(_seatLocks.releaseAll(_eventId, state.selected.toList()));
+    }
     return super.close();
   }
 }
