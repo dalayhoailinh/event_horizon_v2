@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../discovery/domain/entities/event_detail.dart';
+import '../../../domain/entities/seat_booking.dart';
 import '../../../domain/entities/seat_lock.dart';
 import '../../../domain/entities/seat_map.dart';
 
@@ -17,4 +18,12 @@ abstract class SeatSelectionState with _$SeatSelectionState {
     String? message,
     String? loadError,
   }) = _SeatSelectionState;
+  const SeatSelectionState._();
+
+  Map<String, int> get _priceByType => {
+    for (final type in detail?.ticketTypes ?? const <TicketTypeInfo>[])
+      type.id: type.price,
+  };
+
+  int get totalAmount => seatsTotalAmount(floors, selected, _priceByType);
 }

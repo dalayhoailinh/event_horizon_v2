@@ -223,8 +223,8 @@ return $default(_that.loading,_that.detail,_that.floors,_that.locks,_that.select
 /// @nodoc
 
 
-class _SeatSelectionState implements SeatSelectionState {
-  const _SeatSelectionState({this.loading = false, this.detail, final  List<SeatMapFloor> floors = const [], final  Map<String, SeatLock> locks = const {}, final  Set<String> selected = const {}, this.message, this.loadError}): _floors = floors,_locks = locks,_selected = selected;
+class _SeatSelectionState extends SeatSelectionState {
+  const _SeatSelectionState({this.loading = false, this.detail, final  List<SeatMapFloor> floors = const [], final  Map<String, SeatLock> locks = const {}, final  Set<String> selected = const {}, this.message, this.loadError}): _floors = floors,_locks = locks,_selected = selected,super._();
   
 
 @override@JsonKey() final  bool loading;

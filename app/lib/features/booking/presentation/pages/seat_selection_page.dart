@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../core/format/formatters.dart';
 import '../../../../core/responsive/page_section.dart';
 import '../../../../core/shell/web_page.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -120,8 +121,45 @@ class _SeatMapList extends StatelessWidget {
             },
           ),
           AppSpacing.vMd,
+          if (state.floors.isNotEmpty) _SeatOrderSummary(state: state),
         ],
       ],
+    );
+  }
+}
+
+class _SeatOrderSummary extends StatelessWidget {
+  final SeatSelectionState state;
+
+  const _SeatOrderSummary({required this.state});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final seats = state.selected.toList()..sort();
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Ghế đã chọn', style: theme.textTheme.titleMedium),
+            AppSpacing.vSm,
+            Text(
+              seats.isEmpty ? 'Chưa chọn ghế nào' : seats.join(', '),
+              style: theme.textTheme.bodyMedium,
+            ),
+            AppSpacing.vSm,
+            Text(
+              '${seats.length} ghế, ${formatVnd(state.totalAmount)}',
+              style: theme.textTheme.titleSmall,
+            ),
+            AppSpacing.vMd,
+            const FilledButton(onPressed: null, child: Text('Tiếp tục')),
+          ],
+        ),
+      ),
     );
   }
 }
