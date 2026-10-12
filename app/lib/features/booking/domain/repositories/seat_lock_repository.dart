@@ -7,4 +7,5 @@ abstract interface class SeatLockRepository {
   Stream<Map<String, SeatLock>> watchLocks(String eventId);
   Future<Result<void>> lockSeat(String eventId, String seatCode);
   Future<Result<void>> unlockSeat(String eventId, String seatCode);
+  Future<Result<void>> releaseAll(String eventId, List<String> seatCodes);
 }

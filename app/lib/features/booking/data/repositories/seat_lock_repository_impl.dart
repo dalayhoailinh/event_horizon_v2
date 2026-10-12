@@ -23,4 +23,8 @@ class SeatLockRepositoryImpl implements SeatLockRepository {
   @override
   Future<Result<void>> unlockSeat(String eventId, String seatCode) =>
       guard(() => _ds.unlockSeat(eventId, seatCode));
+
+  @override
+  Future<Result<void>> releaseAll(String eventId, List<String> seatCodes) =>
+      guard(() => _ds.releaseAll(eventId, seatCodes));
 }

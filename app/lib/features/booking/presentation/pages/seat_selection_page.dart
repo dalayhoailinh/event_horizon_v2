@@ -12,15 +12,20 @@ import '../blocs/seat_selection/seat_selection_state.dart';
 import '../widgets/seat_map_view.dart';
 import '../widgets/seat_visual.dart';
 
-class SeatSelectionPage extends StatelessWidget {
+class SeatSelectionPage extends StatefulWidget {
   final String eventId;
 
   const SeatSelectionPage({super.key, required this.eventId});
 
   @override
+  State<SeatSelectionPage> createState() => _SeatSelectionPageState();
+}
+
+class _SeatSelectionPageState extends State<SeatSelectionPage> {
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => getIt<SeatSelectionCubit>()..start(eventId),
+      create: (context) => getIt<SeatSelectionCubit>()..start(widget.eventId),
       child: const _SeatSelectionView(),
     );
   }

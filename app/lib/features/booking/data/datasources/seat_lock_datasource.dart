@@ -11,6 +11,7 @@ abstract interface class SeatLockDataSource {
   Stream<Map<String, SeatLock>> watchLocks(String eventId);
   Future<void> lockSeat(String eventId, String seatCode);
   Future<void> unlockSeat(String eventId, String seatCode);
+  Future<void> releaseAll(String eventId, List<String> seatCodes);
 }
 
 @LazySingleton(as: SeatLockDataSource)
@@ -47,8 +48,12 @@ class SeatLockDataSourceImpl implements SeatLockDataSource {
 
   @override
   Future<void> lockSeat(String eventId, String seatCode) async {
+    final ref = _seatRef(eventId, seatCode);
+    var armed = false;
     try {
-      await _seatRef(eventId, seatCode).set({
+      await ref.onDisconnect().remove();
+      armed = true;
+      await ref.set({
         'userId': _uid(),
         'status': 'selecting',
         'expiresAt': DateTime.now()
@@ -56,6 +61,7 @@ class SeatLockDataSourceImpl implements SeatLockDataSource {
             .millisecondsSinceEpoch,
       });
     } on FirebaseException catch (e) {
+      if (armed) await ref.onDisconnect().cancel();
       if (e.code == 'permission-denied') {
         throw const BusinessException(
           'Ghế này vừa có người khác giữ.',
@@ -68,12 +74,21 @@ class SeatLockDataSourceImpl implements SeatLockDataSource {
 
   @override
   Future<void> unlockSeat(String eventId, String seatCode) async {
+    final ref = _seatRef(eventId, seatCode);
     try {
-      await _seatRef(eventId, seatCode).remove();
+      await ref.onDisconnect().cancel();
+      await ref.remove();
     } on FirebaseException catch (e) {
       if (e.code != 'permission-denied') {
         throw ServerException('RTDB: ${e.code}');
       }
+    }
+  }
+
+  @override
+  Future<void> releaseAll(String eventId, List<String> seatCodes) async {
+    for (final seatCode in seatCodes) {
+      await unlockSeat(eventId, seatCode);
     }
   }
 }
