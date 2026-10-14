@@ -13,6 +13,7 @@ export type TicketTypeState = {
   quantity: number;
   sold: number;
   isActive: boolean;
+  seatCodes: string[] | null;
 };
 
 export type BookingPlan = {
@@ -26,6 +27,7 @@ export type BookingPlan = {
   totalAmount: number;
   ticketCount: number;
   paymentRequired: boolean;
+  allSeatCodes: string[];
 };
 
 export const MAX_TICKETS_PER_BOOKING = 10;
@@ -43,9 +45,11 @@ export function planBooking(args: {
   event: EventState | null;
   ticketTypes: Map<string, TicketTypeState | null>;
   buyerBookingCount: number;
+  soldSeatCodes: Set<string>;
   nowMs: number;
 }): PlanResult {
-  const { input, event, ticketTypes, buyerBookingCount, nowMs } = args;
+  const { input, event, ticketTypes, buyerBookingCount, soldSeatCodes, nowMs } =
+    args;
 
   if (!event || event.status !== "published") {
     return err(
@@ -67,6 +71,7 @@ export function planBooking(args: {
   }
 
   const seen = new Set<string>();
+  const claimedSeats = new Set<string>();
   const lineItems: BookingPlan["lineItems"] = [];
   let ticketCount = 0;
   let totalAmount = 0;
@@ -85,6 +90,29 @@ export function planBooking(args: {
       return err("sold-out", `"${tt.name}" không còn đủ vé.`);
     }
 
+    const requestedSeats = item.seatCodes ?? [];
+    const typeSeats = tt.seatCodes;
+    if (typeSeats === null && requestedSeats.length > 0) {
+      return err("seats-not-allowed", "Loại vé này không chọn ghế.");
+    }
+    if (typeSeats !== null) {
+      if (requestedSeats.length !== item.quantity) {
+        return err("seat-count-mismatch", "Số ghế chọn phải bằng số vé.");
+      }
+      for (const code of requestedSeats) {
+        if (!typeSeats.includes(code)) {
+          return err(
+            "seat-not-in-type",
+            `Ghế "${code}" không thuộc loại vé "${tt.name}".`,
+          );
+        }
+        if (soldSeatCodes.has(code) || claimedSeats.has(code)) {
+          return err("seat-taken", `Ghế "${code}" đã có người đặt.`);
+        }
+        claimedSeats.add(code);
+      }
+    }
+
     ticketCount += item.quantity;
     totalAmount += tt.price * item.quantity;
     lineItems.push({
@@ -92,7 +120,7 @@ export function planBooking(args: {
       name: tt.name,
       price: tt.price,
       quantity: item.quantity,
-      seatCodes: [],
+      seatCodes: requestedSeats,
     });
   }
 
@@ -110,6 +138,7 @@ export function planBooking(args: {
       totalAmount,
       ticketCount,
       paymentRequired: totalAmount > 0,
+      allSeatCodes: [...claimedSeats],
     },
   };
 }

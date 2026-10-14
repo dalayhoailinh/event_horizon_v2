@@ -20,6 +20,7 @@ function tt(over: Partial<TicketTypeState> = {}): TicketTypeState {
     quantity: 100,
     sold: 0,
     isActive: true,
+    seatCodes: null,
     ...over,
   };
 }
@@ -37,7 +38,12 @@ function run(
     event?: EventState | null;
     tts?: Array<TicketTypeState | null>;
     count?: number;
-    items?: Array<{ ticketTypeId: string; quantity: number }>;
+    items?: Array<{
+      ticketTypeId: string;
+      quantity: number;
+      seatCodes?: string[];
+    }>;
+    sold?: Set<string>;
   } = {},
 ) {
   const tts = over.tts ?? [tt()];
@@ -55,6 +61,7 @@ function run(
     ticketTypes: map,
     buyerBookingCount: over.count ?? 0,
     nowMs: NOW,
+    soldSeatCodes: over.sold ?? new Set(),
   });
 }
 
@@ -171,5 +178,73 @@ describe("planBooking - đơn hợp lệ", () => {
       expect(result.plan.paymentRequired).toBe(true);
       expect(result.plan.totalAmount).toBe(400_000);
     }
+  });
+});
+
+describe("planBooking - ghế (GD4)", () => {
+  const seated = () => tt({ seatCodes: ["1-A1", "1-A2", "1-A3"], quantity: 3 });
+
+  it("vé ngồi: chọn đúng ghế -> OK, plan gom allSeatCodes", () => {
+    const result = run({
+      tts: [seated()],
+      items: [{ ticketTypeId: "t1", quantity: 2, seatCodes: ["1-A1", "1-A2"] }],
+    });
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.plan.allSeatCodes).toEqual(["1-A1", "1-A2"]);
+    }
+  });
+
+  it("vé ngồi mà không gửi ghế -> seat-count-mismatch", () => {
+    expect(
+      codeOf(
+        run({
+          tts: [seated()],
+          items: [{ ticketTypeId: "t1", quantity: 2 }],
+        }),
+      ),
+    ).toBe("seat-count-mismatch");
+  });
+
+  it("ghế ĐÃ BÁN -> seat-taken", () => {
+    expect(
+      codeOf(
+        run({
+          tts: [seated()],
+          items: [{ ticketTypeId: "t1", quantity: 1, seatCodes: ["1-A1"] }],
+          sold: new Set(["1-A1"]),
+        }),
+      ),
+    ).toBe("seat-taken");
+  });
+
+  it("cùng ghế 2 lần trong 1 đơn -> seat-taken", () => {
+    const t2 = tt({
+      id: "t2",
+      name: "VIP",
+      seatCodes: ["1-A1", "1-A2"],
+      quantity: 2,
+    });
+    expect(
+      codeOf(
+        run({
+          tts: [seated(), t2],
+          items: [
+            { ticketTypeId: "t1", quantity: 1, seatCodes: ["1-A1"] },
+            { ticketTypeId: "t2", quantity: 1, seatCodes: ["1-A1"] },
+          ],
+        }),
+      ),
+    ).toBe("seat-taken");
+  });
+
+  it("vé đứng mà gửi ghế -> seats-not-allowed", () => {
+    expect(
+      codeOf(
+        run({
+          items: [{ ticketTypeId: "t1", quantity: 1, seatCodes: ["1-A1"] }],
+        }),
+      ),
+    ).toBe("seats-not-allowed");
   });
 });

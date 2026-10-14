@@ -8,6 +8,7 @@ export const createBookingSchema = z.object({
       z.object({
         ticketTypeId: z.string().min(1),
         quantity: z.number().int().min(1).max(10),
+        seatCodes: z.array(z.string().min(1)).max(10).optional(),
       }),
     )
     .min(1)

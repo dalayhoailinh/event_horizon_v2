@@ -40,6 +40,7 @@ export const createBooking = onCall(
     const bookingRef = db.collection("bookings").doc(bookingId);
     const eventRef = db.collection("events").doc(input.eventId);
     const buyerRef = eventRef.collection("buyers").doc(uid);
+    const soldRef = eventRef.collection("seatmap").doc("sold");
 
     return await db.runTransaction(async (tx) => {
       const existing = await tx.get(bookingRef);
@@ -52,6 +53,8 @@ export const createBooking = onCall(
       }
       const eventSnap = await tx.get(eventRef);
       const buyerSnap = await tx.get(buyerRef);
+      const soldSnap = await tx.get(soldRef);
+      const soldSeatCodes = new Set(Object.keys(soldSnap.data()?.codes ?? {}));
       const ttSnapById = new Map<string, DocumentSnapshot>();
       for (const item of input.items) {
         const ref = eventRef.collection("ticketTypes").doc(item.ticketTypeId);
@@ -80,6 +83,7 @@ export const createBooking = onCall(
                 quantity: d.quantity as number,
                 sold: d.sold as number,
                 isActive: d.isActive as boolean,
+                seatCodes: (d.seatCodes as string[] | null) ?? null,
               }
             : null,
         );
@@ -91,6 +95,7 @@ export const createBooking = onCall(
         ticketTypes,
         buyerBookingCount:
           (buyerSnap.data()?.bookingCount as number | undefined) ?? 0,
+        soldSeatCodes,
         nowMs: Date.now(),
       });
       if (!result.ok) {
@@ -155,6 +160,14 @@ export const createBooking = onCall(
         },
         { merge: true },
       );
+
+      if (result.plan.allSeatCodes.length > 0) {
+        const claims: Record<string, string> = {};
+        for (const code of result.plan.allSeatCodes) {
+          claims[code] = bookingId;
+        }
+        tx.set(soldRef, { codes: claims }, { merge: true });
+      }
 
       return { bookingId, duplicate: false, paymentRequired: pending };
     });
