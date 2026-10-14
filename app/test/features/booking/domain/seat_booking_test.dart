@@ -51,7 +51,7 @@ void main() {
   });
 
   test('tổng tiền cộng theo hạng của từng ghế', () {
-    final priceByType = {'t1': 2000, 't2': 0500};
+    final priceByType = {'t1': 2000, 't2': 5000};
     expect(seatsTotalAmount(_floors, {'1-A1', '1-A3'}, priceByType), 7000);
   });
 

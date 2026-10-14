@@ -206,6 +206,17 @@ describe("planBooking - ghế (GD4)", () => {
     ).toBe("seat-count-mismatch");
   });
 
+  it("ghế không thuộc loại vé -> seat-not-in-type", () => {
+    expect(
+      codeOf(
+        run({
+          tts: [seated()],
+          items: [{ ticketTypeId: "t1", quantity: 1, seatCodes: ["9-Z9"] }],
+        }),
+      ),
+    ).toBe("seat-not-in-type");
+  });
+
   it("ghế ĐÃ BÁN -> seat-taken", () => {
     expect(
       codeOf(
