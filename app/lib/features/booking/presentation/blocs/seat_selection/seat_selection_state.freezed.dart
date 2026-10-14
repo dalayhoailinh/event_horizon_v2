@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SeatSelectionState {
 
- bool get loading; EventDetail? get detail; List<SeatMapFloor> get floors; Map<String, SeatLock> get locks; Set<String> get selected; String? get message; String? get loadError;
+ bool get loading; EventDetail? get detail; List<SeatMapFloor> get floors; Map<String, SeatLock> get locks; Set<String> get selected; String? get message; String? get loadError; bool get proceeding; String? get bookingId; bool get paymentRequired;
 /// Create a copy of SeatSelectionState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $SeatSelectionStateCopyWith<SeatSelectionState> get copyWith => _$SeatSelectionS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SeatSelectionState&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.detail, detail) || other.detail == detail)&&const DeepCollectionEquality().equals(other.floors, floors)&&const DeepCollectionEquality().equals(other.locks, locks)&&const DeepCollectionEquality().equals(other.selected, selected)&&(identical(other.message, message) || other.message == message)&&(identical(other.loadError, loadError) || other.loadError == loadError));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SeatSelectionState&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.detail, detail) || other.detail == detail)&&const DeepCollectionEquality().equals(other.floors, floors)&&const DeepCollectionEquality().equals(other.locks, locks)&&const DeepCollectionEquality().equals(other.selected, selected)&&(identical(other.message, message) || other.message == message)&&(identical(other.loadError, loadError) || other.loadError == loadError)&&(identical(other.proceeding, proceeding) || other.proceeding == proceeding)&&(identical(other.bookingId, bookingId) || other.bookingId == bookingId)&&(identical(other.paymentRequired, paymentRequired) || other.paymentRequired == paymentRequired));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,loading,detail,const DeepCollectionEquality().hash(floors),const DeepCollectionEquality().hash(locks),const DeepCollectionEquality().hash(selected),message,loadError);
+int get hashCode => Object.hash(runtimeType,loading,detail,const DeepCollectionEquality().hash(floors),const DeepCollectionEquality().hash(locks),const DeepCollectionEquality().hash(selected),message,loadError,proceeding,bookingId,paymentRequired);
 
 @override
 String toString() {
-  return 'SeatSelectionState(loading: $loading, detail: $detail, floors: $floors, locks: $locks, selected: $selected, message: $message, loadError: $loadError)';
+  return 'SeatSelectionState(loading: $loading, detail: $detail, floors: $floors, locks: $locks, selected: $selected, message: $message, loadError: $loadError, proceeding: $proceeding, bookingId: $bookingId, paymentRequired: $paymentRequired)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $SeatSelectionStateCopyWith<$Res>  {
   factory $SeatSelectionStateCopyWith(SeatSelectionState value, $Res Function(SeatSelectionState) _then) = _$SeatSelectionStateCopyWithImpl;
 @useResult
 $Res call({
- bool loading, EventDetail? detail, List<SeatMapFloor> floors, Map<String, SeatLock> locks, Set<String> selected, String? message, String? loadError
+ bool loading, EventDetail? detail, List<SeatMapFloor> floors, Map<String, SeatLock> locks, Set<String> selected, String? message, String? loadError, bool proceeding, String? bookingId, bool paymentRequired
 });
 
 
@@ -62,7 +62,7 @@ class _$SeatSelectionStateCopyWithImpl<$Res>
 
 /// Create a copy of SeatSelectionState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? loading = null,Object? detail = freezed,Object? floors = null,Object? locks = null,Object? selected = null,Object? message = freezed,Object? loadError = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? loading = null,Object? detail = freezed,Object? floors = null,Object? locks = null,Object? selected = null,Object? message = freezed,Object? loadError = freezed,Object? proceeding = null,Object? bookingId = freezed,Object? paymentRequired = null,}) {
   return _then(_self.copyWith(
 loading: null == loading ? _self.loading : loading // ignore: cast_nullable_to_non_nullable
 as bool,detail: freezed == detail ? _self.detail : detail // ignore: cast_nullable_to_non_nullable
@@ -71,7 +71,10 @@ as List<SeatMapFloor>,locks: null == locks ? _self.locks : locks // ignore: cast
 as Map<String, SeatLock>,selected: null == selected ? _self.selected : selected // ignore: cast_nullable_to_non_nullable
 as Set<String>,message: freezed == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String?,loadError: freezed == loadError ? _self.loadError : loadError // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,proceeding: null == proceeding ? _self.proceeding : proceeding // ignore: cast_nullable_to_non_nullable
+as bool,bookingId: freezed == bookingId ? _self.bookingId : bookingId // ignore: cast_nullable_to_non_nullable
+as String?,paymentRequired: null == paymentRequired ? _self.paymentRequired : paymentRequired // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 /// Create a copy of SeatSelectionState
@@ -168,10 +171,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool loading,  EventDetail? detail,  List<SeatMapFloor> floors,  Map<String, SeatLock> locks,  Set<String> selected,  String? message,  String? loadError)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool loading,  EventDetail? detail,  List<SeatMapFloor> floors,  Map<String, SeatLock> locks,  Set<String> selected,  String? message,  String? loadError,  bool proceeding,  String? bookingId,  bool paymentRequired)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SeatSelectionState() when $default != null:
-return $default(_that.loading,_that.detail,_that.floors,_that.locks,_that.selected,_that.message,_that.loadError);case _:
+return $default(_that.loading,_that.detail,_that.floors,_that.locks,_that.selected,_that.message,_that.loadError,_that.proceeding,_that.bookingId,_that.paymentRequired);case _:
   return orElse();
 
 }
@@ -189,10 +192,10 @@ return $default(_that.loading,_that.detail,_that.floors,_that.locks,_that.select
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool loading,  EventDetail? detail,  List<SeatMapFloor> floors,  Map<String, SeatLock> locks,  Set<String> selected,  String? message,  String? loadError)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool loading,  EventDetail? detail,  List<SeatMapFloor> floors,  Map<String, SeatLock> locks,  Set<String> selected,  String? message,  String? loadError,  bool proceeding,  String? bookingId,  bool paymentRequired)  $default,) {final _that = this;
 switch (_that) {
 case _SeatSelectionState():
-return $default(_that.loading,_that.detail,_that.floors,_that.locks,_that.selected,_that.message,_that.loadError);case _:
+return $default(_that.loading,_that.detail,_that.floors,_that.locks,_that.selected,_that.message,_that.loadError,_that.proceeding,_that.bookingId,_that.paymentRequired);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -209,10 +212,10 @@ return $default(_that.loading,_that.detail,_that.floors,_that.locks,_that.select
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool loading,  EventDetail? detail,  List<SeatMapFloor> floors,  Map<String, SeatLock> locks,  Set<String> selected,  String? message,  String? loadError)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool loading,  EventDetail? detail,  List<SeatMapFloor> floors,  Map<String, SeatLock> locks,  Set<String> selected,  String? message,  String? loadError,  bool proceeding,  String? bookingId,  bool paymentRequired)?  $default,) {final _that = this;
 switch (_that) {
 case _SeatSelectionState() when $default != null:
-return $default(_that.loading,_that.detail,_that.floors,_that.locks,_that.selected,_that.message,_that.loadError);case _:
+return $default(_that.loading,_that.detail,_that.floors,_that.locks,_that.selected,_that.message,_that.loadError,_that.proceeding,_that.bookingId,_that.paymentRequired);case _:
   return null;
 
 }
@@ -224,7 +227,7 @@ return $default(_that.loading,_that.detail,_that.floors,_that.locks,_that.select
 
 
 class _SeatSelectionState extends SeatSelectionState {
-  const _SeatSelectionState({this.loading = false, this.detail, final  List<SeatMapFloor> floors = const [], final  Map<String, SeatLock> locks = const {}, final  Set<String> selected = const {}, this.message, this.loadError}): _floors = floors,_locks = locks,_selected = selected,super._();
+  const _SeatSelectionState({this.loading = false, this.detail, final  List<SeatMapFloor> floors = const [], final  Map<String, SeatLock> locks = const {}, final  Set<String> selected = const {}, this.message, this.loadError, this.proceeding = false, this.bookingId, this.paymentRequired = false}): _floors = floors,_locks = locks,_selected = selected,super._();
   
 
 @override@JsonKey() final  bool loading;
@@ -252,6 +255,9 @@ class _SeatSelectionState extends SeatSelectionState {
 
 @override final  String? message;
 @override final  String? loadError;
+@override@JsonKey() final  bool proceeding;
+@override final  String? bookingId;
+@override@JsonKey() final  bool paymentRequired;
 
 /// Create a copy of SeatSelectionState
 /// with the given fields replaced by the non-null parameter values.
@@ -263,16 +269,16 @@ _$SeatSelectionStateCopyWith<_SeatSelectionState> get copyWith => __$SeatSelecti
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SeatSelectionState&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.detail, detail) || other.detail == detail)&&const DeepCollectionEquality().equals(other._floors, _floors)&&const DeepCollectionEquality().equals(other._locks, _locks)&&const DeepCollectionEquality().equals(other._selected, _selected)&&(identical(other.message, message) || other.message == message)&&(identical(other.loadError, loadError) || other.loadError == loadError));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SeatSelectionState&&(identical(other.loading, loading) || other.loading == loading)&&(identical(other.detail, detail) || other.detail == detail)&&const DeepCollectionEquality().equals(other._floors, _floors)&&const DeepCollectionEquality().equals(other._locks, _locks)&&const DeepCollectionEquality().equals(other._selected, _selected)&&(identical(other.message, message) || other.message == message)&&(identical(other.loadError, loadError) || other.loadError == loadError)&&(identical(other.proceeding, proceeding) || other.proceeding == proceeding)&&(identical(other.bookingId, bookingId) || other.bookingId == bookingId)&&(identical(other.paymentRequired, paymentRequired) || other.paymentRequired == paymentRequired));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,loading,detail,const DeepCollectionEquality().hash(_floors),const DeepCollectionEquality().hash(_locks),const DeepCollectionEquality().hash(_selected),message,loadError);
+int get hashCode => Object.hash(runtimeType,loading,detail,const DeepCollectionEquality().hash(_floors),const DeepCollectionEquality().hash(_locks),const DeepCollectionEquality().hash(_selected),message,loadError,proceeding,bookingId,paymentRequired);
 
 @override
 String toString() {
-  return 'SeatSelectionState(loading: $loading, detail: $detail, floors: $floors, locks: $locks, selected: $selected, message: $message, loadError: $loadError)';
+  return 'SeatSelectionState(loading: $loading, detail: $detail, floors: $floors, locks: $locks, selected: $selected, message: $message, loadError: $loadError, proceeding: $proceeding, bookingId: $bookingId, paymentRequired: $paymentRequired)';
 }
 
 
@@ -283,7 +289,7 @@ abstract mixin class _$SeatSelectionStateCopyWith<$Res> implements $SeatSelectio
   factory _$SeatSelectionStateCopyWith(_SeatSelectionState value, $Res Function(_SeatSelectionState) _then) = __$SeatSelectionStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool loading, EventDetail? detail, List<SeatMapFloor> floors, Map<String, SeatLock> locks, Set<String> selected, String? message, String? loadError
+ bool loading, EventDetail? detail, List<SeatMapFloor> floors, Map<String, SeatLock> locks, Set<String> selected, String? message, String? loadError, bool proceeding, String? bookingId, bool paymentRequired
 });
 
 
@@ -300,7 +306,7 @@ class __$SeatSelectionStateCopyWithImpl<$Res>
 
 /// Create a copy of SeatSelectionState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? loading = null,Object? detail = freezed,Object? floors = null,Object? locks = null,Object? selected = null,Object? message = freezed,Object? loadError = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? loading = null,Object? detail = freezed,Object? floors = null,Object? locks = null,Object? selected = null,Object? message = freezed,Object? loadError = freezed,Object? proceeding = null,Object? bookingId = freezed,Object? paymentRequired = null,}) {
   return _then(_SeatSelectionState(
 loading: null == loading ? _self.loading : loading // ignore: cast_nullable_to_non_nullable
 as bool,detail: freezed == detail ? _self.detail : detail // ignore: cast_nullable_to_non_nullable
@@ -309,7 +315,10 @@ as List<SeatMapFloor>,locks: null == locks ? _self._locks : locks // ignore: cas
 as Map<String, SeatLock>,selected: null == selected ? _self._selected : selected // ignore: cast_nullable_to_non_nullable
 as Set<String>,message: freezed == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String?,loadError: freezed == loadError ? _self.loadError : loadError // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,proceeding: null == proceeding ? _self.proceeding : proceeding // ignore: cast_nullable_to_non_nullable
+as bool,bookingId: freezed == bookingId ? _self.bookingId : bookingId // ignore: cast_nullable_to_non_nullable
+as String?,paymentRequired: null == paymentRequired ? _self.paymentRequired : paymentRequired // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

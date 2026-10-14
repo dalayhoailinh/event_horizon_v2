@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/format/formatters.dart';
 import '../../../../core/responsive/page_section.dart';
+import '../../../../core/router/route_names.dart';
 import '../../../../core/shell/web_page.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../discovery/domain/entities/event_detail.dart';
@@ -40,20 +42,29 @@ class _SeatSelectionView extends StatelessWidget {
     final state = context.watch<SeatSelectionCubit>().state;
     final title = state.detail?.summary.title;
 
-    return WebPage(
-      title: title == null ? 'Chọn ghế' : 'Chọn ghế - $title',
-      actions: const [],
-      sections: [
-        PageSection(
-          child: switch (state) {
-            SeatSelectionState(loading: true) => const Center(
-              child: CircularProgressIndicator(),
-            ),
-            SeatSelectionState(:final loadError?) => Text(loadError),
-            _ => _SeatMapList(state: state),
-          },
-        ),
-      ],
+    return BlocListener<SeatSelectionCubit, SeatSelectionState>(
+      listenWhen: (previous, current) =>
+          previous.bookingId == null && current.bookingId != null,
+      listener: (context, state) => context.go(
+        state.paymentRequired
+            ? RouteNames.paymentPath(state.bookingId!)
+            : RouteNames.ticketDetailPath(state.bookingId!),
+      ),
+      child: WebPage(
+        title: title == null ? 'Chọn ghế' : 'Chọn ghế - $title',
+        actions: const [],
+        sections: [
+          PageSection(
+            child: switch (state) {
+              SeatSelectionState(loading: true) => const Center(
+                child: CircularProgressIndicator(),
+              ),
+              SeatSelectionState(:final loadError?) => Text(loadError),
+              _ => _SeatMapList(state: state),
+            },
+          ),
+        ],
+      ),
     );
   }
 }
@@ -156,7 +167,12 @@ class _SeatOrderSummary extends StatelessWidget {
               style: theme.textTheme.titleSmall,
             ),
             AppSpacing.vMd,
-            const FilledButton(onPressed: null, child: Text('Tiếp tục')),
+            FilledButton(
+              onPressed: state.canProceed
+                  ? () => context.read<SeatSelectionCubit>().proceed()
+                  : null,
+              child: Text(state.proceeding ? 'Đang đặt...' : 'Tiếp tục'),
+            ),
           ],
         ),
       ),

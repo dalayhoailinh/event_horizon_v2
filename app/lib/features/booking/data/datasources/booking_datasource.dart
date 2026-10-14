@@ -7,6 +7,7 @@ import '../../../../core/firebase/firestore_error_mapper.dart';
 import '../../../../core/firebase/functions_error_mapper.dart';
 import '../../../../core/result/app_exception.dart';
 import '../../domain/entities/booking.dart';
+import '../../domain/entities/booking_item_input.dart';
 import '../../domain/entities/seat_map.dart';
 import '../../domain/repositories/booking_repository.dart';
 import '../models/booking_mappers.dart';
@@ -16,7 +17,7 @@ abstract interface class BookingDataSource {
   Future<BookingCreated> createBooking({
     required String eventId,
     required String bookingIntentId,
-    required Map<String, int> quantities,
+    required List<BookingItemInput> items,
   });
   Future<void> cancelBooking(String bookingId);
   Future<String> createPayosOrder(String bookingId);
@@ -36,15 +37,20 @@ class BookingDataSourceImpl implements BookingDataSource {
   Future<BookingCreated> createBooking({
     required String eventId,
     required String bookingIntentId,
-    required Map<String, int> quantities,
+    required List<BookingItemInput> items,
   }) async {
     try {
       final result = await _functions.httpsCallable('createBooking').call({
         'eventId': eventId,
         'bookingIntentId': bookingIntentId,
-        'items': quantities.entries
-            .where((e) => e.value > 0)
-            .map((e) => {'ticketTypeId': e.key, 'quantity': e.value})
+        'items': items
+            .map(
+              (item) => {
+                'ticketTypeId': item.ticketTypeId,
+                'quantity': item.quantity,
+                if (item.seatCodes.isNotEmpty) 'seatCodes': item.seatCodes,
+              },
+            )
             .toList(),
       });
       final data = Map<String, dynamic>.from(result.data as Map);

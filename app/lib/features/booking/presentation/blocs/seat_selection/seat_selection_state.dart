@@ -17,6 +17,9 @@ abstract class SeatSelectionState with _$SeatSelectionState {
     @Default({}) Set<String> selected,
     String? message,
     String? loadError,
+    @Default(false) bool proceeding,
+    String? bookingId,
+    @Default(false) bool paymentRequired,
   }) = _SeatSelectionState;
   const SeatSelectionState._();
 
@@ -26,4 +29,7 @@ abstract class SeatSelectionState with _$SeatSelectionState {
   };
 
   int get totalAmount => seatsTotalAmount(floors, selected, _priceByType);
+
+  bool get canProceed =>
+      selected.isNotEmpty && !proceeding && bookingId == null;
 }

@@ -4,7 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../../core/result/result.dart';
+import '../../../../../core/util/id_generator.dart';
 import '../../../../discovery/domain/repositories/discovery_repository.dart';
+import '../../../domain/entities/seat_booking.dart';
 import '../../../domain/entities/seat_lock.dart';
 import '../../../domain/entities/seat_map.dart';
 import '../../../domain/repositories/booking_repository.dart';
@@ -24,6 +26,7 @@ class SeatSelectionCubit extends Cubit<SeatSelectionState> {
     : super(const SeatSelectionState());
 
   static const int maxSeatsPerBooking = 10;
+  late final String _intentId = generateIntentId();
 
   Future<void> start(String eventId) async {
     _eventId = eventId;
@@ -80,10 +83,34 @@ class SeatSelectionCubit extends Cubit<SeatSelectionState> {
     }
   }
 
+  Future<void> proceed() async {
+    if (!state.canProceed) return;
+    emit(state.copyWith(proceeding: true, message: null));
+
+    final result = await _booking.createBooking(
+      eventId: _eventId,
+      bookingIntentId: _intentId,
+      items: groupSeatsIntoItems(state.floors, state.selected),
+    );
+    if (isClosed) return;
+    switch (result) {
+      case Ok(:final value):
+        emit(
+          state.copyWith(
+            proceeding: false,
+            bookingId: value.bookingId,
+            paymentRequired: value.paymentRequired,
+          ),
+        );
+      case Err(:final failure):
+        emit(state.copyWith(proceeding: false, message: failure.message));
+    }
+  }
+
   @override
   Future<void> close() async {
     await _locksSub?.cancel();
-    if (state.selected.isNotEmpty) {
+    if (state.bookingId == null && state.selected.isNotEmpty) {
       unawaited(_seatLocks.releaseAll(_eventId, state.selected.toList()));
     }
     return super.close();

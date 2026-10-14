@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../../core/result/result.dart';
 import '../../../../../core/util/id_generator.dart';
+import '../../../domain/entities/booking_item_input.dart';
 import '../../../domain/repositories/booking_repository.dart';
 import 'booking_create_state.dart';
 
@@ -30,7 +31,10 @@ class BookingCreateCubit extends Cubit<BookingCreateState> {
     final result = await _repo.createBooking(
       eventId: eventId,
       bookingIntentId: _intentId,
-      quantities: state.quantities,
+      items: state.quantities.entries
+          .where((e) => e.value > 0)
+          .map((e) => BookingItemInput(ticketTypeId: e.key, quantity: e.value))
+          .toList(),
     );
     if (isClosed) return;
 

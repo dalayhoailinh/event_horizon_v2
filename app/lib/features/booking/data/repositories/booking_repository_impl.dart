@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 import '../../../../core/result/guard.dart';
 import '../../../../core/result/result.dart';
 import '../../domain/entities/booking.dart';
+import '../../domain/entities/booking_item_input.dart';
 import '../../domain/entities/seat_map.dart';
 import '../../domain/repositories/booking_repository.dart';
 import '../datasources/booking_datasource.dart';
@@ -16,12 +17,12 @@ class BookingRepositoryImpl implements BookingRepository {
   Future<Result<BookingCreated>> createBooking({
     required String eventId,
     required String bookingIntentId,
-    required Map<String, int> quantities,
+    required List<BookingItemInput> items,
   }) => guard(
     () => _ds.createBooking(
       eventId: eventId,
       bookingIntentId: bookingIntentId,
-      quantities: quantities,
+      items: items,
     ),
   );
 
