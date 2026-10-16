@@ -5,7 +5,17 @@ import '../router/route_names.dart';
 class NavLink {
   final String label;
   final String? route;
-  const NavLink({required this.label, this.route});
+
+  /// Icon for the mobile-app bottom tabs and the drawer. Footer links don't
+  /// need one.
+  final IconData? icon;
+  final IconData? selectedIcon;
+  const NavLink({
+    required this.label,
+    this.route,
+    this.icon,
+    this.selectedIcon,
+  });
 }
 
 class NavGroup {
@@ -15,10 +25,46 @@ class NavGroup {
 }
 
 const kSiteNav = [
-  NavLink(label: 'Trang chủ', route: RouteNames.home),
-  NavLink(label: 'Khám phá', route: RouteNames.events),
-  NavLink(label: 'Vé của tôi', route: RouteNames.myTickets),
+  NavLink(
+    label: 'Trang chủ',
+    route: RouteNames.home,
+    icon: Icons.home_outlined,
+    selectedIcon: Icons.home,
+  ),
+  NavLink(
+    label: 'Khám phá',
+    route: RouteNames.events,
+    icon: Icons.explore_outlined,
+    selectedIcon: Icons.explore,
+  ),
+  NavLink(
+    label: 'Vé của tôi',
+    route: RouteNames.myTickets,
+    icon: Icons.confirmation_num_outlined,
+    selectedIcon: Icons.confirmation_num,
+  ),
 ];
+
+/// Index of the top-level section a location belongs to, or null for pages
+/// outside the main nav (login, payment...). `/events/abc` belongs to
+/// "Khám phá", `/my-tickets/xyz` to "Vé của tôi".
+int? siteNavIndexOf(String location) {
+  for (var i = kSiteNav.length - 1; i >= 0; i--) {
+    final route = kSiteNav[i].route;
+    if (route == null) continue;
+    if (route == RouteNames.home) {
+      if (location == RouteNames.home) return i;
+      continue;
+    }
+    if (location == route || location.startsWith('$route/')) return i;
+  }
+  return null;
+}
+
+/// True only on the section roots themselves — those get the bottom tabs in
+/// the mobile app; deeper pages get a back arrow instead.
+bool isSiteNavRoot(String location) =>
+    kSiteNav.any((link) => link.route == location);
 
 const kFooterNav = <NavGroup>[
   NavGroup(

@@ -3,7 +3,7 @@ import '../../domain/entities/event_filter.dart';
 
 const String _qCategory = 'category';
 const String _qProvince = 'province';
-const String _qSearch = 'search';
+const String _qSearch = RouteNames.eventsSearchKey;
 const String _qTime = 'time';
 
 const Map<EventTimeRange, String> _timeNames = {

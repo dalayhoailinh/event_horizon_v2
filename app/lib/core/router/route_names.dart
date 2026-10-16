@@ -8,6 +8,13 @@ abstract final class RouteNames {
   static const String verifyEmail = '/verify-email';
   static const String splash = '/splash';
   static const String events = '/events';
+
+  /// Query key of the free-text search on `/events` — shared by the filter
+  /// query codec and the header search box so the two can never drift.
+  static const String eventsSearchKey = 'search';
+  static String eventsSearchPath(String query) =>
+      Uri(path: events, queryParameters: {eventsSearchKey: query}).toString();
+
   static const String eventDetail = ':id';
   static String eventDetailPath(String id) => '/events/$id';
   static const String bookSegment = 'book';
