@@ -64,14 +64,13 @@ class _EventDetailView extends StatelessWidget {
                 AppSpacing.vMd,
               ],
               switch (state) {
-                EventDetailState(isLoading: true) =>
-                  const EventDetailSkeleton(),
                 EventDetailState(:final failure?) => ErrorRetryView(
                   failure: failure,
                   onRetry: () => context.read<EventDetailCubit>().load(eventId),
                 ),
                 EventDetailState(:final detail?) => _DetailBody(detail: detail),
-                _ => const SizedBox.shrink(), // unreachable
+                // The cubit's "loading" is simply: no detail and no failure yet.
+                _ => const EventDetailSkeleton(),
               },
             ],
           ),

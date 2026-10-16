@@ -10,6 +10,11 @@ abstract final class AppColors {
   static const Color orange900 = Color(0xFF7C2D12);
   static const Color orange500 = Color(0xFFF97316);
   static const Color orange100 = Color(0xFFFFEDD5);
+  static const Color orange700 = Color(0xFFEA580C);
+
+  // Seat map (design file "Seat" component)
+  static const Color seatVip = Color(0xFFEAB308);
+  static const Color seatHeld = orange700;
 
   // Status
   static const Color green500 = Color(0xFF22C55E);

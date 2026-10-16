@@ -9,12 +9,16 @@ import '../../../../core/responsive/page_section.dart';
 import '../../../../core/router/route_names.dart';
 import '../../../../core/shell/web_page.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_radius.dart';
+import '../../../../core/widgets/breadcrumbs.dart';
 import '../../../../core/widgets/error_retry_view.dart';
+import '../../../../core/widgets/skeleton_box.dart';
 import '../../../discovery/domain/entities/event_detail.dart';
 import '../../../discovery/presentation/blocs/event_detail/event_detail_cubit.dart';
 import '../../../discovery/presentation/blocs/event_detail/event_detail_state.dart';
 import '../blocs/booking_create/booking_create_cubit.dart';
 import '../blocs/booking_create/booking_create_state.dart';
+import '../widgets/event_summary_strip.dart';
 import '../widgets/ticket_quantity_row.dart';
 
 class BookingPage extends StatelessWidget {
@@ -58,66 +62,90 @@ class _BookingView extends StatelessWidget {
       child: WebPage(
         title: title == null ? 'Đặt vé' : 'Đặt vé - $title',
         actions: const [],
-        sections: switch (detailState) {
-          EventDetailState(isLoading: true) => const [
-            PageSection(child: Center(child: CircularProgressIndicator())),
-          ],
-          EventDetailState(:final failure?) => [
-            PageSection(
-              child: ErrorRetryView(
-                failure: failure,
-                onRetry: () => context.read<EventDetailCubit>().load(eventId),
-              ),
+        sections: [
+          PageSection(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (!useAppShell()) ...[
+                  Breadcrumbs(
+                    items: [
+                      const Crumb('Khám phá', RouteNames.events),
+                      Crumb(
+                        title ?? 'Sự kiện',
+                        RouteNames.eventDetailPath(eventId),
+                      ),
+                      const Crumb('Đặt vé'),
+                    ],
+                  ),
+                  AppSpacing.vMd,
+                ],
+                switch (detailState) {
+                  EventDetailState(:final failure?) => ErrorRetryView(
+                    failure: failure,
+                    onRetry: () =>
+                        context.read<EventDetailCubit>().load(eventId),
+                  ),
+                  EventDetailState(:final detail?) => _BookingBody(
+                    eventId: eventId,
+                    detail: detail,
+                  ),
+                  // No detail and no failure yet = still loading.
+                  _ => const Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      SkeletonBox(height: 92, radius: AppRadius.lg),
+                      AppSpacing.vMd,
+                      SkeletonBox(height: 240, radius: AppRadius.lg),
+                    ],
+                  ),
+                },
+              ],
             ),
-          ],
-          EventDetailState(:final detail?) => [
-            PageSection(
-              child: _BookingBody(eventId: eventId, detail: detail),
-            ),
-          ],
-          _ => const [SizedBox.shrink()],
-        },
+          ),
+        ],
       ),
     );
   }
 }
 
 class _BookingBody extends StatelessWidget {
+  static const double _sideWidth = 360;
+
   final String eventId;
   final EventDetail detail;
   const _BookingBody({required this.eventId, required this.detail});
 
-  static const int _listFlex = 3;
-  static const int _summaryFlex = 2;
-
   @override
   Widget build(BuildContext context) {
-    final list = _TicketTypeList(detail: detail);
-    final summary = _OrderSummary(eventId: eventId, detail: detail);
+    final summary = detail.summary;
+    final left = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        EventSummaryStrip(
+          title: summary.title,
+          coverImageUrl: summary.coverImageUrl,
+          startAt: summary.startAt,
+          venue: summary.venueName,
+        ),
+        AppSpacing.vMd,
+        _TicketTypeList(detail: detail),
+      ],
+    );
+    final order = _OrderSummary(eventId: eventId, detail: detail);
 
     if (!context.windowSize.isExpanded) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _Breadcrumb(detail: detail),
-          list,
-          AppSpacing.vLg,
-          summary,
-        ],
+        children: [left, AppSpacing.vMd, order],
       );
     }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _Breadcrumb(detail: detail),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(flex: _listFlex, child: list),
-            AppSpacing.hLg,
-            Expanded(flex: _summaryFlex, child: summary),
-          ],
-        ),
+        Expanded(child: left),
+        AppSpacing.hLg,
+        SizedBox(width: _sideWidth, child: order),
       ],
     );
   }
@@ -143,12 +171,17 @@ class _OrderSummary extends StatelessWidget {
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Đơn của bạn', style: theme.textTheme.titleMedium),
-            AppSpacing.vSm,
+            Text(
+              'Đơn của bạn',
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            AppSpacing.vMd,
             for (final type in detail.ticketTypes)
               if ((state.quantities[type.id] ?? 0) > 0)
                 Padding(
@@ -157,7 +190,10 @@ class _OrderSummary extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          '${type.name} × ${state.quantities[type.id]}',
+                          '${state.quantities[type.id]}× ${type.name}',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
                         ),
                       ),
                       Text(formatVnd(type.price * state.quantities[type.id]!)),
@@ -165,16 +201,27 @@ class _OrderSummary extends StatelessWidget {
                   ),
                 ),
             if (state.totalTickets == 0)
-              Text('Chưa chọn vé nào.', style: theme.textTheme.bodySmall),
-            const Divider(),
+              Text(
+                'Chọn số lượng vé ở bên cạnh.',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            const Divider(height: AppSpacing.xl),
             Row(
               children: [
                 Expanded(
-                  child: Text('Tổng', style: theme.textTheme.titleSmall),
+                  child: Text(
+                    'Tổng số tiền',
+                    style: theme.textTheme.titleMedium,
+                  ),
                 ),
                 Text(
                   formatVnd(_total(state.quantities)),
-                  style: theme.textTheme.titleSmall,
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    color: theme.colorScheme.primary,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ],
             ),
@@ -190,6 +237,7 @@ class _OrderSummary extends StatelessWidget {
               AppSpacing.vSm,
             ],
             FilledButton(
+              style: FilledButton.styleFrom(minimumSize: const Size(0, 52)),
               onPressed: state.canSubmit
                   ? () => context.read<BookingCreateCubit>().submit(eventId)
                   : null,
@@ -216,52 +264,35 @@ class _TicketTypeList extends StatelessWidget {
         if (type.isActive) type,
     ];
 
-    if (sellable.isEmpty) {
-      return const Text('Sự kiện này chưa mở bán vé.');
-    }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        for (final type in sellable)
-          TicketQuantityRow(
-            ticketType: type,
-            quantity: quantities[type.id] ?? 0,
-            onChanged: (value) =>
-                context.read<BookingCreateCubit>().setQuantity(type.id, value),
-          ),
-      ],
-    );
-  }
-}
-
-class _Breadcrumb extends StatelessWidget {
-  final EventDetail detail;
-  const _Breadcrumb({required this.detail});
-
-  @override
-  Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.md),
-      child: Wrap(
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          TextButton(
-            onPressed: () => context.go(RouteNames.events),
-            child: const Text('Khám phá'),
-          ),
-          const Text('/'),
-          TextButton(
-            onPressed: () =>
-                context.go(RouteNames.eventDetailPath(detail.summary.id)),
-            child: Text(detail.summary.title),
-          ),
-          const Text('/'),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
-            child: Text('Đặt vé', style: theme.textTheme.labelLarge),
-          ),
-        ],
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'Chọn loại vé',
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            AppSpacing.vSm,
+            if (sellable.isEmpty)
+              const Text('Sự kiện này chưa mở bán vé.')
+            else
+              for (var i = 0; i < sellable.length; i++) ...[
+                if (i > 0) const Divider(),
+                TicketQuantityRow(
+                  ticketType: sellable[i],
+                  quantity: quantities[sellable[i].id] ?? 0,
+                  onChanged: (value) => context
+                      .read<BookingCreateCubit>()
+                      .setQuantity(sellable[i].id, value),
+                ),
+              ],
+          ],
+        ),
       ),
     );
   }

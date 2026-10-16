@@ -3,7 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../../../core/format/formatters.dart';
+import '../../../../core/theme/app_radius.dart';
+import '../../../../core/theme/app_spacing.dart';
 
+/// "Còn lại 4:59" pill that ticks every second and turns red near the end.
 class PaymentCountdown extends StatefulWidget {
   final DateTime deadline;
 
@@ -33,14 +36,35 @@ class _PaymentCountdownState extends State<PaymentCountdown> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
     final remaining = widget.deadline.difference(DateTime.now());
+    final urgent = remaining < _warnBelow;
+    final fg = urgent ? scheme.error : scheme.primary;
 
-    return Text(
-      remaining.isNegative
-          ? formatCountdown(remaining)
-          : 'Còn lại ${formatCountdown(remaining)}',
-      style: theme.textTheme.titleMedium?.copyWith(
-        color: remaining < _warnBelow ? theme.colorScheme.error : null,
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
+      decoration: BoxDecoration(
+        color: urgent ? scheme.errorContainer : scheme.primaryContainer,
+        borderRadius: BorderRadius.circular(AppRadius.full),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.timer_outlined, size: 18, color: fg),
+          AppSpacing.hSm,
+          Text(
+            remaining.isNegative
+                ? formatCountdown(remaining)
+                : 'Còn lại ${formatCountdown(remaining)}',
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: fg,
+              fontFeatures: const [FontFeature.tabularFigures()],
+            ),
+          ),
+        ],
       ),
     );
   }
