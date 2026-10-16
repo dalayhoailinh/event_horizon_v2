@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/format/formatters.dart';
@@ -8,7 +8,10 @@ import '../../../../core/responsive/breakpoints.dart';
 import '../../../../core/responsive/page_section.dart';
 import '../../../../core/router/route_names.dart';
 import '../../../../core/shell/web_page.dart';
+import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/widgets/breadcrumbs.dart';
+import '../../../../core/widgets/skeleton_box.dart';
 import '../../domain/entities/booking.dart';
 import '../blocs/ticket_detail/ticket_detail_cubit.dart';
 import '../blocs/ticket_detail/ticket_detail_state.dart';
@@ -41,46 +44,41 @@ class _TicketDetailView extends StatelessWidget {
       title: booking == null ? 'Vé' : 'Vé — ${booking.eventTitle}',
       actions: const [],
       sections: [
-        if (state.isLoading)
-          const PageSection(child: Center(child: CircularProgressIndicator()))
-        else if (booking == null)
-          const PageSection(
-            child: Center(child: Text('Không tìm thấy vé này.')),
-          )
-        else ...[
-          PageSection(child: _Breadcrumb(booking: booking)),
-          PageSection(
-            child: _TicketBody(
-              bookingId: bookingId,
-              booking: booking,
-              state: state,
-            ),
-          ),
-        ],
-      ],
-    );
-  }
-}
-
-class _Breadcrumb extends StatelessWidget {
-  final Booking booking;
-  const _Breadcrumb({required this.booking});
-
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: [
-        TextButton(
-          onPressed: () => context.go(RouteNames.myTickets),
-          child: const Text('Vé của tôi'),
-        ),
-        const Text('/'),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
-          child: Text(
-            booking.eventTitle,
-            style: Theme.of(context).textTheme.labelLarge,
+        PageSection(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (!useAppShell()) ...[
+                Row(
+                  children: [
+                    Expanded(
+                      child: Breadcrumbs(
+                        items: [
+                          const Crumb('Vé của tôi', RouteNames.myTickets),
+                          Crumb(booking?.eventTitle ?? 'Vé'),
+                        ],
+                      ),
+                    ),
+                    if (booking != null)
+                      BookingStatusChip(status: booking.status),
+                  ],
+                ),
+                AppSpacing.vMd,
+              ],
+              if (state.isLoading)
+                const SkeletonBox(height: 360, radius: AppRadius.lg)
+              else if (booking == null)
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: AppSpacing.xxl),
+                  child: Center(child: Text('Không tìm thấy vé này.')),
+                )
+              else
+                _TicketBody(
+                  bookingId: bookingId,
+                  booking: booking,
+                  state: state,
+                ),
+            ],
           ),
         ),
       ],
@@ -89,6 +87,8 @@ class _Breadcrumb extends StatelessWidget {
 }
 
 class _TicketBody extends StatelessWidget {
+  static const double _qrColumnWidth = 340;
+
   final String bookingId;
   final Booking booking;
   final TicketDetailState state;
@@ -97,9 +97,6 @@ class _TicketBody extends StatelessWidget {
     required this.booking,
     required this.state,
   });
-
-  static const int _qrFlex = 2;
-  static const int _infoFlex = 3;
 
   @override
   Widget build(BuildContext context) {
@@ -113,20 +110,21 @@ class _TicketBody extends StatelessWidget {
     if (!context.windowSize.isExpanded) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [qr, AppSpacing.vLg, info],
+        children: [qr, AppSpacing.vMd, info],
       );
     }
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(flex: _qrFlex, child: qr),
+        SizedBox(width: _qrColumnWidth, child: qr),
         AppSpacing.hLg,
-        Expanded(flex: _infoFlex, child: info),
+        Expanded(child: info),
       ],
     );
   }
 }
 
+/// "Thông tin vé": label/value rows, the copyable ticket id, cancel button.
 class _TicketInfo extends StatelessWidget {
   final String bookingId;
   final Booking booking;
@@ -140,51 +138,96 @@ class _TicketInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
     final canCancel = booking.canCancel(DateTime.now());
+    final venue = [
+      booking.venueName.trim(),
+      booking.venueAddress.trim(),
+    ].where((s) => s.isNotEmpty).join(', ');
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Expanded(
-              child: Text(
-                booking.eventTitle,
-                style: theme.textTheme.headlineSmall,
+            Text(
+              'Thông tin vé',
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w600,
               ),
             ),
-            BookingStatusChip(status: booking.status),
+            AppSpacing.vMd,
+            _Row(label: 'Mã vé', value: booking.id, copyable: true),
+            _Row(label: 'Sự kiện', value: booking.eventTitle),
+            _Row(
+              label: 'Thời gian',
+              value:
+                  '${formatEventDate(booking.eventStartAt)} • '
+                  '${formatTimeOfDay(booking.eventStartAt)}',
+            ),
+            if (venue.isNotEmpty) _Row(label: 'Địa điểm', value: venue),
+            _Row(
+              label: 'Vé',
+              value: booking.lineItems
+                  .map((item) => '${item.quantity}× ${item.name}')
+                  .join('\n'),
+            ),
+            _Row(
+              label: 'Tổng số tiền',
+              value: formatVnd(booking.totalAmount),
+              emphasize: true,
+            ),
+            _Row(
+              label: 'Ngày đặt',
+              value:
+                  '${formatEventDate(booking.createdAt)} • '
+                  '${formatTimeOfDay(booking.createdAt)}',
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Trạng thái',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                  BookingStatusChip(status: booking.status),
+                ],
+              ),
+            ),
+            if (state.errorMessage case final message?) ...[
+              AppSpacing.vSm,
+              Text(
+                message,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: scheme.error,
+                ),
+              ),
+            ],
+            if (canCancel) ...[
+              AppSpacing.vMd,
+              Align(
+                alignment: Alignment.centerRight,
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: scheme.error,
+                    side: BorderSide(color: scheme.error),
+                  ),
+                  onPressed: state.cancelling
+                      ? null
+                      : () => _confirmCancel(context, bookingId),
+                  child: Text(state.cancelling ? 'Đang hủy…' : 'Hủy đặt vé'),
+                ),
+              ),
+            ],
           ],
         ),
-        AppSpacing.vSm,
-        Text(formatEventTime(booking.eventStartAt)),
-        Text('${booking.venueName} · ${booking.venueAddress}'),
-        AppSpacing.vMd,
-        for (final item in booking.lineItems)
-          Text('${item.name} × ${item.quantity} · ${formatVnd(item.price)}'),
-        const Divider(),
-        Text(
-          'Tổng: ${formatVnd(booking.totalAmount)}',
-          style: theme.textTheme.titleSmall,
-        ),
-        AppSpacing.vLg,
-        if (state.errorMessage case final message?) ...[
-          Text(
-            message,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.error,
-            ),
-          ),
-          AppSpacing.vSm,
-        ],
-        if (canCancel)
-          OutlinedButton(
-            onPressed: state.cancelling
-                ? null
-                : () => _confirmCancel(context, bookingId),
-            child: Text(state.cancelling ? 'Đang hủy…' : 'Hủy vé'),
-          ),
-      ],
+      ),
     );
   }
 
@@ -199,12 +242,12 @@ class _TicketInfo extends StatelessWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(dialogContext, false),
-            child: const Text('Giữ vé'),
-          ),
-          FilledButton(
             onPressed: () => Navigator.pop(dialogContext, true),
             child: const Text('Hủy vé'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('Giữ vé'),
           ),
         ],
       ),
@@ -212,5 +255,66 @@ class _TicketInfo extends StatelessWidget {
     if (confirmed ?? false) {
       await cubit.cancel(bookingId);
     }
+  }
+}
+
+class _Row extends StatelessWidget {
+  final String label;
+  final String value;
+  final bool copyable;
+  final bool emphasize;
+  const _Row({
+    required this.label,
+    required this.value,
+    this.copyable = false,
+    this.emphasize = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              label,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: scheme.onSurfaceVariant,
+              ),
+            ),
+          ),
+          Expanded(
+            child: SelectableText(
+              value,
+              textAlign: TextAlign.right,
+              style: emphasize
+                  ? theme.textTheme.titleMedium?.copyWith(
+                      color: scheme.primary,
+                      fontWeight: FontWeight.w700,
+                    )
+                  : theme.textTheme.bodyMedium,
+            ),
+          ),
+          if (copyable)
+            IconButton(
+              tooltip: 'Sao chép mã vé',
+              visualDensity: VisualDensity.compact,
+              icon: const Icon(Icons.copy, size: 18),
+              onPressed: () async {
+                await Clipboard.setData(ClipboardData(text: value));
+                if (!context.mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Đã sao chép mã vé')),
+                );
+              },
+            ),
+        ],
+      ),
+    );
   }
 }
