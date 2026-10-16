@@ -1,6 +1,7 @@
 import { Timestamp } from "firebase-admin/firestore";
 import { call, db, intent, verifiedUser } from "./helpers";
 import { describe, expect, it } from "vitest";
+import { expireDueBookings } from "../src/booking/expireBookings";
 
 let seq = 0;
 
@@ -76,5 +77,33 @@ describe("createBooking với ghế (emulator)", () => {
     ).length;
     expect(wins).toBe(1);
     expect(losses).toBe(1);
+  }, 30_000);
+
+  it("đơn quá hạn: nhả ghế khỏi sold-map -> đặt lại được", async () => {
+    const eventId = await seedSeatEvent();
+    const user = await verifiedUser();
+    const first = await call("createBooking", user.idToken, {
+      eventId,
+      bookingIntentId: intent(),
+      items: [{ ticketTypeId: "t1", quantity: 1, seatCodes: ["1-A1"] }],
+    });
+    expect(first.error).toBeUndefined();
+
+    const bookingRef = db
+      .collection("bookings")
+      .doc(first.result?.bookingId ?? "");
+    await bookingRef.update({
+      expiresAt: Timestamp.fromMillis(Date.now() - 1_000),
+    });
+    await expireDueBookings(db);
+    expect((await bookingRef.get()).data()?.status).toBe("expired");
+    expect(await soldCodes(eventId)).toEqual([]);
+
+    const again = await call("createBooking", user.idToken, {
+      eventId,
+      bookingIntentId: intent(),
+      items: [{ ticketTypeId: "t1", quantity: 1, seatCodes: ["1-A1"] }],
+    });
+    expect(again.error).toBeUndefined();
   }, 30_000);
 });

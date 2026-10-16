@@ -6,6 +6,7 @@ import {
   Timestamp,
   Transaction,
 } from "firebase-admin/firestore";
+import { collectSeatCodes } from "./seatSync";
 
 export function releaseBooking(args: {
   tx: Transaction;
@@ -40,4 +41,13 @@ export function releaseBooking(args: {
     { bookingCount: FieldValue.increment(-1), updatedAt: now },
     { merge: true },
   );
+
+  const seatCodes = collectSeatCodes(data.lineItems);
+  if (seatCodes.length > 0) {
+    const deletes: Record<string, FieldValue> = {};
+    for (const code of seatCodes) {
+      deletes[`codes.${code}`] = FieldValue.delete();
+    }
+    tx.update(eventRef.collection("seatmap").doc("sold"), deletes);
+  }
 }
