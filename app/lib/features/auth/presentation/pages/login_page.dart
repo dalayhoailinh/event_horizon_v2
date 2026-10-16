@@ -6,6 +6,7 @@ import '../../../../core/di/injection.dart';
 import '../../../../core/router/route_names.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../blocs/login/login_cubit.dart';
+import '../widgets/auth_layout.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -37,6 +38,12 @@ class __LoginViewState extends State<_LoginView> {
     super.dispose();
   }
 
+  void _submit() {
+    final cubit = context.read<LoginCubit>();
+    if (cubit.state.submitting) return;
+    cubit.loginWithEmail(_email.text, _password.text);
+  }
+
   Future<void> _showForgotPasswordDialog(BuildContext context) async {
     final cubit = context.read<LoginCubit>();
     final controller = TextEditingController(text: _email.text);
@@ -44,10 +51,20 @@ class __LoginViewState extends State<_LoginView> {
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: const Text('Đặt lại mật khẩu'),
-        content: TextField(
-          controller: controller,
-          decoration: const InputDecoration(labelText: 'Email'),
-          keyboardType: TextInputType.emailAddress,
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Nhập email, chúng tôi sẽ gửi đường dẫn đặt lại.'),
+            AppSpacing.vMd,
+            TextField(
+              controller: controller,
+              autofocus: true,
+              keyboardType: TextInputType.emailAddress,
+              decoration: const InputDecoration(hintText: 'Email của bạn'),
+              onSubmitted: (value) => dialogContext.pop(value),
+            ),
+          ],
         ),
         actions: [
           TextButton(
@@ -61,8 +78,9 @@ class __LoginViewState extends State<_LoginView> {
         ],
       ),
     );
-    if (email != null && email.isNotEmpty) {
-      await cubit.sendPasswordReset(email);
+    controller.dispose();
+    if (email != null && email.trim().isNotEmpty) {
+      await cubit.sendPasswordReset(email.trim());
     }
   }
 
@@ -71,83 +89,92 @@ class __LoginViewState extends State<_LoginView> {
     final state = context.watch<LoginCubit>().state;
     final theme = Theme.of(context);
 
-    return Scaffold(
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 400),
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  'Đăng nhập',
-                  style: theme.textTheme.headlineMedium,
-                  textAlign: TextAlign.center,
-                ),
-                AppSpacing.vLg,
-                TextField(
-                  controller: _email,
-                  decoration: const InputDecoration(labelText: 'Email'),
-                  keyboardType: TextInputType.emailAddress,
-                ),
-                AppSpacing.vMd,
-                TextField(
-                  controller: _password,
-                  decoration: const InputDecoration(labelText: 'Mật khẩu'),
-                  obscureText: true,
-                ),
-                if (state.errorMessage != null) ...[
-                  AppSpacing.vMd,
-                  Text(
-                    state.errorMessage!,
-                    style: TextStyle(color: theme.colorScheme.error),
-                  ),
-                ],
-                if (state.infoMessage != null) ...[
-                  AppSpacing.vMd,
-                  Text(
-                    state.infoMessage!,
-                    style: TextStyle(color: theme.colorScheme.primary),
-                  ),
-                ],
-                AppSpacing.vLg,
-                FilledButton(
-                  onPressed: state.submitting
-                      ? null
-                      : () => context.read<LoginCubit>().loginWithEmail(
-                          _email.text,
-                          _password.text,
-                        ),
-                  child: state.submitting
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Text('Đăng nhập'),
-                ),
-                AppSpacing.vSm,
-                OutlinedButton(
-                  onPressed: state.submitting
-                      ? null
-                      : () => context.read<LoginCubit>().loginWithGoogle(),
-                  child: const Text('Đăng nhập với Google'),
-                ),
-                TextButton(
+    return Title(
+      title: 'Đăng nhập — EventHorizon',
+      color: theme.colorScheme.primary,
+      child: AuthLayout(
+        title: 'Chào mừng trở lại',
+        subtitle: 'Đăng nhập vào tài khoản của bạn',
+        child: AutofillGroup(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              AuthField(
+                label: 'Email',
+                hint: 'Nhập email của bạn',
+                controller: _email,
+                keyboardType: TextInputType.emailAddress,
+                autofillHints: const [AutofillHints.email],
+              ),
+              AppSpacing.vMd,
+              PasswordField(
+                label: 'Mật khẩu',
+                controller: _password,
+                autofillHints: const [AutofillHints.password],
+                // Enter submits (web rule).
+                onSubmitted: (_) => _submit(),
+              ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
                   onPressed: () => _showForgotPasswordDialog(context),
                   child: const Text('Quên mật khẩu?'),
                 ),
-                TextButton(
-                  onPressed: () => context.go(RouteNames.register),
-                  child: const Text('Chưa có tài khoản? Đăng ký'),
-                ),
-              ],
-            ),
+              ),
+              if (state.errorMessage case final message?)
+                AuthMessage(message: message),
+              if (state.infoMessage case final message?)
+                AuthMessage(message: message, error: false),
+              AppSpacing.vMd,
+              SubmitButton(
+                label: 'Đăng nhập',
+                busy: state.submitting,
+                onPressed: _submit,
+              ),
+              const OrDivider(),
+              GoogleButton(
+                onPressed: state.submitting
+                    ? null
+                    : () => context.read<LoginCubit>().loginWithGoogle(),
+              ),
+              AppSpacing.vMd,
+              _SwitchLink(
+                question: 'Chưa có tài khoản?',
+                action: 'Đăng ký ngay',
+                onTap: () => context.go(RouteNames.register),
+              ),
+            ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class _SwitchLink extends StatelessWidget {
+  final String question;
+  final String action;
+  final VoidCallback onTap;
+  const _SwitchLink({
+    required this.question,
+    required this.action,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          question,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+        TextButton(onPressed: onTap, child: Text(action)),
+      ],
     );
   }
 }
