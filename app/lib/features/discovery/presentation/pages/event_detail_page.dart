@@ -4,8 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/responsive/breakpoints.dart';
 import '../../../../core/responsive/page_section.dart';
+import '../../../../core/router/route_names.dart';
 import '../../../../core/shell/web_page.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/widgets/breadcrumbs.dart';
 import '../../../../core/widgets/error_retry_view.dart';
 import '../../domain/entities/event_detail.dart';
 import '../blocs/event_detail/event_detail_cubit.dart';
@@ -41,82 +43,93 @@ class _EventDetailView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<EventDetailCubit>().state;
+    final title = state.detail?.summary.title ?? 'Sự kiện';
     return WebPage(
-      title: state.detail?.summary.title ?? 'Sự kiện',
+      title: title,
       actions: const [],
-      sections: switch (state) {
-        EventDetailState(isLoading: true) => const [
-          PageSection(child: Center(child: CircularProgressIndicator())),
-        ],
-        EventDetailState(:final failure?) => [
-          PageSection(
-            child: ErrorRetryView(
-              failure: failure,
-              onRetry: () => context.read<EventDetailCubit>().load(eventId),
-            ),
+      sections: [
+        PageSection(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // The app shell has its own back arrow; breadcrumbs are the web
+              // way of saying "you are here".
+              if (!useAppShell()) ...[
+                Breadcrumbs(
+                  items: [
+                    const Crumb('Khám phá', RouteNames.events),
+                    Crumb(title),
+                  ],
+                ),
+                AppSpacing.vMd,
+              ],
+              switch (state) {
+                EventDetailState(isLoading: true) =>
+                  const EventDetailSkeleton(),
+                EventDetailState(:final failure?) => ErrorRetryView(
+                  failure: failure,
+                  onRetry: () => context.read<EventDetailCubit>().load(eventId),
+                ),
+                EventDetailState(:final detail?) => _DetailBody(detail: detail),
+                _ => const SizedBox.shrink(), // unreachable
+              },
+            ],
           ),
-        ],
-        EventDetailState(:final detail?) => [
-          PageSection(child: _DetailBody(detail: detail)),
-        ],
-        _ => const [SizedBox.shrink()], // unreachable
-      },
+        ),
+      ],
     );
   }
 }
 
 class _DetailBody extends StatelessWidget {
+  static const double _sideWidth = 360;
+
   final EventDetail detail;
   const _DetailBody({required this.detail});
 
-  static const int _mainFlex = 3;
-  static const int _sideFlex = 2;
-
   @override
   Widget build(BuildContext context) {
-    final wide = context.windowSize.isExpanded;
-    if (!wide) {
+    final hero = EventHero(
+      detail: detail,
+      trailing: const FavoriteButton(onImage: true),
+    );
+    final pricing = EventPricingCard(detail: detail);
+    final meta = EventMetaCard(detail: detail);
+    final about = AboutEventCard(detail: detail);
+
+    if (!context.windowSize.isExpanded) {
+      // Phone: price + button right under the photo — the main action must
+      // not hide below a long description.
       return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          EventHeroSection(detail: detail, trailing: const FavoriteButton()),
+          hero,
           AppSpacing.vMd,
-          TicketTypesSection(
-            ticketTypes: detail.ticketTypes,
-            eventId: detail.summary.id,
-            startAt: detail.summary.startAt,
-          ),
+          pricing,
           AppSpacing.vMd,
-          DescriptionSection(detail: detail),
+          meta,
+          AppSpacing.vMd,
+          about,
         ],
       );
     }
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Expanded(
-          flex: _mainFlex,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              EventHeroSection(
-                detail: detail,
-                trailing: const FavoriteButton(),
+        hero,
+        AppSpacing.vLg,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [meta, AppSpacing.vLg, about],
               ),
-              AppSpacing.vLg,
-              DescriptionSection(detail: detail),
-            ],
-          ),
-        ),
-        AppSpacing.hLg,
-        Expanded(
-          flex: _sideFlex,
-          child: TicketTypesSection(
-            ticketTypes: detail.ticketTypes,
-            eventId: detail.summary.id,
-            startAt: detail.summary.startAt,
-            hasSeatMap: detail.summary.hasSeatMap,
-          ),
+            ),
+            AppSpacing.hLg,
+            SizedBox(width: _sideWidth, child: pricing),
+          ],
         ),
       ],
     );
