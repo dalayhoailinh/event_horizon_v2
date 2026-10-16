@@ -4,18 +4,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../core/responsive/breakpoints.dart';
 import '../../../../core/responsive/page_section.dart';
 import '../../../../core/router/route_names.dart';
 import '../../../../core/shell/web_page.dart';
-import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/error_retry_view.dart';
+import '../../../../core/widgets/section_header.dart';
 import '../../domain/entities/event_category.dart';
+import '../../domain/entities/event_filter.dart';
 import '../../domain/entities/provinces.dart';
 import '../blocs/home/home_cubit.dart';
 import '../blocs/home/home_state.dart';
-import '../widgets/event_card.dart';
-import '../widgets/event_grid.dart';
+import '../routing/event_filter_query.dart';
+import '../widgets/event_row.dart';
+import '../widgets/hero_carousel.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -30,11 +33,16 @@ class HomePage extends StatelessWidget {
 }
 
 class _HomeView extends StatelessWidget {
+  /// How many featured events rotate in the banner.
+  static const int _bannerCount = 5;
+
   const _HomeView();
 
   @override
   Widget build(BuildContext context) {
     final state = context.watch<HomeCubit>().state;
+    void seeAll() => context.go(RouteNames.events);
+
     return WebPage(
       title: 'Trang chủ',
       actions: [
@@ -46,9 +54,6 @@ class _HomeView extends StatelessWidget {
           ),
       ],
       sections: switch (state) {
-        HomeState(isLoading: true) => const [
-          PageSection(child: Center(child: CircularProgressIndicator())),
-        ],
         HomeState(:final failure?) => [
           PageSection(
             child: ErrorRetryView(
@@ -57,38 +62,53 @@ class _HomeView extends StatelessWidget {
             ),
           ),
         ],
-        _ => [
+        // Loading keeps the final layout (skeletons), so nothing jumps when
+        // the data arrives.
+        HomeState(isLoading: true) => const [
+          _TopSection(child: HeroCarousel.skeleton()),
           PageSection(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const _FakeSearchBar(),
-                const SizedBox(height: AppSpacing.md),
-                _CategoryChips(categories: state.categories),
-                const SizedBox(height: AppSpacing.md),
-                _SectionHeader(
-                  title: 'Nổi bật',
-                  onSeeAll: () => context.go(RouteNames.events),
-                ),
-                SizedBox(
-                  height: 270,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: state.featured.length,
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(width: AppSpacing.sm),
-                    itemBuilder: (context, index) =>
-                        EventCard(event: state.featured[index], width: 280),
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.md),
-                const _ProvinceChips(),
-                const SizedBox(height: AppSpacing.md),
-                _SectionHeader(
-                  title: 'Sắp diễn ra',
-                  onSeeAll: () => context.go(RouteNames.events),
-                ),
-                EventGrid(events: state.upcoming),
+                SectionHeader(title: 'Sự kiện phổ biến'),
+                EventRow.skeleton(),
+                AppSpacing.vXl,
+                SectionHeader(title: 'Sự kiện sắp tới'),
+                EventRow.skeleton(),
+              ],
+            ),
+          ),
+        ],
+        _ => [
+          _TopSection(
+            child: HeroCarousel(
+              events: state.featured.take(_bannerCount).toList(),
+            ),
+          ),
+          PageSection(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (state.categories.isNotEmpty) ...[
+                  _CategoryChips(categories: state.categories),
+                  AppSpacing.vXl,
+                ],
+                if (state.featured.isNotEmpty) ...[
+                  SectionHeader(title: 'Sự kiện phổ biến', onSeeAll: seeAll),
+                  EventRow(events: state.featured),
+                  AppSpacing.vXl,
+                ],
+                if (state.upcoming.isNotEmpty) ...[
+                  SectionHeader(title: 'Sự kiện sắp tới', onSeeAll: seeAll),
+                  EventRow(events: state.upcoming),
+                  AppSpacing.vXl,
+                ],
+                const SectionHeader(title: 'Khám phá theo địa phương'),
+                const _ProvinceTiles(),
+                if (state.featured.isEmpty && state.upcoming.isEmpty) ...[
+                  AppSpacing.vXl,
+                  const _EmptyHome(),
+                ],
               ],
             ),
           ),
@@ -98,38 +118,22 @@ class _HomeView extends StatelessWidget {
   }
 }
 
-/// Looks like a search field; actually a shortcut into the list page.
-class _FakeSearchBar extends StatelessWidget {
-  const _FakeSearchBar();
+/// First section: a bit more top room, no bottom padding (the next section
+/// brings its own).
+class _TopSection extends StatelessWidget {
+  final Widget child;
+  const _TopSection({required this.child});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return InkWell(
-      borderRadius: BorderRadius.circular(AppRadius.md),
-      onTap: () => context.go(RouteNames.events),
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.sm + 4,
-        ),
-        decoration: BoxDecoration(
-          color: theme.colorScheme.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(AppRadius.md),
-        ),
-        child: Row(
-          children: [
-            Icon(Icons.search, color: theme.colorScheme.onSurfaceVariant),
-            const SizedBox(width: AppSpacing.sm),
-            Text(
-              'Tìm sự kiện...',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ],
-        ),
+    return PageSection(
+      padding: EdgeInsets.fromLTRB(
+        context.gutter,
+        AppSpacing.lg,
+        context.gutter,
+        0,
       ),
+      child: child,
     );
   }
 }
@@ -140,71 +144,79 @@ class _CategoryChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 40,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: categories.length,
-        separatorBuilder: (context, index) =>
-            const SizedBox(width: AppSpacing.sm),
-        itemBuilder: (context, index) {
-          final c = categories[index];
-          return ActionChip(
-            label: Text(c.name),
-            onPressed: () =>
-                context.go('${RouteNames.events}?category=${c.id}'),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _ProvinceChips extends StatelessWidget {
-  const _ProvinceChips();
-
-  @override
-  Widget build(BuildContext context) {
+    final chips = [
+      for (final c in categories)
+        ActionChip(
+          label: Text(c.name),
+          onPressed: () =>
+              context.go(eventsLocationFor(EventFilter(categoryId: c.id))),
+        ),
+    ];
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text('Theo địa phương', style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: AppSpacing.sm),
-        SizedBox(
-          height: 40,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemCount: kProvinces.length,
-            separatorBuilder: (context, index) =>
-                const SizedBox(width: AppSpacing.sm),
-            itemBuilder: (context, index) {
-              final p = kProvinces[index];
-              return ActionChip(
-                label: Text(p.name),
-                onPressed: () =>
-                    context.go('${RouteNames.events}?province=${p.code}'),
-              );
-            },
-          ),
+        const SectionHeader(title: 'Thể loại'),
+        Wrap(
+          spacing: AppSpacing.sm,
+          runSpacing: AppSpacing.sm,
+          children: chips,
         ),
       ],
     );
   }
 }
 
-class _SectionHeader extends StatelessWidget {
-  final String title;
-  final VoidCallback onSeeAll;
-  const _SectionHeader({required this.title, required this.onSeeAll});
+class _ProvinceTiles extends StatelessWidget {
+  const _ProvinceTiles();
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    final theme = Theme.of(context);
+    return Wrap(
+      spacing: AppSpacing.smd,
+      runSpacing: AppSpacing.smd,
       children: [
-        Expanded(
-          child: Text(title, style: Theme.of(context).textTheme.titleMedium),
+        for (final p in kProvinces)
+          OutlinedButton.icon(
+            onPressed: () => context.go(
+              eventsLocationFor(EventFilter(provinceCode: p.code)),
+            ),
+            icon: Icon(
+              Icons.location_on_outlined,
+              size: 18,
+              color: theme.colorScheme.primary,
+            ),
+            label: Text(p.name),
+            style: OutlinedButton.styleFrom(
+              backgroundColor: theme.colorScheme.surface,
+              foregroundColor: theme.colorScheme.onSurface,
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _EmptyHome extends StatelessWidget {
+  const _EmptyHome();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      children: [
+        Icon(
+          Icons.event_busy_outlined,
+          size: 48,
+          color: theme.colorScheme.onSurfaceVariant,
         ),
-        TextButton(onPressed: onSeeAll, child: const Text('Xem tất cả')),
+        AppSpacing.vSm,
+        Text(
+          'Chưa có sự kiện nào đang mở bán.',
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
       ],
     );
   }

@@ -27,4 +27,20 @@ void main() {
     expect(formatCountdown(const Duration(seconds: 0)), 'Hết hạn');
     expect(formatCountdown(const Duration(seconds: -1)), 'Hết hạn');
   });
+
+  test('formatDayMonthTime / formatEventDate / formatTimeOfDay', () {
+    final dt = DateTime(2026, 3, 7, 9, 5);
+    expect(formatDayMonthTime(dt), '07/03 • 09:05');
+    expect(formatEventDate(dt), 'T7, 07/03/2026');
+    expect(formatTimeOfDay(dt), '09:05');
+  });
+
+  test('categoryLabel: tên đầu + số còn lại, bỏ tên rỗng', () {
+    expect(categoryLabel(const []), 'Sự kiện');
+    expect(categoryLabel(const ['Âm nhạc']), 'Âm nhạc');
+    expect(
+      categoryLabel(const ['Âm nhạc', ' ', 'Hội thảo', 'Workshop']),
+      'Âm nhạc +2',
+    );
+  });
 }

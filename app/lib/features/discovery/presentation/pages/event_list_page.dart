@@ -5,8 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../core/responsive/breakpoints.dart';
 import '../../../../core/responsive/page_section.dart';
+import '../../../../core/router/route_names.dart';
 import '../../../../core/shell/web_page.dart';
+import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/error_retry_view.dart';
 import '../../domain/entities/event_filter.dart';
@@ -39,6 +42,7 @@ class _EventListView extends StatefulWidget {
 }
 
 class __EventListViewState extends State<_EventListView> {
+  static const double _filterColumnWidth = 280;
   static const _searchDebounce = Duration(milliseconds: 300);
   Timer? _debounce;
   late final TextEditingController _searchController = TextEditingController(
@@ -78,25 +82,48 @@ class __EventListViewState extends State<_EventListView> {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<DiscoveryListCubit>().state;
+    final wide = context.windowSize.isExpanded;
+    final search = _SearchField(
+      controller: _searchController,
+      onChanged: _onQueryChanged,
+      onSubmitted: _onSubmitted,
+    );
+
     return WebPage(
       title: 'Khám phá',
       actions: const [],
       sections: [
         PageSection(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _SearchField(
-                controller: _searchController,
-                onChanged: _onQueryChanged,
-                onSubmitted: _onSubmitted,
-              ),
-              AppSpacing.vMd,
-              const EventFilterBar(),
-            ],
-          ),
+          child: wide
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    search,
+                    AppSpacing.vLg,
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          width: _filterColumnWidth,
+                          child: EventFilterPanel(),
+                        ),
+                        AppSpacing.hLg,
+                        Expanded(child: _Result(state: state)),
+                      ],
+                    ),
+                  ],
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    search,
+                    AppSpacing.vMd,
+                    const EventFilterBar(),
+                    AppSpacing.vMd,
+                    _Result(state: state),
+                  ],
+                ),
         ),
-        PageSection(child: _Result(state: state)),
       ],
     );
   }
@@ -115,15 +142,21 @@ class _SearchField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final radius = BorderRadius.circular(AppRadius.md);
     return TextField(
       controller: controller,
       onChanged: onChanged,
       onSubmitted: onSubmitted,
       textInputAction: TextInputAction.search,
       decoration: InputDecoration(
-        labelText: 'Tìm sự kiện',
+        hintText: 'Tìm kiếm sự kiện của bạn...',
         prefixIcon: const Icon(Icons.search),
-        border: const OutlineInputBorder(),
+        fillColor: scheme.surface,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: radius,
+          borderSide: BorderSide(color: scheme.outline),
+        ),
       ),
     );
   }
@@ -136,9 +169,8 @@ class _Result extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (state.isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
+    final theme = Theme.of(context);
+    if (state.isLoading) return const EventGrid.skeleton(skeletonCount: 6);
 
     final failure = state.failure;
     if (failure != null && state.events.isEmpty) {
@@ -148,13 +180,21 @@ class _Result extends StatelessWidget {
       );
     }
 
-    if (state.events.isEmpty) {
-      return const Center(child: Text('Không có sự kiện nào'));
-    }
+    if (state.events.isEmpty) return const _NoResult();
 
+    final query = state.filter.searchQuery;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        if (query.isNotEmpty) ...[
+          Text(
+            'Kết quả cho “$query”',
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          AppSpacing.vMd,
+        ],
         EventGrid(events: state.events),
         if (state.hasMore) ...[
           AppSpacing.vLg,
@@ -166,6 +206,44 @@ class _Result extends StatelessWidget {
           ),
         ],
       ],
+    );
+  }
+}
+
+class _NoResult extends StatelessWidget {
+  const _NoResult();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),
+      child: Column(
+        children: [
+          Icon(
+            Icons.search_off,
+            size: 48,
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+          AppSpacing.vSm,
+          Text(
+            'Không tìm thấy sự kiện phù hợp',
+            style: theme.textTheme.titleMedium,
+          ),
+          AppSpacing.vXs,
+          Text(
+            'Thử từ khoá khác hoặc bỏ bớt bộ lọc.',
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          AppSpacing.vMd,
+          OutlinedButton(
+            onPressed: () => context.go(RouteNames.events),
+            child: const Text('Xoá tìm kiếm và bộ lọc'),
+          ),
+        ],
+      ),
     );
   }
 }
