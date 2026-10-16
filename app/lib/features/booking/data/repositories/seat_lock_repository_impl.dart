@@ -27,4 +27,14 @@ class SeatLockRepositoryImpl implements SeatLockRepository {
   @override
   Future<Result<void>> releaseAll(String eventId, List<String> seatCodes) =>
       guard(() => _ds.releaseAll(eventId, seatCodes));
+
+  @override
+  Future<Result<void>> extendLocks(String eventId, List<String> seatCodes) =>
+      guard(() => _ds.extendLocks(eventId, seatCodes));
+
+  @override
+  Future<Result<void>> cancelAutoRelease(
+    String eventId,
+    List<String> seatCodes,
+  ) => guard(() => _ds.cancelAutoRelease(eventId, seatCodes));
 }

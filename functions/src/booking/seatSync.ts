@@ -18,3 +18,18 @@ export function isHoldingSeats(status: string): boolean {
     status === "checkedIn"
   );
 }
+
+export function seatNodeFor(
+  status: string,
+  userId: string,
+  expiresAtMs: number | null,
+): {
+  userId: string;
+  status: string;
+  expiresAt: number;
+} {
+  if (status === "pendingPayment" && expiresAtMs !== null) {
+    return { userId, status: "selecting", expiresAt: expiresAtMs };
+  }
+  return { userId: "server", status: "sold", expiresAt: 0 };
+}

@@ -87,6 +87,14 @@ class SeatSelectionCubit extends Cubit<SeatSelectionState> {
     if (!state.canProceed) return;
     emit(state.copyWith(proceeding: true, message: null));
 
+    final codes = state.selected.toList();
+    final extended = await _seatLocks.extendLocks(_eventId, codes);
+    if (isClosed) return;
+    if (extended case Err(:final failure)) {
+      emit(state.copyWith(proceeding: false, message: failure.message));
+      return;
+    }
+
     final result = await _booking.createBooking(
       eventId: _eventId,
       bookingIntentId: _intentId,
@@ -95,6 +103,8 @@ class SeatSelectionCubit extends Cubit<SeatSelectionState> {
     if (isClosed) return;
     switch (result) {
       case Ok(:final value):
+        await _seatLocks.cancelAutoRelease(_eventId, codes);
+        if (isClosed) return;
         emit(
           state.copyWith(
             proceeding: false,

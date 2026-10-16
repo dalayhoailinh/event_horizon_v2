@@ -9,9 +9,15 @@ import '../models/seat_lock_mappers.dart';
 
 abstract interface class SeatLockDataSource {
   Stream<Map<String, SeatLock>> watchLocks(String eventId);
-  Future<void> lockSeat(String eventId, String seatCode);
+  Future<void> lockSeat(
+    String eventId,
+    String seatCode, {
+    Duration hold = kSeatHoldWhileSelecting,
+  });
   Future<void> unlockSeat(String eventId, String seatCode);
   Future<void> releaseAll(String eventId, List<String> seatCodes);
+  Future<void> extendLocks(String eventId, List<String> seatCodes);
+  Future<void> cancelAutoRelease(String eventId, List<String> seatCodes);
 }
 
 @LazySingleton(as: SeatLockDataSource)
@@ -47,7 +53,11 @@ class SeatLockDataSourceImpl implements SeatLockDataSource {
   }
 
   @override
-  Future<void> lockSeat(String eventId, String seatCode) async {
+  Future<void> lockSeat(
+    String eventId,
+    String seatCode, {
+    Duration hold = kSeatHoldWhileSelecting,
+  }) async {
     final ref = _seatRef(eventId, seatCode);
     var armed = false;
     try {
@@ -56,9 +66,7 @@ class SeatLockDataSourceImpl implements SeatLockDataSource {
       await ref.set({
         'userId': _uid(),
         'status': 'selecting',
-        'expiresAt': DateTime.now()
-            .add(kSeatHoldWhileSelecting)
-            .millisecondsSinceEpoch,
+        'expiresAt': DateTime.now().add(hold).millisecondsSinceEpoch,
       });
     } on FirebaseException catch (e) {
       if (armed) await ref.onDisconnect().cancel();
@@ -89,6 +97,24 @@ class SeatLockDataSourceImpl implements SeatLockDataSource {
   Future<void> releaseAll(String eventId, List<String> seatCodes) async {
     for (final seatCode in seatCodes) {
       await unlockSeat(eventId, seatCode);
+    }
+  }
+
+  @override
+  Future<void> extendLocks(String eventId, List<String> seatCodes) async {
+    for (final code in seatCodes) {
+      await lockSeat(eventId, code, hold: kSeatHoldForPayment);
+    }
+  }
+
+  @override
+  Future<void> cancelAutoRelease(String eventId, List<String> seatCodes) async {
+    try {
+      for (final code in seatCodes) {
+        await _seatRef(eventId, code).onDisconnect().cancel();
+      }
+    } on FirebaseException catch (e) {
+      throw ServerException('RTDB: ${e.code}');
     }
   }
 }
